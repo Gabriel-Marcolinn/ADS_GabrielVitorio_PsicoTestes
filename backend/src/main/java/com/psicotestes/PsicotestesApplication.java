@@ -1,4 +1,4 @@
-package com.psicotestes.psicotestes;
+package com.psicotestes;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
