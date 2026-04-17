@@ -1,5 +1,7 @@
+import RedirectButton from "./RedirectButton";
+
 export default function LoginButton() {
     return(
-        <button>Login</button>
+        <RedirectButton to="/app" text="Login"/>
     );
 }
