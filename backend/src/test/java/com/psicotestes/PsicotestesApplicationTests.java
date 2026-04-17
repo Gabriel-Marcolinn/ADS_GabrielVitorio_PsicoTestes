@@ -1,4 +1,4 @@
-package com.psicotestes.psicotestes;
+package com.psicotestes;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
