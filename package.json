@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "vite-plugin-windicss": "^1.9.4",
+    "windicss": "^3.5.6"
+  }
+}

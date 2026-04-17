@@ -1,11 +1,16 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 export default function RedirectButton({ to, text }) {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    return(
-        <button onClick={() => navigate(to)}>
-            { text }
-        </button>
-    )
+  return (
+    <div className="p-2">
+      <button
+        onClick={() => navigate(to)}
+        className="bg-primary"
+      >
+        {text}
+      </button>
+    </div>
+  );
 }
