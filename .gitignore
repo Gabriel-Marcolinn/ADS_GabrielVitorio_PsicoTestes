@@ -1,3 +1,5 @@
 .idea/
 backend/src/main/resources/application-local.properties
 node_modules
+package-lock.json
+package.json
