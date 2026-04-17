@@ -3,6 +3,8 @@ package com.psicotestes.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Table(name="testes")
 @Entity
 @Getter
@@ -17,4 +19,8 @@ public class Teste {
 
     @Column(name = "nome", nullable = false)
     private String nome;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "teste")
+    private List<Pergunta> perguntas;
 }
