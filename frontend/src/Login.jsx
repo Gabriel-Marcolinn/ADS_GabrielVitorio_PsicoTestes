@@ -2,7 +2,7 @@ import InputEmail from "./components/InputEmail";
 import InputPassword from "./components/InputPassword";
 import LoginButton from "./components/LoginButton";
 
-function Login() {
+export default function Login() {
   return (
     <>
       <section>
@@ -14,5 +14,3 @@ function Login() {
     </>
   );
 }
-
-export default Login;

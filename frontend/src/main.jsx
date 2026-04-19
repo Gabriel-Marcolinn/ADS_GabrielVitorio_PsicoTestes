@@ -5,7 +5,8 @@ import "virtual:windi.css";
 import "./index.css";
 import App from "./App.jsx";
 import Login from "./Login.jsx";
-import 'virtual:windi.css'
+import Empresas from "./Empresas.jsx";
+import "virtual:windi.css";
 
 function Main() {
   return (
@@ -13,9 +14,10 @@ function Main() {
       <Routes>
         {/* redirect assim que abre a url */}
         <Route path="/" element={<Navigate to="/login" />} />
-        
+
         <Route path="/login" element={<Login />} />
         <Route path="/app" element={<App />} />
+        <Route path="/empresas" element={<Empresas />} />
       </Routes>
     </BrowserRouter>
   );
