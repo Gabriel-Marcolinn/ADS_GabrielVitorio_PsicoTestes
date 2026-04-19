@@ -26,4 +26,9 @@ public class Empresa {
     @ToString.Exclude
     @OneToMany(mappedBy = "empresa")
     private List<Usuario> usuarios;
+
+    public Empresa(String razaoSocial, String cnpj) {
+        this.razaoSocial = razaoSocial;
+        this.cnpj = cnpj;
+    }
 }
