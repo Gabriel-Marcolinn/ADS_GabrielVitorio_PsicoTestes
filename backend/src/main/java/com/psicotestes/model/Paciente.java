@@ -30,4 +30,7 @@ public class Paciente {
     @ManyToOne
     @JoinColumn(name = "psicologo_id", nullable = false)
     private Usuario psicologo;
+
+    @Column(name = "ativo", nullable = false)
+    private Boolean ativo;
 }
