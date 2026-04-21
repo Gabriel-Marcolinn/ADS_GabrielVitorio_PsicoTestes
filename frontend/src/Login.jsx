@@ -58,6 +58,7 @@ export default function Login() {
             label="Senha"
             type={showPassword ? "text" : "password"}
             fullWidth
+            sx={{ mb: 2 }}
             slotProps={{
               input: {
                 endAdornment: (
@@ -70,7 +71,7 @@ export default function Login() {
               },
             }}
           />
-          <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
+          <Button type="submit" variant="contained" fullWidth>
             Login
           </Button>
         </Box>
