@@ -1,8 +1,12 @@
+import { useNavigate } from "react-router-dom";
 import InputEmail from "./components/InputEmail";
 import InputPassword from "./components/InputPassword";
 import LoginButton from "./components/LoginButton";
+import Button from "@mui/material/Button";
 
 export default function Login() {
+  const navigate = useNavigate();
+
   return (
     <>
       <section>
@@ -11,6 +15,9 @@ export default function Login() {
       <InputEmail />
       <InputPassword />
       <LoginButton />
+      <Button variant="contained" onClick={() => navigate("/app")}>
+        Botao
+      </Button>
     </>
   );
 }

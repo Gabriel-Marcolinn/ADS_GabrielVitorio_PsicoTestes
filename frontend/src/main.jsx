@@ -6,6 +6,7 @@ import "./index.css";
 import App from "./App.jsx";
 import Login from "./Login.jsx";
 import Empresas from "./Empresas.jsx";
+import EmpresaCadastro from "./EmpresaCadastro.jsx";
 import "virtual:windi.css";
 
 function Main() {
@@ -18,6 +19,7 @@ function Main() {
         <Route path="/login" element={<Login />} />
         <Route path="/app" element={<App />} />
         <Route path="/empresas" element={<Empresas />} />
+        <Route path="/empresas/cadastro" element={<EmpresaCadastro />} />
       </Routes>
     </BrowserRouter>
   );
