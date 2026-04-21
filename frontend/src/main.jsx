@@ -7,7 +7,22 @@ import App from "./App.jsx";
 import Login from "./Login.jsx";
 import Empresas from "./Empresas.jsx";
 import EmpresaCadastro from "./EmpresaCadastro.jsx";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import "virtual:windi.css";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#18a1db",
+    },
+    secondary: {
+      main: "#2bc0ff",
+    },
+    background: {
+      default: "#d7dbdb",
+    },
+  },
+});
 
 function Main() {
   return (
