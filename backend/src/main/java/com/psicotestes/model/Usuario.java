@@ -2,6 +2,8 @@ package com.psicotestes.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.List;
 
@@ -12,6 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE usuarios SET deletado = true WHERE id = ?")
+@SQLRestriction("deletado = false")
 public class Usuario {
 
     @Id
@@ -31,7 +35,12 @@ public class Usuario {
     private String tipo;
 
     @Column(name = "ativo", nullable = false)
-    private Boolean ativo;
+    @Builder.Default
+    private Boolean ativo = true;
+
+    @Column(name = "deletado", nullable = false)
+    @Builder.Default
+    private Boolean deletado = false;
 
     @ManyToOne
     @JoinColumn(name = "empresa_id", nullable = false)
