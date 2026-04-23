@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "virtual:windi.css";
@@ -9,6 +9,7 @@ import Empresas from "./Empresas.jsx";
 import EmpresaCadastro from "./EmpresaCadastro.jsx";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import "virtual:windi.css";
+import Header from "./components/Header.jsx";
 
 const theme = createTheme({
   palette: {
@@ -24,11 +25,15 @@ const theme = createTheme({
   },
 });
 
-function Main() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        {/* redirect assim que abre a url */}
+function Layout() {
+  const location = useLocation();
+  const semHeader = ["/login"];
+  const mostrarHeader = !semHeader.includes(location.pathname);
+
+  return(
+    <>
+    {mostrarHeader && <Header />}
+     <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
 
         <Route path="/login" element={<Login />} />
@@ -36,6 +41,16 @@ function Main() {
         <Route path="/empresas" element={<Empresas />} />
         <Route path="/empresas/cadastro" element={<EmpresaCadastro />} />
       </Routes>
+    </>
+  )
+}
+
+function Main() {
+  return (
+    <BrowserRouter>
+     <ThemeProvider theme={theme}>
+      <Layout />
+     </ThemeProvider>
     </BrowserRouter>
   );
 }
