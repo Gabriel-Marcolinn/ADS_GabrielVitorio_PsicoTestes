@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
-import { deletarEmpresa, listarEmpresas } from "../services/empresaService";
 import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { isCNPJ, validate } from "validation-br";
+import { mask } from "validation-br/dist/cnpj";
+import {
+  deletarEmpresa,
+  listarEmpresas,
+  atualizarEmpresa,
+} from "../services/empresaService";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
@@ -9,11 +16,19 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+import TextField from "@mui/material/TextField";
 
 export default function Empresas() {
   const [empresas, setEmpresas] = useState([]);
-  const [modalAberta, setModalAberta] = useState(false);
+  const [modalDeletarAberta, setModalDeletarAberta] = useState(false);
   const [empresaParaDeletar, setEmpresaParaDeletar] = useState(null);
+  const [modalEditarAberta, setModalEditarAberta] = useState(false);
+  const [empresaParaEditar, setEmpresaParaEditar] = useState(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const navigate = useNavigate();
 
@@ -23,14 +38,33 @@ export default function Empresas() {
 
   function confirmarDeletar(empresa) {
     setEmpresaParaDeletar(empresa);
-    setModalAberta(true);
+    setModalDeletarAberta(true);
+  }
+
+  function abrirEditar(empresa) {
+    setEmpresaParaEditar(empresa);
+    setModalEditarAberta(true);
   }
 
   async function handleDeletar() {
     try {
       await deletarEmpresa(empresaParaDeletar.id);
       setEmpresas(empresas.filter((e) => e.id !== empresaParaDeletar.id));
-      setModalAberta(false);
+      setModalDeletarAberta(false);
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  async function handleEditar(data) {
+    try {
+      await atualizarEmpresa(empresaParaEditar.id, data);
+      setEmpresas(
+        empresas.map((e) =>
+          e.id === empresaParaEditar.id ? { ...e, ...data } : e,
+        ),
+      );
+      setModalEditarAberta(false);
     } catch (error) {
       alert(error.message);
     }
@@ -46,7 +80,60 @@ export default function Empresas() {
         minHeight: "100vh",
       }}
     >
-      <Dialog open={modalAberta} onClose={() => setModalAberta(false)}>
+      <Dialog
+        open={modalEditarAberta}
+        onClose={() => setModalEditarAberta(false)}
+      >
+        <DialogTitle>
+          Editar <strong>{empresaParaEditar?.razaoSocial}</strong>
+        </DialogTitle>
+        <DialogContent>
+          <Box
+            component="form"
+            onSubmit={handleSubmit(handleEditar)}
+            sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
+          >
+            <TextField
+              {...register("cnpj", {
+                required: "CNPJ e obrigatorio",
+                validate: (value) => isCNPJ(value) || "CNPJ invalido",
+              })}
+              label="CNPJ"
+              placeholder="Digite o CNPJ"
+              fullWidth
+              sx={{ mb: 2 }}
+              defaultValue={empresaParaEditar?.cnpj}
+              error={!!errors.cnpj}
+              helperText={errors.cnpj?.message}
+            />
+            <TextField
+              {...register("razaoSocial", {
+                required: "Razao Social e obrigatoria",
+              })}
+              label="Razão Social"
+              placeholder="Digite a Razão Social"
+              fullWidth
+              sx={{ mb: 2 }}
+              defaultValue={empresaParaEditar?.razaoSocial}
+              error={!!errors.razaoSocial}
+              helperText={errors.razaoSocial?.message}
+            />
+            <DialogActions>
+              <Button onClick={() => setModalEditarAberta(false)}>
+                Cancelar
+              </Button>
+              <Button type="submit" variant="contained">
+                Salvar
+              </Button>
+            </DialogActions>
+          </Box>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={modalDeletarAberta}
+        onClose={() => setModalDeletarAberta(false)}
+      >
         <DialogTitle>
           Deletar <strong>{empresaParaDeletar?.razaoSocial}</strong>?
         </DialogTitle>
@@ -54,8 +141,8 @@ export default function Empresas() {
           Tem certeza que deseja deletar {empresaParaDeletar?.razaoSocial}?
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setModalAberta(false)}>Cancelar</Button>
-          <Button onClick={handleDeletar} coloar="error" variant="contained">
+          <Button onClick={() => setModalDeletarAberta(false)}>Cancelar</Button>
+          <Button onClick={handleDeletar} color="error" variant="contained">
             Deletar
           </Button>
         </DialogActions>
@@ -88,9 +175,10 @@ export default function Empresas() {
               justifyContent: "space-between",
               p: 1,
             }}
+            key={empresa.id}
           >
-            <p key={empresa.id}>
-              {empresa.razaoSocial} - {empresa.cnpj}
+            <p>
+              {empresa.razaoSocial} - {mask(empresa.cnpj)}
             </p>
             <Box>
               <Button
@@ -101,7 +189,12 @@ export default function Empresas() {
               >
                 Deletar
               </Button>
-              <Button variant="outlined" color="primary" sx={{ mr: "2px" }}>
+              <Button
+                variant="outlined"
+                color="primary"
+                sx={{ mr: "2px" }}
+                onClick={() => abrirEditar(empresa)}
+              >
                 Editar
               </Button>
             </Box>
