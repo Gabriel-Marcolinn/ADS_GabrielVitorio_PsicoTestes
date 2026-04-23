@@ -48,11 +48,17 @@ public class EmpresaController {
         return ResponseEntity.ok(empresaAtualizada);
     }
 
-    // DELETE /api/empresas/{id} -> Excluir uma clínica
+    // DELETE /api/empresas/{id} -> Soft Delete transparente
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> remover(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         empresaService.remover(id);
-
         return ResponseEntity.noContent().build();
+    }
+
+    // PATCH /api/empresas/{id}/status -> Altera entre ativo/inativo
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<EmpresaResponseDTO> alternarStatus(@PathVariable Long id) {
+        EmpresaResponseDTO empresa = empresaService.alternarStatus(id);
+        return ResponseEntity.ok(empresa);
     }
 }

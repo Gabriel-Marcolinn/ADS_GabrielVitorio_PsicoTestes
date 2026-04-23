@@ -18,4 +18,6 @@ public interface PacienteRepository extends JpaRepository<Paciente, Long> {
     // Para facilitar a busca de um paciente específico na tela
     List<Paciente> findByPsicologoIdAndNomeContainingIgnoreCase(Long psicologoId, String nome);
 
+    // Para facilitar a listagem de pacientes ativos e inativos
+    List<Paciente> findByPsicologoIdAndAtivo(Long psicologoId, Boolean ativo);
 }

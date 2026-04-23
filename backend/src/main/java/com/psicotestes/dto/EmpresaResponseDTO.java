@@ -7,10 +7,11 @@ import com.psicotestes.model.Empresa;
 public record EmpresaResponseDTO(
         Long id,
         String razaoSocial,
-        String cnpj
+        String cnpj,
+        Boolean ativo
 ) {
     // Construtor prático para converter a Entidade no DTO rapidamente
     public EmpresaResponseDTO(Empresa empresa) {
-        this(empresa.getId(), empresa.getRazaoSocial(), empresa.getCnpj());
+        this(empresa.getId(), empresa.getRazaoSocial(), empresa.getCnpj(), empresa.getAtivo());
     }
 }
