@@ -24,7 +24,7 @@ public class Empresa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "cnpj", nullable = false, unique = true)
+    @Column(name = "cnpj", nullable = false)
     private String cnpj;
 
     @Column(name = "razao_social", nullable = false)
