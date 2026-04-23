@@ -62,8 +62,20 @@ public class EmpresaService {
     @Transactional
     public void remover(Long id) {
         if (!empresaRepository.existsById(id)) {
-            throw new RuntimeException("Não é possível remover: Empresa não encontrada.");
+            throw new RuntimeException("Empresa não encontrada.");
         }
+        // O Hibernate vai interceptar isso aqui e fazer o UPDATE deletado = true
         empresaRepository.deleteById(id);
+    }
+
+    @Transactional
+    public EmpresaResponseDTO alternarStatus(Long id) {
+        Empresa empresa = empresaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Empresa não encontrada."));
+
+        // Inverte o status atual (se for true vira false, se for false vira true)
+        empresa.setAtivo(!empresa.getAtivo());
+
+        return new EmpresaResponseDTO(empresa);
     }
 }
