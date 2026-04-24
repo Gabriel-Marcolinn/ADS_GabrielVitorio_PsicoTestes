@@ -24,6 +24,9 @@ export default function Empresas() {
   const [empresaParaDeletar, setEmpresaParaDeletar] = useState(null);
   const [modalEditarAberta, setModalEditarAberta] = useState(false);
   const [empresaParaEditar, setEmpresaParaEditar] = useState(null);
+  const [empresaParaInativar, setEmpresaParaInativar] = useState(null);
+  const [modalInativarAberta, setModalInativarAberta] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -41,6 +44,11 @@ export default function Empresas() {
     setModalDeletarAberta(true);
   }
 
+  function confirmarInativar(empresa) {
+    setEmpresaParaInativar(empresa);
+    setModalInativarAberta(true);
+  }
+
   function abrirEditar(empresa) {
     setEmpresaParaEditar(empresa);
     setModalEditarAberta(true);
@@ -51,6 +59,16 @@ export default function Empresas() {
       await deletarEmpresa(empresaParaDeletar.id);
       setEmpresas(empresas.filter((e) => e.id !== empresaParaDeletar.id));
       setModalDeletarAberta(false);
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  async function handleInativar() {
+    try {
+      await inativarEmpresa(empresaParaInativar.id);
+      setEmpresas(empresas.filter((e) => e.id !== empresaParaInativar.id));
+      setModalInativarAberta(false);
     } catch (error) {
       alert(error.message);
     }
@@ -147,6 +165,28 @@ export default function Empresas() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog
+        open={modalInativarAberta}
+        onClose={() => setModalInativarAberta(false)}
+      >
+        <DialogTitle>
+          Inativar <strong>{empresaParaInativar?.razaoSocial}</strong>?
+        </DialogTitle>
+        <DialogContent>
+          Tem certeza que desejaa inativar{" "}
+          <strong>{empresaParaInativar?.razaoSocial}</strong>?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setModalInativarAberta(false)}>
+            Cancelar
+          </Button>
+          <Button onClick={handleInativar} color="error" variant="contained">
+            Inativar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Box>
         <Typography
           sx={{
@@ -188,6 +228,14 @@ export default function Empresas() {
                 onClick={() => confirmarDeletar(empresa)}
               >
                 Deletar
+              </Button>
+              <Button
+                variant="outlined"
+                color="warning"
+                sx={{ mr: "2px" }}
+                onClick={() => confirmarInativar(empresa)}
+              >
+                Inativar
               </Button>
               <Button
                 variant="outlined"

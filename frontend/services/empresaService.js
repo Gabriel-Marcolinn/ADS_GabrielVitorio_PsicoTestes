@@ -54,3 +54,10 @@ export async function deletarEmpresa(id) {
   });
   return handleResponse(response);
 }
+
+export async function alterarStatusEmpresa(id) {
+  const response = await fetch(`${BASE_URL}/${id}/status`, {
+    method: "PATCH",
+  });
+  return handleResponse(response);
+}
