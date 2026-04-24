@@ -4,6 +4,7 @@ import com.psicotestes.dto.EmpresaRequestDTO;
 import com.psicotestes.dto.EmpresaResponseDTO;
 import com.psicotestes.model.Empresa;
 import com.psicotestes.repository.EmpresaRepository;
+import com.psicotestes.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import java.util.List;
 public class EmpresaService {
 
     private final EmpresaRepository empresaRepository;
+    private final UsuarioRepository usuarioRepository;
 
     @Transactional
     public EmpresaResponseDTO salvar(EmpresaRequestDTO dto) {
@@ -64,6 +66,12 @@ public class EmpresaService {
         if (!empresaRepository.existsById(id)) {
             throw new RuntimeException("Empresa não encontrada.");
         }
+
+        // Caso a empresa tenha usuários vinculados, o sistema impede o soft delete
+        if (usuarioRepository.existsByEmpresaId(id)) {
+            throw new RuntimeException("A empresa tem usuários vinculados à ela, logo, ela não pode ser deletada.");
+        }
+
         // O Hibernate vai interceptar isso aqui e fazer o UPDATE deletado = true
         empresaRepository.deleteById(id);
     }

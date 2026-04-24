@@ -19,4 +19,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     // Para facilitar a busca global de um usuário pelo nome (uso exclusivo do Administrador geral)
     List<Usuario> findByNomeContainingIgnoreCase(String nome);
+
+    // Para indicar se tem algum usuário cadastrado na empresa, impedindo a remoção da mesma caso sim
+    Boolean existsByEmpresaId(Long empresaId);
 }
