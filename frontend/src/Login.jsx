@@ -17,7 +17,7 @@ export default function Login() {
 
   function onSubmit(data) {
     console.log(data);
-    navigate("/app");
+    navigate("/empresas");
   }
 
   return (
