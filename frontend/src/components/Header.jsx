@@ -5,13 +5,23 @@ import { useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 export default function Header() {
   const navigate = useNavigate();
 
   return (
     <AppBar position="static" sx={{ background: "white", boxShadow: "1" }}>
-      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          maxWidth: 1400,
+          width: "100%",
+          margin: "0 auto",
+        }}
+      >
         <Box sx={{ display: "flex" }}>
           <Box
             sx={{
@@ -31,7 +41,7 @@ export default function Header() {
         </Box>
 
         <Button color="inherit" onClick={() => navigate("/login")}>
-          Sair
+          <LogoutIcon></LogoutIcon>Sair
         </Button>
       </Toolbar>
     </AppBar>
