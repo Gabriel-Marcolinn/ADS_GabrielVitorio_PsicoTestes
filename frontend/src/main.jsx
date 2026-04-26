@@ -7,14 +7,12 @@ import {
 } from "react-router-dom";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "virtual:windi.css";
 import "./index.css";
 import App from "./Empresas.jsx";
 import Login from "./Login.jsx";
 import Empresas from "./Empresas.jsx";
 import EmpresaCadastro from "./EmpresaCadastro.jsx";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import "virtual:windi.css";
 import Header from "./components/Header.jsx";
 import CssBaseline from "@mui/material/CssBaseline";
 
