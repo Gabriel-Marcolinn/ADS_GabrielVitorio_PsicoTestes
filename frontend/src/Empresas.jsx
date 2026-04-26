@@ -142,10 +142,19 @@ export default function Empresas() {
               helperText={errors.razaoSocial?.message}
             />
             <DialogActions>
-              <Button onClick={() => setModalEditarAberta(false)}>
+              <Button
+                variant="outlined"
+                onClick={() => setModalEditarAberta(false)}
+              >
                 Cancelar
               </Button>
-              <Button type="submit" variant="contained">
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  color: "white",
+                }}
+              >
                 Salvar
               </Button>
             </DialogActions>
@@ -164,7 +173,12 @@ export default function Empresas() {
           Tem certeza que deseja deletar {empresaParaDeletar?.razaoSocial}?
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setModalDeletarAberta(false)}>Cancelar</Button>
+          <Button
+            variant="outlined"
+            onClick={() => setModalDeletarAberta(false)}
+          >
+            Cancelar
+          </Button>
           <Button onClick={handleDeletar} color="error" variant="contained">
             Deletar
           </Button>
@@ -183,7 +197,10 @@ export default function Empresas() {
           <strong>{empresaParaInativar?.razaoSocial}</strong>?
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setModalInativarAberta(false)}>
+          <Button
+            variant="outlined"
+            onClick={() => setModalInativarAberta(false)}
+          >
             Cancelar
           </Button>
           <Button onClick={handleInativar} color="warning" variant="contained">
