@@ -317,7 +317,7 @@ export default function Empresas() {
         <Button
           variant="contained"
           size="large"
-          onClick={() => setModalCadastrarAberta(true)}
+          onClick={() => abrirCadastrar(true)}
           sx={{
             background: "linear-gradient(135deg, #1565c0, #1581c0)",
             color: "white",
