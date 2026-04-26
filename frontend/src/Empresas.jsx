@@ -8,6 +8,7 @@ import {
   deletarEmpresa,
   listarEmpresas,
   atualizarEmpresa,
+  inativarEmpresa,
 } from "../services/empresaService";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -174,7 +175,7 @@ export default function Empresas() {
           Inativar <strong>{empresaParaInativar?.razaoSocial}</strong>?
         </DialogTitle>
         <DialogContent>
-          Tem certeza que desejaa inativar{" "}
+          Tem certeza que deseja inativar{" "}
           <strong>{empresaParaInativar?.razaoSocial}</strong>?
         </DialogContent>
         <DialogActions>

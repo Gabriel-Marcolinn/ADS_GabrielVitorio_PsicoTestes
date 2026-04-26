@@ -55,7 +55,8 @@ export async function deletarEmpresa(id) {
   return handleResponse(response);
 }
 
-export async function alterarStatusEmpresa(id) {
+// INATIVAR
+export async function inativarEmpresa(id) {
   const response = await fetch(`${BASE_URL}/${id}/status`, {
     method: "PATCH",
   });
