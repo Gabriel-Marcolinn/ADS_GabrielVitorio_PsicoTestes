@@ -1,6 +1,7 @@
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import PsychologyIcon from '@mui/icons-material/Psychology';import { useNavigate } from "react-router-dom";
+import PsychologyIcon from "@mui/icons-material/Psychology";
+import { useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -14,7 +15,7 @@ export default function Header() {
         <Box sx={{ display: "flex" }}>
           <Box
             sx={{
-              background: "linear-gradient(135deg, #1565c0, #42a5f5)",
+              background: "linear-gradient(135deg, #1565c0, #1581c0)",
               borderRadius: 2,
               p: 1,
               display: "flex",

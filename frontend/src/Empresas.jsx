@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Button from "@mui/material/Button";
 import { data, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { isCNPJ, validate } from "validation-br";
@@ -11,6 +10,7 @@ import {
   inativarEmpresa,
 } from "../services/empresaService";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Dialog from "@mui/material/Dialog";
@@ -18,6 +18,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
+import EditIcon from "@mui/icons-material/Edit";
+import IconButton from "@mui/material/IconButton";
+import BlockIcon from "@mui/icons-material/Block";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function Empresas() {
   const [empresas, setEmpresas] = useState([]);
@@ -96,7 +100,7 @@ export default function Empresas() {
         justifyContent: "center",
         flexDirection: "column",
         alignItems: "center",
-        minHeight: "100vh",
+        pt: 3,
       }}
     >
       <Dialog
@@ -182,74 +186,116 @@ export default function Empresas() {
           <Button onClick={() => setModalInativarAberta(false)}>
             Cancelar
           </Button>
-          <Button onClick={handleInativar} color="error" variant="contained">
+          <Button onClick={handleInativar} color="warning" variant="contained">
             Inativar
           </Button>
         </DialogActions>
       </Dialog>
 
-      <Box>
-        <Typography
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          mb: 3,
+          width: "100%",
+          maxWidth: 900,
+        }}
+      >
+        <Box
           sx={{
+            justifyContent: "space-between",
             display: "flex",
-            justifyContent: "flex-start",
-            mb: 2,
           }}
-          variant="h5"
-          fontWeight="bold"
         >
-          Empresas cadastradas:
-        </Typography>
-
-        <Button variant="contained" onClick={() => navigate("./cadastro")}>
-          Cadastrar empresa
+          <Box>
+            <Typography variant="h4">Gerenciar Empresas</Typography>
+            <Typography variant="body2" color="text.secondary">
+              Visualize e gerencie todas as empresas cadastradas no sistema
+            </Typography>
+          </Box>
+        </Box>
+        <Button
+          variant="contained"
+          size="large"
+          onClick={() => navigate("./cadastro")}
+          sx={{
+            background: "linear-gradient(135deg, #1565c0, #1581c0)",
+            color: "white",
+            borderRadius: 3,
+            boxShadow: "0px 0px 30px rgba(24, 161, 219, 0.4)",
+            "&:hover": {
+              background: "linear-gradient(135deg, #1255a1, #0f689b)",
+              boxShadow: "0px 0px 30px rgba(24, 161, 219, 0.6)",
+            },
+          }}
+        >
+          + Nova Empresa
         </Button>
       </Box>
-      <Paper elevation={4} sx={{ p: 2, width: 600, borderRadius: 3 }}>
+
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 1.5,
+          maxWidth: 1200,
+        }}
+      >
         {empresas.map((empresa) => (
-          <Box
-            sx={{
-              outline: "2px solid grey",
-              borderRadius: 2,
-              mb: "8px",
-              display: "flex",
-              justifyContent: "space-between",
-              p: 1,
-            }}
+          <Paper
             key={empresa.id}
+            elevation={2}
+            sx={{
+              p: 3,
+              width: 380,
+              borderRadius: 3,
+              height: "100%",
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
           >
-            <p>
-              {empresa.razaoSocial} - {mask(empresa.cnpj)}
-            </p>
-            <Box>
-              <Button
-                variant="outlined"
-                color="error"
-                sx={{ mr: "2px" }}
-                onClick={() => confirmarDeletar(empresa)}
-              >
-                Deletar
-              </Button>
-              <Button
-                variant="outlined"
-                color="warning"
-                sx={{ mr: "2px" }}
-                onClick={() => confirmarInativar(empresa)}
-              >
-                Inativar
-              </Button>
-              <Button
-                variant="outlined"
-                color="primary"
-                sx={{ mr: "2px" }}
-                onClick={() => abrirEditar(empresa)}
-              >
-                Editar
-              </Button>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Box>
+                <Typography fontWeight="bold" variant="h5">
+                  {empresa.razaoSocial}
+                </Typography>
+                <Typography variant="body2" color="primary">
+                  {mask(empresa.cnpj)}
+                </Typography>
+              </Box>
+              <IconButton onClick={() => abrirEditar(empresa)}>
+                <EditIcon />
+              </IconButton>
             </Box>
-          </Box>
+
+            <Box
+              sx={{
+                mt: 2,
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <IconButton onClick={() => confirmarDeletar(empresa)}>
+                <DeleteIcon size="small" color="error" variant="outlined">
+                  Deletar
+                </DeleteIcon>
+              </IconButton>
+              <IconButton onClick={() => confirmarInativar(empresa)}>
+                <BlockIcon size="small" color="warning" variant="outlined">
+                  Inativar
+                </BlockIcon>
+              </IconButton>
+            </Box>
+          </Paper>
         ))}
-      </Paper>
+      </Box>
     </Box>
   );
 }

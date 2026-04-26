@@ -16,6 +16,7 @@ import EmpresaCadastro from "./EmpresaCadastro.jsx";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import "virtual:windi.css";
 import Header from "./components/Header.jsx";
+import CssBaseline from "@mui/material/CssBaseline";
 
 const theme = createTheme({
   palette: {
@@ -26,7 +27,7 @@ const theme = createTheme({
       main: "#2bc0ff",
     },
     background: {
-      default: "#d7dbdb",
+      default: "#f2f7fe",
     },
   },
 });
@@ -54,6 +55,7 @@ function Main() {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
+        <CssBaseline />
         <Layout />
       </ThemeProvider>
     </BrowserRouter>
