@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { data, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { isCNPJ, validate } from "validation-br";
-import { mask } from "validation-br/dist/cnpj";
+import { mask, normalize } from "validation-br/dist/cnpj";
 import {
   deletarEmpresa,
   listarEmpresas,
@@ -41,6 +41,20 @@ export default function Empresas() {
     reset,
   } = useForm();
 
+  const {
+    register: registerCadastro,
+    handleSubmit: handleSubmitCadastro,
+    formState: { errors: errorsCadastro },
+    reset: resetCadastro,
+  } = useForm();
+
+  const {
+    register: registerEditar,
+    handleSubmit: handleSubmitEditar,
+    formState: { errors: errorsEditar },
+    reset: resetEditar,
+  } = useForm();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,6 +72,7 @@ export default function Empresas() {
   }
 
   function abrirEditar(empresa) {
+    resetEditar();
     setEmpresaParaEditar(empresa);
     setModalEditarAberta(true);
   }
@@ -73,7 +88,7 @@ export default function Empresas() {
   }
 
   function abrirCadastrar() {
-    reset();
+    resetCadastro();
     setModalCadastrarAberta(true);
   }
 
@@ -132,11 +147,11 @@ export default function Empresas() {
         <DialogContent>
           <Box
             component="form"
-            onSubmit={handleSubmit(handleEditar)}
+            onSubmit={handleSubmitEditar(handleEditar)}
             sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
           >
             <TextField
-              {...register("cnpj", {
+              {...registerEditar("cnpj", {
                 required: "CNPJ e obrigatorio",
                 validate: (value) => isCNPJ(value) || "CNPJ invalido",
               })}
@@ -144,12 +159,12 @@ export default function Empresas() {
               placeholder="Digite o CNPJ"
               fullWidth
               sx={{ mb: 2 }}
-              defaultValue={empresaParaEditar?.cnpj}
+              defaultValue={normalize(empresaParaEditar?.cnpj)}
               error={!!errors.cnpj}
               helperText={errors.cnpj?.message}
             />
             <TextField
-              {...register("razaoSocial", {
+              {...registerEditar("razaoSocial", {
                 required: "Razao Social e obrigatoria",
               })}
               label="Razão Social"
@@ -250,10 +265,10 @@ export default function Empresas() {
             <Box
               sx={{ flexDirection: "column", p: 1 }}
               component="form"
-              onSubmit={handleSubmit(handleCadastrar)}
+              onSubmit={handleSubmitCadastro(handleCadastrar)}
             >
               <TextField
-                {...register("cnpj", {
+                {...registerCadastro("cnpj", {
                   required: "CNPJ e obrigatorio",
                   validate: (value) => isCNPJ(value) || "CNPJ invalido",
                 })}
@@ -265,7 +280,7 @@ export default function Empresas() {
                 helperText={errors.cnpj?.message}
               />
               <TextField
-                {...register("razaoSocial", {
+                {...registerCadastro("razaoSocial", {
                   required: "Razao Social e obrigatoria",
                 })}
                 label="Razão Social"
