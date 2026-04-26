@@ -7,7 +7,6 @@ import {
 } from "react-router-dom";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./index.css";
 import App from "./Empresas.jsx";
 import Login from "./Login.jsx";
 import Empresas from "./Empresas.jsx";
@@ -17,6 +16,10 @@ import Header from "./components/Header.jsx";
 import CssBaseline from "@mui/material/CssBaseline";
 
 const theme = createTheme({
+  typography: {
+    fontFamily: "'Roboto', sans-serif",
+  },
+
   palette: {
     primary: {
       main: "#18a1db",
