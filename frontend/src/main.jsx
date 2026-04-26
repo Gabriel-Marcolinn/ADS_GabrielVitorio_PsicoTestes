@@ -10,7 +10,6 @@ import { createRoot } from "react-dom/client";
 import App from "./Empresas.jsx";
 import Login from "./Login.jsx";
 import Empresas from "./Empresas.jsx";
-import EmpresaCadastro from "./EmpresaCadastro.jsx";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Header from "./components/Header.jsx";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -46,7 +45,6 @@ function Layout() {
 
         <Route path="/login" element={<Login />} />
         <Route path="/empresas" element={<Empresas />} />
-        <Route path="/empresas/cadastro" element={<EmpresaCadastro />} />
       </Routes>
     </>
   );

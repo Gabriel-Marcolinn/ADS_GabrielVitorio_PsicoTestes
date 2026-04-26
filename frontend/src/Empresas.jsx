@@ -8,6 +8,7 @@ import {
   listarEmpresas,
   atualizarEmpresa,
   inativarEmpresa,
+  cadastrarEmpresa,
 } from "../services/empresaService";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -31,11 +32,13 @@ export default function Empresas() {
   const [empresaParaEditar, setEmpresaParaEditar] = useState(null);
   const [empresaParaInativar, setEmpresaParaInativar] = useState(null);
   const [modalInativarAberta, setModalInativarAberta] = useState(false);
+  const [modalCadastrarAberta, setModalCadastrarAberta] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
 
   const navigate = useNavigate();
@@ -64,6 +67,22 @@ export default function Empresas() {
       await deletarEmpresa(empresaParaDeletar.id);
       setEmpresas(empresas.filter((e) => e.id !== empresaParaDeletar.id));
       setModalDeletarAberta(false);
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  function abrirCadastrar() {
+    reset();
+    setModalCadastrarAberta(true);
+  }
+
+  async function handleCadastrar(data) {
+    try {
+      const novaEmpresa = await cadastrarEmpresa(data);
+      setEmpresas([...empresas, novaEmpresa]);
+      alert("Empresa cadastrada com sucesso!");
+      setModalCadastrarAberta(false);
     } catch (error) {
       alert(error.message);
     }
@@ -209,6 +228,69 @@ export default function Empresas() {
         </DialogActions>
       </Dialog>
 
+      <Dialog
+        open={modalCadastrarAberta}
+        onClose={() => setModalCadastrarAberta(false)}
+      >
+        <DialogTitle
+          sx={{ textAlign: "center" }}
+          variant="h5"
+          fontWeight="bold"
+        >
+          Cadastrar empresa
+        </DialogTitle>
+        <DialogContent>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Box
+              sx={{ flexDirection: "column", p: 1 }}
+              component="form"
+              onSubmit={handleSubmit(handleCadastrar)}
+            >
+              <TextField
+                {...register("cnpj", {
+                  required: "CNPJ e obrigatorio",
+                  validate: (value) => isCNPJ(value) || "CNPJ invalido",
+                })}
+                label="CNPJ"
+                placeholder="Digite o CNPJ"
+                fullWidth
+                sx={{ mb: 2 }}
+                error={!!errors.cnpj}
+                helperText={errors.cnpj?.message}
+              />
+              <TextField
+                {...register("razaoSocial", {
+                  required: "Razao Social e obrigatoria",
+                })}
+                label="Razão Social"
+                placeholder="Digite a Razão Social"
+                fullWidth
+                sx={{ mb: 2 }}
+                error={!!errors.razaoSocial}
+                helperText={errors.razaoSocial?.message}
+              />
+              <DialogActions>
+                <Button
+                  variant="outlined"
+                  onClick={() => setModalCadastrarAberta(false)}
+                >
+                  Cancelar
+                </Button>
+                <Button type="submit" variant="contained">
+                  Cadastrar
+                </Button>
+              </DialogActions>
+            </Box>
+          </Box>
+        </DialogContent>
+      </Dialog>
+
       <Box
         sx={{
           display: "flex",
@@ -235,7 +317,7 @@ export default function Empresas() {
         <Button
           variant="contained"
           size="large"
-          onClick={() => navigate("./cadastro")}
+          onClick={() => setModalCadastrarAberta(true)}
           sx={{
             background: "linear-gradient(135deg, #1565c0, #1581c0)",
             color: "white",
