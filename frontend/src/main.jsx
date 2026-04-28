@@ -60,8 +60,4 @@ function Main() {
   );
 }
 
-createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <Main />
-  </StrictMode>,
-);
+createRoot(document.getElementById("root")).render(<Main />);
