@@ -206,59 +206,61 @@ export default function Empresas() {
           maxWidth: 1200,
         }}
       >
-        {empresas.map((empresa) => (
-          <Paper
-            key={empresa.id}
-            elevation={2}
-            sx={{
-              p: 3,
-              width: 380,
-              borderRadius: 3,
-              height: "100%",
-              flexDirection: "column",
-              justifyContent: "space-between",
-            }}
-          >
-            <Box
+        {empresas
+          .filter((empresa) => empresa.ativo)
+          .map((empresa) => (
+            <Paper
+              key={empresa.id}
+              elevation={2}
               sx={{
-                display: "flex",
+                p: 3,
+                width: 380,
+                borderRadius: 3,
+                height: "100%",
+                flexDirection: "column",
                 justifyContent: "space-between",
-                alignItems: "center",
               }}
             >
-              <Box>
-                <Typography fontWeight="bold" variant="h5">
-                  {empresa.razaoSocial}
-                </Typography>
-                <Typography variant="body2" color="primary">
-                  {mask(empresa.cnpj)}
-                </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Box>
+                  <Typography fontWeight="bold" variant="h5">
+                    {empresa.razaoSocial}
+                  </Typography>
+                  <Typography variant="body2" color="primary">
+                    {mask(empresa.cnpj)}
+                  </Typography>
+                </Box>
+                <IconButton onClick={() => abrirEditar(empresa)}>
+                  <EditIcon />
+                </IconButton>
               </Box>
-              <IconButton onClick={() => abrirEditar(empresa)}>
-                <EditIcon />
-              </IconButton>
-            </Box>
 
-            <Box
-              sx={{
-                mt: 2,
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <IconButton onClick={() => confirmarDeletar(empresa)}>
-                <DeleteIcon size="small" color="error" variant="outlined">
-                  Deletar
-                </DeleteIcon>
-              </IconButton>
-              <IconButton onClick={() => confirmarInativar(empresa)}>
-                <BlockIcon size="small" color="warning" variant="outlined">
-                  Inativar
-                </BlockIcon>
-              </IconButton>
-            </Box>
-          </Paper>
-        ))}
+              <Box
+                sx={{
+                  mt: 2,
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <IconButton onClick={() => confirmarDeletar(empresa)}>
+                  <DeleteIcon size="small" color="error" variant="outlined">
+                    Deletar
+                  </DeleteIcon>
+                </IconButton>
+                <IconButton onClick={() => confirmarInativar(empresa)}>
+                  <BlockIcon size="small" color="warning" variant="outlined">
+                    Inativar
+                  </BlockIcon>
+                </IconButton>
+              </Box>
+            </Paper>
+          ))}
       </Box>
     </Box>
   );
