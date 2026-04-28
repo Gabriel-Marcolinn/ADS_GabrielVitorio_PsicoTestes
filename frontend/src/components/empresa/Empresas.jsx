@@ -76,6 +76,7 @@ export default function Empresas() {
     }
   }
 
+  // EDITAR EMPRESA
   function abrirEditar(empresa) {
     setEmpresaParaEditar(empresa);
     setModalEditarAberta(true);
@@ -156,6 +157,7 @@ export default function Empresas() {
         />
       )}
 
+      {/* TITULO E BOTAO PARA CADASTRAR EMPRESA */}
       <Box
         sx={{
           display: "flex",
@@ -198,6 +200,7 @@ export default function Empresas() {
         </Button>
       </Box>
 
+      {/* LISTAGEM DE EMPRESA */}
       <Box
         sx={{
           display: "flex",
