@@ -26,6 +26,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ModalDeletarEmpresa from "./ModalDeletarEmpresa";
 import ModalInativarEmpresa from "./ModalInativarEmpresa";
 import ModalCadastrarEmpresa from "./ModalCadastrarEmpresa";
+import ModalEditarEmpresa from "./ModalEditarEmpresa";
 
 export default function Empresas() {
   const [empresas, setEmpresas] = useState([]);
@@ -42,14 +43,6 @@ export default function Empresas() {
   useEffect(() => {
     listarEmpresas().then(setEmpresas);
   }, []);
-
-  // USEFORM DE EDITAR
-  const {
-    register: registerEditar,
-    handleSubmit: handleSubmitEditar,
-    formState: { errors: errorsEditar },
-    reset: resetEditar,
-  } = useForm();
 
   // DELETAR EMPRESA
   function confirmarDeletar(empresa) {
@@ -84,7 +77,6 @@ export default function Empresas() {
   }
 
   function abrirEditar(empresa) {
-    resetEditar();
     setEmpresaParaEditar(empresa);
     setModalEditarAberta(true);
   }
@@ -129,65 +121,6 @@ export default function Empresas() {
         pt: 3,
       }}
     >
-      <Dialog
-        open={modalEditarAberta}
-        onClose={() => setModalEditarAberta(false)}
-      >
-        <DialogTitle>
-          Editar <strong>{empresaParaEditar?.razaoSocial}</strong>
-        </DialogTitle>
-        <DialogContent>
-          <Box
-            component="form"
-            onSubmit={handleSubmitEditar(handleEditar)}
-            sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
-          >
-            <TextField
-              {...registerEditar("cnpj", {
-                required: "CNPJ e obrigatorio",
-                validate: (value) => isCNPJ(value) || "CNPJ invalido",
-              })}
-              label="CNPJ"
-              placeholder="Digite o CNPJ"
-              fullWidth
-              sx={{ mb: 2 }}
-              defaultValue={normalize(empresaParaEditar?.cnpj)}
-              error={!!errorsEditar.cnpj}
-              helperText={errorsEditar.cnpj?.message}
-            />
-            <TextField
-              {...registerEditar("razaoSocial", {
-                required: "Razao Social e obrigatoria",
-              })}
-              label="Razão Social"
-              placeholder="Digite a Razão Social"
-              fullWidth
-              sx={{ mb: 2 }}
-              defaultValue={empresaParaEditar?.razaoSocial}
-              error={!!errorsEditar.razaoSocial}
-              helperText={errorsEditar.razaoSocial?.message}
-            />
-            <DialogActions>
-              <Button
-                variant="outlined"
-                onClick={() => setModalEditarAberta(false)}
-              >
-                Cancelar
-              </Button>
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{
-                  color: "white",
-                }}
-              >
-                Salvar
-              </Button>
-            </DialogActions>
-          </Box>
-        </DialogContent>
-      </Dialog>
-
       {modalDeletarAberta && (
         <ModalDeletarEmpresa
           aberta={modalDeletarAberta}
@@ -211,6 +144,15 @@ export default function Empresas() {
           aberta={modalCadastrarAberta}
           onFechar={() => setModalCadastrarAberta(false)}
           onCadastrar={handleCadastrar}
+        />
+      )}
+
+      {modalEditarAberta && (
+        <ModalEditarEmpresa
+          aberta={modalEditarAberta}
+          onFechar={() => setModalEditarAberta(false)}
+          empresa={empresaParaEditar}
+          onEditar={handleEditar}
         />
       )}
 
