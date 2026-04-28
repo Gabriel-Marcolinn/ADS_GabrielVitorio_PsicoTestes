@@ -24,6 +24,7 @@ import IconButton from "@mui/material/IconButton";
 import BlockIcon from "@mui/icons-material/Block";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModalDeletarEmpresa from "./ModalDeletarEmpresa";
+import ModalInativarEmpresa from "./ModalInativarEmpresa";
 
 export default function Empresas() {
   const [empresas, setEmpresas] = useState([]);
@@ -80,9 +81,20 @@ export default function Empresas() {
     }
   }
 
+  // INATIVAR EMPRESA
   function confirmarInativar(empresa) {
     setEmpresaParaInativar(empresa);
     setModalInativarAberta(true);
+  }
+
+  async function handleInativar() {
+    try {
+      await inativarEmpresa(empresaParaInativar.id);
+      setEmpresas(empresas.filter((e) => e.id !== empresaParaInativar.id));
+      setModalInativarAberta(false);
+    } catch (error) {
+      alert(error.message);
+    }
   }
 
   function abrirEditar(empresa) {
@@ -102,16 +114,6 @@ export default function Empresas() {
       setEmpresas([...empresas, novaEmpresa]);
       alert("Empresa cadastrada com sucesso!");
       setModalCadastrarAberta(false);
-    } catch (error) {
-      alert(error.message);
-    }
-  }
-
-  async function handleInativar() {
-    try {
-      await inativarEmpresa(empresaParaInativar.id);
-      setEmpresas(empresas.filter((e) => e.id !== empresaParaInativar.id));
-      setModalInativarAberta(false);
     } catch (error) {
       alert(error.message);
     }
@@ -209,7 +211,16 @@ export default function Empresas() {
         />
       )}
 
-      <Dialog
+      {modalInativarAberta && (
+        <ModalInativarEmpresa
+          aberta={modalInativarAberta}
+          onFechar={() => setModalInativarAberta(false)}
+          empresa={empresaParaInativar}
+          onInativar={handleInativar}
+        />
+      )}
+
+      {/* <Dialog
         open={modalInativarAberta}
         onClose={() => setModalInativarAberta(false)}
       >
@@ -231,7 +242,7 @@ export default function Empresas() {
             Inativar
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
 
       <Dialog
         open={modalCadastrarAberta}
