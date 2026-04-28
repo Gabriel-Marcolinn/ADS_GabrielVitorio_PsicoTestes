@@ -16,7 +16,6 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   function onSubmit(data) {
-    console.log(data);
     navigate("/empresas");
   }
 
