@@ -11,8 +11,6 @@ export default function ModalDeletarEmpresa({
   empresa,
   onDeletar,
 }) {
-  const [modalDeletarAberta, setModalDeletarAberta] = useState(false);
-
   return (
     <Dialog open={aberta} onClose={onFechar}>
       <DialogTitle>

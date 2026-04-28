@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { data, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { isCNPJ, validate } from "validation-br";
+import { isCNPJ } from "validation-br";
 import { mask, normalize } from "validation-br/dist/cnpj";
 import {
   deletarEmpresa,
@@ -25,6 +25,7 @@ import BlockIcon from "@mui/icons-material/Block";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModalDeletarEmpresa from "./ModalDeletarEmpresa";
 import ModalInativarEmpresa from "./ModalInativarEmpresa";
+import ModalCadastrarEmpresa from "./ModalCadastrarEmpresa";
 
 export default function Empresas() {
   const [empresas, setEmpresas] = useState([]);
@@ -41,21 +42,6 @@ export default function Empresas() {
   useEffect(() => {
     listarEmpresas().then(setEmpresas);
   }, []);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
-
-  // USEFORM DE CADASTRO
-  const {
-    register: registerCadastro,
-    handleSubmit: handleSubmitCadastro,
-    formState: { errors: errorsCadastro },
-    reset: resetCadastro,
-  } = useForm();
 
   // USEFORM DE EDITAR
   const {
@@ -103,22 +89,6 @@ export default function Empresas() {
     setModalEditarAberta(true);
   }
 
-  function abrirCadastrar() {
-    resetCadastro();
-    setModalCadastrarAberta(true);
-  }
-
-  async function handleCadastrar(data) {
-    try {
-      const novaEmpresa = await cadastrarEmpresa(data);
-      setEmpresas([...empresas, novaEmpresa]);
-      alert("Empresa cadastrada com sucesso!");
-      setModalCadastrarAberta(false);
-    } catch (error) {
-      alert(error.message);
-    }
-  }
-
   async function handleEditar(data) {
     try {
       await atualizarEmpresa(empresaParaEditar.id, data);
@@ -128,6 +98,22 @@ export default function Empresas() {
         ),
       );
       setModalEditarAberta(false);
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  // CADASTRAR EMPRESA
+  function abrirCadastrar() {
+    setModalCadastrarAberta(true);
+  }
+
+  async function handleCadastrar(data) {
+    try {
+      const novaEmpresa = await cadastrarEmpresa(data);
+      setEmpresas([...empresas, novaEmpresa]);
+      alert("Empresa cadastrada com sucesso!");
+      setModalCadastrarAberta(false);
     } catch (error) {
       alert(error.message);
     }
@@ -166,8 +152,8 @@ export default function Empresas() {
               fullWidth
               sx={{ mb: 2 }}
               defaultValue={normalize(empresaParaEditar?.cnpj)}
-              error={!!errors.cnpj}
-              helperText={errors.cnpj?.message}
+              error={!!errorsEditar.cnpj}
+              helperText={errorsEditar.cnpj?.message}
             />
             <TextField
               {...registerEditar("razaoSocial", {
@@ -178,8 +164,8 @@ export default function Empresas() {
               fullWidth
               sx={{ mb: 2 }}
               defaultValue={empresaParaEditar?.razaoSocial}
-              error={!!errors.razaoSocial}
-              helperText={errors.razaoSocial?.message}
+              error={!!errorsEditar.razaoSocial}
+              helperText={errorsEditar.razaoSocial?.message}
             />
             <DialogActions>
               <Button
@@ -220,92 +206,13 @@ export default function Empresas() {
         />
       )}
 
-      {/* <Dialog
-        open={modalInativarAberta}
-        onClose={() => setModalInativarAberta(false)}
-      >
-        <DialogTitle>
-          Inativar <strong>{empresaParaInativar?.razaoSocial}</strong>?
-        </DialogTitle>
-        <DialogContent>
-          Tem certeza que deseja inativar{" "}
-          <strong>{empresaParaInativar?.razaoSocial}</strong>?
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="outlined"
-            onClick={() => setModalInativarAberta(false)}
-          >
-            Cancelar
-          </Button>
-          <Button onClick={handleInativar} color="warning" variant="contained">
-            Inativar
-          </Button>
-        </DialogActions>
-      </Dialog> */}
-
-      <Dialog
-        open={modalCadastrarAberta}
-        onClose={() => setModalCadastrarAberta(false)}
-      >
-        <DialogTitle
-          sx={{ textAlign: "center" }}
-          variant="h5"
-          fontWeight="bold"
-        >
-          Cadastrar empresa
-        </DialogTitle>
-        <DialogContent>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Box
-              sx={{ flexDirection: "column", p: 1 }}
-              component="form"
-              onSubmit={handleSubmitCadastro(handleCadastrar)}
-            >
-              <TextField
-                {...registerCadastro("cnpj", {
-                  required: "CNPJ e obrigatorio",
-                  validate: (value) => isCNPJ(value) || "CNPJ invalido",
-                })}
-                label="CNPJ"
-                placeholder="Digite o CNPJ"
-                fullWidth
-                sx={{ mb: 2 }}
-                error={!!errors.cnpj}
-                helperText={errors.cnpj?.message}
-              />
-              <TextField
-                {...registerCadastro("razaoSocial", {
-                  required: "Razao Social e obrigatoria",
-                })}
-                label="Razão Social"
-                placeholder="Digite a Razão Social"
-                fullWidth
-                sx={{ mb: 2 }}
-                error={!!errors.razaoSocial}
-                helperText={errors.razaoSocial?.message}
-              />
-              <DialogActions>
-                <Button
-                  variant="outlined"
-                  onClick={() => setModalCadastrarAberta(false)}
-                >
-                  Cancelar
-                </Button>
-                <Button type="submit" variant="contained">
-                  Cadastrar
-                </Button>
-              </DialogActions>
-            </Box>
-          </Box>
-        </DialogContent>
-      </Dialog>
+      {modalCadastrarAberta && (
+        <ModalCadastrarEmpresa
+          aberta={modalCadastrarAberta}
+          onFechar={() => setModalCadastrarAberta(false)}
+          onCadastrar={handleCadastrar}
+        />
+      )}
 
       <Box
         sx={{

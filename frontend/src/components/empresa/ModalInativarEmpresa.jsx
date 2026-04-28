@@ -11,8 +11,6 @@ export default function ModalInativarEmpresa({
   empresa,
   onInativar,
 }) {
-  const [modalInativarAberta, setModalInativarAberta] = useState(false);
-
   return (
     <Dialog open={aberta} onClose={onFechar}>
       <DialogTitle>
