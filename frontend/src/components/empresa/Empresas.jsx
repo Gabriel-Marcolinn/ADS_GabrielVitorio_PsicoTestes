@@ -9,7 +9,7 @@ import {
   atualizarEmpresa,
   inativarEmpresa,
   cadastrarEmpresa,
-} from "../services/empresaService";
+} from "../../../services/empresaService";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -23,6 +23,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 import BlockIcon from "@mui/icons-material/Block";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ModalDeletarEmpresa from "./ModalDeletarEmpresa";
 
 export default function Empresas() {
   const [empresas, setEmpresas] = useState([]);
@@ -34,6 +35,12 @@ export default function Empresas() {
   const [modalInativarAberta, setModalInativarAberta] = useState(false);
   const [modalCadastrarAberta, setModalCadastrarAberta] = useState(false);
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    listarEmpresas().then(setEmpresas);
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -41,6 +48,7 @@ export default function Empresas() {
     reset,
   } = useForm();
 
+  // USEFORM DE CADASTRO
   const {
     register: registerCadastro,
     handleSubmit: handleSubmitCadastro,
@@ -48,6 +56,7 @@ export default function Empresas() {
     reset: resetCadastro,
   } = useForm();
 
+  // USEFORM DE EDITAR
   const {
     register: registerEditar,
     handleSubmit: handleSubmitEditar,
@@ -55,15 +64,20 @@ export default function Empresas() {
     reset: resetEditar,
   } = useForm();
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    listarEmpresas().then(setEmpresas);
-  }, []);
-
+  // DELETAR EMPRESA
   function confirmarDeletar(empresa) {
     setEmpresaParaDeletar(empresa);
     setModalDeletarAberta(true);
+  }
+
+  async function handleDeletar() {
+    try {
+      await deletarEmpresa(empresaParaDeletar.id);
+      setEmpresas(empresas.filter((e) => e.id !== empresaParaDeletar.id));
+      setModalDeletarAberta(false);
+    } catch (error) {
+      alert(error.message);
+    }
   }
 
   function confirmarInativar(empresa) {
@@ -75,16 +89,6 @@ export default function Empresas() {
     resetEditar();
     setEmpresaParaEditar(empresa);
     setModalEditarAberta(true);
-  }
-
-  async function handleDeletar() {
-    try {
-      await deletarEmpresa(empresaParaDeletar.id);
-      setEmpresas(empresas.filter((e) => e.id !== empresaParaDeletar.id));
-      setModalDeletarAberta(false);
-    } catch (error) {
-      alert(error.message);
-    }
   }
 
   function abrirCadastrar() {
@@ -196,28 +200,14 @@ export default function Empresas() {
         </DialogContent>
       </Dialog>
 
-      <Dialog
-        open={modalDeletarAberta}
-        onClose={() => setModalDeletarAberta(false)}
-      >
-        <DialogTitle>
-          Deletar <strong>{empresaParaDeletar?.razaoSocial}</strong>?
-        </DialogTitle>
-        <DialogContent>
-          Tem certeza que deseja deletar {empresaParaDeletar?.razaoSocial}?
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="outlined"
-            onClick={() => setModalDeletarAberta(false)}
-          >
-            Cancelar
-          </Button>
-          <Button onClick={handleDeletar} color="error" variant="contained">
-            Deletar
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {modalDeletarAberta && (
+        <ModalDeletarEmpresa
+          aberta={modalDeletarAberta}
+          onFechar={() => setModalDeletarAberta(false)}
+          empresa={empresaParaDeletar}
+          onDeletar={handleDeletar}
+        />
+      )}
 
       <Dialog
         open={modalInativarAberta}
