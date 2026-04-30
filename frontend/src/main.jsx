@@ -12,6 +12,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Header from "./components/Header.jsx";
 import CssBaseline from "@mui/material/CssBaseline";
 import Empresas from "./components/empresa/Empresas.jsx";
+import Pacientes from "./components/paciente/Pacientes.jsx";
 
 const theme = createTheme({
   typography: {
@@ -44,6 +45,8 @@ function Layout() {
 
         <Route path="/login" element={<Login />} />
         <Route path="/empresas" element={<Empresas />} />
+        <Route path="/pacientes" element={<Pacientes />} />
+
       </Routes>
     </>
   );

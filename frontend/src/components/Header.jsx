@@ -39,10 +39,13 @@ export default function Header() {
             Nome do usuario
           </Typography>
         </Box>
-
-        <Button color="inherit" onClick={() => navigate("/login")}>
-          <LogoutIcon></LogoutIcon>Sair
-        </Button>
+        <Box>
+          <Button onClick={() => navigate("/empresas")}>Empresas</Button>
+          <Button onClick={() => navigate("/pacientes")}>Pacientes</Button>
+          <Button color="inherit" onClick={() => navigate("/login")}>
+            <LogoutIcon></LogoutIcon>Sair
+          </Button>
+        </Box>
       </Toolbar>
     </AppBar>
   );
