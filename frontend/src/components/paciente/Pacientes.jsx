@@ -3,19 +3,37 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { listarPacientes } from "../../../services/pacienteService";
+import { cadastrarPaciente, listarPacientes } from "../../../services/pacienteService";
 import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
-
+import ModalCadastrarPaciente from "./ModalCadastrarPaciente";
 
 export default function Pacientes() {
   const [pacientes, setPacientes] = useState([]);
+  const [modalCadastrarAberta, setModalCadastrarAberta] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     listarPacientes(1).then(setPacientes);
   }, []);
+
+  // CADASTRAR PACIENTE
+  function abrirCadastrar() {
+    setModalCadastrarAberta(true);
+  }
+
+  async function handleCadastrar(data) {
+    try {
+      const novoPaciente = await cadastrarPaciente({ ...data, psicologoId: 1 });
+      setPacientes([...pacientes, novoPaciente]);
+      alert("Paciente cadastrado com sucesso!");
+      setModalCadastrarAberta(false);
+    } catch (error) {
+      alert(error.message);
+    }
+  }
 
   return (
     <Box
@@ -27,6 +45,14 @@ export default function Pacientes() {
         pt: 3,
       }}
     >
+      {modalCadastrarAberta && (
+        <ModalCadastrarPaciente
+          aberta={modalCadastrarAberta}
+          onFechar={() => setModalCadastrarAberta(false)}
+          onCadastrar={handleCadastrar}
+        />
+      )}
+
       <Box
         sx={{
           display: "flex",
@@ -53,7 +79,7 @@ export default function Pacientes() {
         <Button
           variant="contained"
           size="large"
-          onClick={() => {}}
+          onClick={() => abrirCadastrar(true)}
           sx={{
             background: "linear-gradient(135deg, #1565c0, #1581c0)",
             color: "white",
