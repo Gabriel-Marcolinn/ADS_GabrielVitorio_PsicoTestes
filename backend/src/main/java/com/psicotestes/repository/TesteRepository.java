@@ -1,6 +1,7 @@
 package com.psicotestes.repository;
 
 import com.psicotestes.model.Teste;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -8,14 +9,12 @@ import java.util.Optional;
 
 public interface TesteRepository extends JpaRepository<Teste, Long> {
 
-    // Para buscar um teste específico pelo seu nome exato (útil em validações internas)
-    Optional<Teste> findByNome(String nome);
-
-    // Para permitir que o psicólogo pesquise por um teste específico na tela de aplicação (HU06)
-    List<Teste> findByNomeContainingIgnoreCase(String nome);
-
-    // Bônus: Para exibir a lista de testes ordenados em ordem alfabética no frontend,
-    // facilitando a visualização para o psicólogo
+    //Retorna a lista de testes ordenados para a tela inicial
     List<Teste> findAllByOrderByNomeAsc();
 
+    // Evita o erro de N+1. Com essa anotação, o Hibernate faz um JOIN automático
+    // e traz a árvore completa (Teste -> Perguntas -> Alternativas)
+    // Isso faz o Postgres fazer apenas uma consulta ao banco, e não N+1 consultas
+    @EntityGraph(attributePaths = {"perguntas", "perguntas.alternativas"})
+    Optional<Teste> findById(Long id);
 }

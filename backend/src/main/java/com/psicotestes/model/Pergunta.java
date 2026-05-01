@@ -25,6 +25,6 @@ public class Pergunta {
     private Teste teste;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "pergunta")
+    @OneToMany(mappedBy = "pergunta", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Alternativa> alternativas;
 }

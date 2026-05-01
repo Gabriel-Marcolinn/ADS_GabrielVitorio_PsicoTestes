@@ -21,6 +21,6 @@ public class Teste {
     private String nome;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "teste")
+    @OneToMany(mappedBy = "teste", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pergunta> perguntas;
 }
