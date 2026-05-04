@@ -66,6 +66,7 @@ export default function ModalEditarUsuario({ aberta, onFechar, usuario, onEditar
             label="Nova senha"
             type="password"
             placeholder="Digite a nova senha"
+            autoComplete="new-password"
             fullWidth
             error={!!errors.senha}
             helperText={errors.senha?.message || "Informe a senha para alterá-la"}

@@ -31,3 +31,29 @@ export async function listarPacientes(psicologoId = 1) {
   const response = await fetch(`${BASE_URL}?psicologoId=${psicologoId}&ativo=true`);
   return handleResponse(response);
 }
+
+// ATUALIZAR
+export async function atualizarPaciente(id, data) {
+  const response = await fetch(`${BASE_URL}/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return handleResponse(response);
+}
+
+// INATIVAR
+export async function inativarPaciente(id) {
+  const response = await fetch(`${BASE_URL}/${id}/status`, {
+    method: "PATCH",
+  });
+  return handleResponse(response);
+}
+
+// DELETAR
+export async function deletarPaciente(id) {
+  const response = await fetch(`${BASE_URL}/${id}`, {
+    method: "DELETE",
+  });
+  return handleResponse(response);
+}

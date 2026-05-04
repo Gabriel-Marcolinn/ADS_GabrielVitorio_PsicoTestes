@@ -5,15 +5,11 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
 import { useForm } from "react-hook-form";
+import { isCPF } from "validation-br";
+import { normalize } from "validation-br/dist/cpf";
 
-const TIPOS_USUARIO = [
-  { value: "AD", label: "Administrador" },
-  { value: "PS", label: "Psicólogo" },
-];
-
-export default function ModalCadastrarUsuario({ aberta, onFechar, onCadastrar }) {
+export default function ModalEditarPaciente({ aberta, onFechar, paciente, onEditar }) {
   const {
     register,
     handleSubmit,
@@ -28,22 +24,35 @@ export default function ModalCadastrarUsuario({ aberta, onFechar, onCadastrar })
 
   return (
     <Dialog open={aberta} onClose={handleFechar}>
-      <DialogTitle sx={{ textAlign: "center" }} variant="h5" fontWeight="bold">
-        Cadastrar usuário
+      <DialogTitle>
+        Editar <strong>{paciente?.nome}</strong>
       </DialogTitle>
       <DialogContent>
         <Box
           sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}
           component="form"
-          onSubmit={handleSubmit(onCadastrar)}
+          onSubmit={handleSubmit(onEditar)}
         >
           <TextField
             {...register("nome", { required: "Nome é obrigatório" })}
             label="Nome"
-            placeholder="Digite o nome completo"
+            placeholder="Digite o nome do paciente"
             fullWidth
+            defaultValue={paciente?.nome}
             error={!!errors.nome}
             helperText={errors.nome?.message}
+          />
+          <TextField
+            {...register("cpf", {
+              required: "CPF é obrigatório",
+              validate: (value) => isCPF(value) || "CPF inválido",
+            })}
+            label="CPF"
+            placeholder="Digite o CPF do paciente"
+            fullWidth
+            defaultValue={normalize(paciente?.cpf)}
+            error={!!errors.cpf}
+            helperText={errors.cpf?.message}
           />
           <TextField
             {...register("email", {
@@ -54,42 +63,18 @@ export default function ModalCadastrarUsuario({ aberta, onFechar, onCadastrar })
               },
             })}
             label="E-mail"
-            placeholder="Digite o e-mail"
+            placeholder="Digite o e-mail do paciente"
             fullWidth
+            defaultValue={paciente?.email}
             error={!!errors.email}
             helperText={errors.email?.message}
           />
-          <TextField
-            {...register("senha", { required: "Senha é obrigatória" })}
-            label="Senha"
-            type="password"
-            placeholder="Digite a senha"
-            autoComplete="new-password"
-            fullWidth
-            error={!!errors.senha}
-            helperText={errors.senha?.message}
-          />
-          <TextField
-            {...register("tipo", { required: "Tipo é obrigatório" })}
-            label="Tipo"
-            select
-            fullWidth
-            defaultValue=""
-            error={!!errors.tipo}
-            helperText={errors.tipo?.message}
-          >
-            {TIPOS_USUARIO.map((tipo) => (
-              <MenuItem key={tipo.value} value={tipo.value}>
-                {tipo.label}
-              </MenuItem>
-            ))}
-          </TextField>
           <DialogActions>
             <Button variant="outlined" onClick={handleFechar}>
               Cancelar
             </Button>
             <Button type="submit" variant="contained">
-              Cadastrar
+              Salvar
             </Button>
           </DialogActions>
         </Box>
