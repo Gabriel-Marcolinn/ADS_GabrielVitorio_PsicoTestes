@@ -64,6 +64,7 @@ export default function ModalCadastrarUsuario({ aberta, onFechar, onCadastrar })
             label="Senha"
             type="password"
             placeholder="Digite a senha"
+            autoComplete="new-password"
             fullWidth
             error={!!errors.senha}
             helperText={errors.senha?.message}
