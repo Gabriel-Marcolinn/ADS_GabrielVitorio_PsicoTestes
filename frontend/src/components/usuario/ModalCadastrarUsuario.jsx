@@ -73,6 +73,7 @@ export default function ModalCadastrarUsuario({
             label="Senha"
             type={showPassword ? "text" : "password"}
             placeholder="Digite a senha"
+            autoComplete="new-password"
             fullWidth
             autoComplete="new-password"
             error={!!errors.senha}

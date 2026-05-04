@@ -5,15 +5,11 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
 import { useForm } from "react-hook-form";
+import { isCPF } from "validation-br";
+import { normalize } from "validation-br/dist/cpf";
 
-const TIPOS_USUARIO = [
-  { value: "AD", label: "Administrador" },
-  { value: "PS", label: "Psicólogo" },
-];
-
-export default function ModalEditarUsuario({ aberta, onFechar, usuario, onEditar }) {
+export default function ModalEditarPaciente({ aberta, onFechar, paciente, onEditar }) {
   const {
     register,
     handleSubmit,
@@ -29,7 +25,7 @@ export default function ModalEditarUsuario({ aberta, onFechar, usuario, onEditar
   return (
     <Dialog open={aberta} onClose={handleFechar}>
       <DialogTitle>
-        Editar <strong>{usuario?.nome}</strong>
+        Editar <strong>{paciente?.nome}</strong>
       </DialogTitle>
       <DialogContent>
         <Box
@@ -40,11 +36,23 @@ export default function ModalEditarUsuario({ aberta, onFechar, usuario, onEditar
           <TextField
             {...register("nome", { required: "Nome é obrigatório" })}
             label="Nome"
-            placeholder="Digite o nome completo"
+            placeholder="Digite o nome do paciente"
             fullWidth
-            defaultValue={usuario?.nome}
+            defaultValue={paciente?.nome}
             error={!!errors.nome}
             helperText={errors.nome?.message}
+          />
+          <TextField
+            {...register("cpf", {
+              required: "CPF é obrigatório",
+              validate: (value) => isCPF(value) || "CPF inválido",
+            })}
+            label="CPF"
+            placeholder="Digite o CPF do paciente"
+            fullWidth
+            defaultValue={normalize(paciente?.cpf)}
+            error={!!errors.cpf}
+            helperText={errors.cpf?.message}
           />
           <TextField
             {...register("email", {
@@ -55,37 +63,12 @@ export default function ModalEditarUsuario({ aberta, onFechar, usuario, onEditar
               },
             })}
             label="E-mail"
-            placeholder="Digite o e-mail"
+            placeholder="Digite o e-mail do paciente"
             fullWidth
-            defaultValue={usuario?.email}
+            defaultValue={paciente?.email}
             error={!!errors.email}
             helperText={errors.email?.message}
           />
-          <TextField
-            {...register("senha", { required: "Senha é obrigatória" })}
-            label="Nova senha"
-            type="password"
-            placeholder="Digite a nova senha"
-            autoComplete="new-password"
-            fullWidth
-            error={!!errors.senha}
-            helperText={errors.senha?.message || "Informe a senha para alterá-la"}
-          />
-          <TextField
-            {...register("tipo", { required: "Tipo é obrigatório" })}
-            label="Tipo"
-            select
-            fullWidth
-            defaultValue={usuario?.tipo ?? ""}
-            error={!!errors.tipo}
-            helperText={errors.tipo?.message}
-          >
-            {TIPOS_USUARIO.map((tipo) => (
-              <MenuItem key={tipo.value} value={tipo.value}>
-                {tipo.label}
-              </MenuItem>
-            ))}
-          </TextField>
           <DialogActions>
             <Button variant="outlined" onClick={handleFechar}>
               Cancelar
