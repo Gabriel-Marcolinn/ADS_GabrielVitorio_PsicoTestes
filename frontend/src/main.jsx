@@ -13,6 +13,7 @@ import Header from "./components/Header.jsx";
 import CssBaseline from "@mui/material/CssBaseline";
 import Empresas from "./components/empresa/Empresas.jsx";
 import Pacientes from "./components/paciente/Pacientes.jsx";
+import Usuarios from "./components/usuario/Usuarios.jsx";
 
 const theme = createTheme({
   typography: {
@@ -46,7 +47,7 @@ function Layout() {
         <Route path="/login" element={<Login />} />
         <Route path="/empresas" element={<Empresas />} />
         <Route path="/pacientes" element={<Pacientes />} />
-
+        <Route path="/usuarios" element={<Usuarios />} />
       </Routes>
     </>
   );
