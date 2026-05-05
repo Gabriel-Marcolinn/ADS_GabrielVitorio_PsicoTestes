@@ -35,6 +35,12 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarios);
     }
 
+    // GET /api/usuarios
+    @GetMapping
+    public ResponseEntity<List<UsuarioResponseDTO>> listarTodos() {
+        return ResponseEntity.ok(usuarioService.listarTodos());
+    }
+
     // PUT /api/usuarios/{id} -> Atualizar dados cadastrais do usuário
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioResponseDTO> atualizar(

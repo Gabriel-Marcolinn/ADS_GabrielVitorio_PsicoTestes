@@ -50,6 +50,14 @@ public class UsuarioService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<UsuarioResponseDTO> listarTodos() {
+        return usuarioRepository.findAll()
+                .stream()
+                .map(UsuarioResponseDTO::new)
+                .toList();
+    }
+
     @Transactional
     public UsuarioResponseDTO atualizar(Long id, UsuarioRequestDTO dto) {
         Usuario usuario = usuarioRepository.findById(id)
