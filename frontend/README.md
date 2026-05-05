@@ -1,16 +1,72 @@
-# React + Vite
+# PsicoTestes
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sistema web para aplicação de testes psicológicos. Permite o cadastro e gerenciamento de empresas, usuários (administradores e psicólogos) e pacientes, com controle de acesso por tipo de perfil.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tecnologias
 
-## React Compiler
+### Frontend
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React 19** com Vite
+- **Material UI (MUI)** para componentes visuais
+- **React Router DOM** para navegação
+- **React Hook Form** para formulários
+- **validation-br** para validação de CPF/CNPJ
 
-## Expanding the ESLint configuration
+### Backend
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Java 21** com **Spring Boot 4**
+- **Spring Data JPA** + **Hibernate** para persistência
+- **Spring Validation** para validação de dados
+- **Lombok** para redução de boilerplate
+- **PostgreSQL** como banco de dados
+
+---
+
+## Como rodar
+
+### Pré-requisitos
+
+- Node.js 18+
+- Java 21+
+- Maven
+- PostgreSQL rodando localmente na porta `5432`
+
+### Banco de dados
+
+Crie o banco de dados no PostgreSQL:
+
+```sql
+CREATE DATABASE psicotestes;
+```
+
+### Backend
+
+1. Abra o arquivo backend/src/main/resources/application.properties e preencha suas credenciais do banco
+
+```properties
+spring.datasource.username=seu_usuario
+spring.datasource.password=sua_senha
+```
+
+2. Na pasta `backend`, rode:
+
+```bash
+mvn spring-boot:run
+```
+
+O servidor sobe em `http://localhost:8080`.
+
+> As tabelas são criadas automaticamente pelo Hibernate no primeiro start (`ddl-auto=create-drop`).
+
+### Frontend
+
+Na pasta `frontend`, rode:
+
+```bash
+npm install
+npm run dev
+```
+
+A aplicação abre em `http://localhost:5173`.
