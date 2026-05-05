@@ -7,13 +7,21 @@ import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
 
 const TIPOS_USUARIO = [
   { value: "AD", label: "Administrador" },
   { value: "PS", label: "Psicólogo" },
+  { value: "PA", label: "Psicólogo Administrador" },
 ];
 
-export default function ModalCadastrarUsuario({ aberta, onFechar, onCadastrar }) {
+export default function ModalCadastrarUsuario({
+  aberta,
+  onFechar,
+  onCadastrar,
+}) {
   const {
     register,
     handleSubmit,
@@ -25,6 +33,8 @@ export default function ModalCadastrarUsuario({ aberta, onFechar, onCadastrar })
     reset();
     onFechar();
   }
+
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <Dialog open={aberta} onClose={handleFechar}>
@@ -62,12 +72,24 @@ export default function ModalCadastrarUsuario({ aberta, onFechar, onCadastrar })
           <TextField
             {...register("senha", { required: "Senha é obrigatória" })}
             label="Senha"
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="Digite a senha"
             autoComplete="new-password"
             fullWidth
+            autoComplete="new-password"
             error={!!errors.senha}
             helperText={errors.senha?.message}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? "👁️" : "🙈"}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
           />
           <TextField
             {...register("tipo", { required: "Tipo é obrigatório" })}

@@ -26,6 +26,7 @@ const EMPRESA_ID = 1;
 const TIPO_LABELS = {
   AD: { label: "Administrador", color: "primary" },
   PS: { label: "Psicólogo", color: "success" },
+  PA: { label: "Psicólogo Administrador", color: "warning" },
 };
 
 export default function Usuarios() {
@@ -100,7 +101,10 @@ export default function Usuarios() {
   // CADASTRAR
   async function handleCadastrar(data) {
     try {
-      const novoUsuario = await cadastrarUsuario({ ...data, empresaId: EMPRESA_ID });
+      const novoUsuario = await cadastrarUsuario({
+        ...data,
+        empresaId: EMPRESA_ID,
+      });
       setUsuarios([...usuarios, novoUsuario]);
       alert("Usuário cadastrado com sucesso!");
       setModalCadastrarAberta(false);
