@@ -26,7 +26,7 @@ public class UsuarioController {
     }
 
     // GET /api/usuarios?empresaId=1&ativo=true -> Listar usuários por empresa (Abas Ativos/Inativos)
-    @GetMapping
+    @GetMapping(params = "empresaId")
     public ResponseEntity<List<UsuarioResponseDTO>> listarPorEmpresa(
             @RequestParam Long empresaId,
             @RequestParam(defaultValue = "true") Boolean ativo) {
