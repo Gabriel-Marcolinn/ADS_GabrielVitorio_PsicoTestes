@@ -14,6 +14,7 @@ import IconButton from "@mui/material/IconButton";
 const TIPOS_USUARIO = [
   { value: "AD", label: "Administrador" },
   { value: "PS", label: "Psicólogo" },
+  { value: "PA", label: "Psicólogo Administrador" },
 ];
 
 export default function ModalCadastrarUsuario({
