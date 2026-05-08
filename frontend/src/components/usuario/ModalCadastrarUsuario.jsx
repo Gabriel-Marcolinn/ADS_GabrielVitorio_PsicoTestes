@@ -7,7 +7,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { listarEmpresas } from "../../../services/empresaService";
+import { useEffect, useState } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 
@@ -29,12 +30,19 @@ export default function ModalCadastrarUsuario({
     reset,
   } = useForm();
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [empresas, setEmpresas] = useState([]);
+
+  useEffect(() => {
+    if (aberta) {
+      listarEmpresas().then(setEmpresas);
+    }
+  }, [aberta]);
+
   function handleFechar() {
     reset();
     onFechar();
   }
-
-  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <Dialog open={aberta} onClose={handleFechar}>
@@ -103,6 +111,21 @@ export default function ModalCadastrarUsuario({
             {TIPOS_USUARIO.map((tipo) => (
               <MenuItem key={tipo.value} value={tipo.value}>
                 {tipo.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            {...register("empresaId", { required: "Empresa é obrigatória" })}
+            label="Empresa"
+            select
+            fullWidth
+            defaultValue=""
+            error={!!errors.empresaId}
+            helperText={errors.empresaId?.message}
+          >
+            {empresas.map((e) => (
+              <MenuItem key={e.id} value={e.id}>
+                {e.razaoSocial}
               </MenuItem>
             ))}
           </TextField>

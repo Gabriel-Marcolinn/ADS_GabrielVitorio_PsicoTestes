@@ -5,6 +5,7 @@ import {
   atualizarUsuario,
   inativarUsuario,
   cadastrarUsuario,
+  listarTodosUsuarios,
 } from "../../../services/usuarioService";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -40,7 +41,9 @@ export default function Usuarios() {
   const [modalCadastrarAberta, setModalCadastrarAberta] = useState(false);
 
   useEffect(() => {
-    listarUsuarios(EMPRESA_ID).then(setUsuarios);
+    listarTodosUsuarios()
+      .then((data) => setUsuarios(data ?? []))
+      .catch(() => setUsuarios([]));
   }, []);
 
   // DELETAR
@@ -101,10 +104,7 @@ export default function Usuarios() {
   // CADASTRAR
   async function handleCadastrar(data) {
     try {
-      const novoUsuario = await cadastrarUsuario({
-        ...data,
-        empresaId: EMPRESA_ID,
-      });
+      const novoUsuario = await cadastrarUsuario(data);
       setUsuarios([...usuarios, novoUsuario]);
       alert("Usuário cadastrado com sucesso!");
       setModalCadastrarAberta(false);

@@ -28,7 +28,13 @@ export async function cadastrarUsuario(data) {
 
 // LISTAGEM
 export async function listarUsuarios(empresaId, ativo = true) {
-  const response = await fetch(`${BASE_URL}?empresaId=${empresaId}&ativo=${ativo}`);
+  const response = await fetch(
+    `${BASE_URL}?empresaId=${empresaId}&ativo=${ativo}`,
+  );
+}
+
+export async function listarTodosUsuarios() {
+  const response = await fetch(`${BASE_URL}`);
   return handleResponse(response);
 }
 
