@@ -24,7 +24,9 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
 
   useEffect(() => {
     if (aberta) {
-      listarTodosUsuarios().then(setUsuarios);
+      listarTodosUsuarios()
+        .then((lista) => setUsuarios(lista.filter((u) => u.tipo === "PS")))
+        .catch(console.error);
     }
   }, [aberta]);
 

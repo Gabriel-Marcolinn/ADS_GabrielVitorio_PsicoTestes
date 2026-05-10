@@ -20,9 +20,6 @@ import ModalEditarPaciente from "./ModalEditarPaciente";
 import ModalDeletarPaciente from "./ModalDeletarPaciente";
 import ModalInativarPaciente from "./ModalInativarPaciente";
 
-// TODO: substituir por psicologoId vindo do contexto de autenticação
-const PSICOLOGO_ID = 1;
-
 export default function Pacientes() {
   const [pacientes, setPacientes] = useState([]);
   const [modalCadastrarAberta, setModalCadastrarAberta] = useState(false);
@@ -34,13 +31,16 @@ export default function Pacientes() {
   const [pacienteParaInativar, setPacienteParaInativar] = useState(null);
 
   useEffect(() => {
-    listarPacientes(PSICOLOGO_ID).then(setPacientes);
+    listarPacientes().then(setPacientes);
   }, []);
 
   // CADASTRAR
   async function handleCadastrar(data) {
     try {
-      const novoPaciente = await cadastrarPaciente({ ...data, psicologoId: PSICOLOGO_ID });
+      const novoPaciente = await cadastrarPaciente({
+        ...data,
+        psicologoId: Number(data.usuarioId),
+      });
       setPacientes([...pacientes, novoPaciente]);
       alert("Paciente cadastrado com sucesso!");
       setModalCadastrarAberta(false);
@@ -59,7 +59,7 @@ export default function Pacientes() {
     try {
       await atualizarPaciente(pacienteParaEditar.id, {
         ...data,
-        psicologoId: PSICOLOGO_ID,
+        psicologoId: Number(data.usuarioId),
       });
       setPacientes(
         pacientes.map((p) =>

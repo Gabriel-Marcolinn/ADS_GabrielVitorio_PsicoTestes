@@ -4,12 +4,25 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { isCPF } from "validation-br";
 import { normalize } from "validation-br/dist/cpf";
+import { listarTodosUsuarios } from "../../../services/usuarioService";
 
 export default function ModalEditarPaciente({ aberta, onFechar, paciente, onEditar }) {
+  const [usuarios, setUsuarios] = useState([]);
+
+  useEffect(() => {
+    if (aberta) {
+      listarTodosUsuarios()
+        .then((lista) => setUsuarios(lista.filter((u) => u.tipo === "PS")))
+        .catch(console.error);
+    }
+  }, [aberta]);
+
   const {
     register,
     handleSubmit,
@@ -33,6 +46,21 @@ export default function ModalEditarPaciente({ aberta, onFechar, paciente, onEdit
           component="form"
           onSubmit={handleSubmit(onEditar)}
         >
+          <TextField
+            {...register("usuarioId", { required: "Psicólogo é obrigatório" })}
+            label="Psicólogo"
+            select
+            fullWidth
+            defaultValue={paciente?.psicologoId ?? ""}
+            error={!!errors.usuarioId}
+            helperText={errors.usuarioId?.message}
+          >
+            {usuarios.map((u) => (
+              <MenuItem key={u.id} value={u.id}>
+                {u.nome}
+              </MenuItem>
+            ))}
+          </TextField>
           <TextField
             {...register("nome", { required: "Nome é obrigatório" })}
             label="Nome"
