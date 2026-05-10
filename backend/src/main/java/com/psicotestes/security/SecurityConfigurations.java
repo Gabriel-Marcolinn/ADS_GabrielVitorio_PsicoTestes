@@ -1,0 +1,57 @@
+package com.psicotestes.security;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+@Configuration
+@EnableWebSecurity
+@RequiredArgsConstructor
+public class SecurityConfigurations {
+
+    private final SecurityFilter securityFilter;
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity
+                // Desabilita o CSRF (Cross-Site Request Forgery) pois o JWT já nos protege contra isso
+                .csrf(csrf -> csrf.disable())
+                // Diz ao Spring que a nossa autenticação é STATELESS (não guardaremos sessão em memória) cada requisição é independente e deve trazer o Token
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // Configura as regras de acesso das rotas
+                .authorizeHttpRequests(authorize -> authorize
+                        // A rota de Login DEVE ser pública
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+
+                        .requestMatchers(HttpMethod.POST, "/api/empresas").hasRole("ADMIN") // empresas só admins podem ver
+
+                        // Qualquer outra rota não mapeada acima precisará do Token JWT (estar autenticado)
+                        .anyRequest().authenticated()
+                )
+                // Adiciona o nosso Filtro ANTES do filtro padrão do Spring
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
+
+    // Exporta o gerenciador de autenticação para podermos usá-lo no nosso AuthController
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    // Configura o algoritmo de criptografia de senhas (BCrypt)
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
