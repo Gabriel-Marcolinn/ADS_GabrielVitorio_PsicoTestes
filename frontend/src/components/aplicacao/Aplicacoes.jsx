@@ -1,7 +1,24 @@
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import { useState } from "react";
+import ModalAplicarTeste from "./ModalAplicarTeste";
 
 export default function Aplicacoes() {
+  const [modalCadastrarAberta, setModalCadastrarAberta] = useState(false);
+
+  // CADASTRAR
+  async function handleCadastrar(data) {
+    try {
+      const novoUsuario = await cadastrarUsuario(data);
+      setUsuarios([...usuarios, novoUsuario]);
+      alert("Usuário cadastrado com sucesso!");
+      setModalCadastrarAberta(false);
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
   return (
     <Box
       sx={{
@@ -12,6 +29,13 @@ export default function Aplicacoes() {
         pt: 3,
       }}
     >
+      {modalCadastrarAberta && (
+        <ModalAplicarTeste
+          aberta={modalCadastrarAberta}
+          onFechar={() => setModalCadastrarAberta(false)}
+          onCadastrar={handleCadastrar}
+        />
+      )}
       <Box
         sx={{
           display: "flex",
@@ -28,7 +52,23 @@ export default function Aplicacoes() {
             Visualize e gerencie todas as aplicacoes cadastradas no sistema
           </Typography>
         </Box>
-        {/* COLOCAR AQUI O BOTAO PRA CADASTRAR APLICACAO*/}
+        <Button
+          variant="contained"
+          size="large"
+          onClick={() => setModalCadastrarAberta(true)}
+          sx={{
+            background: "linear-gradient(135deg, #1565c0, #1581c0)",
+            color: "white",
+            borderRadius: 3,
+            boxShadow: "0px 0px 30px rgba(24, 161, 219, 0.4)",
+            "&:hover": {
+              background: "linear-gradient(135deg, #1255a1, #0f689b)",
+              boxShadow: "0px 0px 30px rgba(24, 161, 219, 0.6)",
+            },
+          }}
+        >
+          + Nova Aplicacao
+        </Button>{" "}
       </Box>
     </Box>
   );

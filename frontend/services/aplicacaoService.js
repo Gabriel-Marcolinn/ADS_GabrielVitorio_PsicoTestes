@@ -31,6 +31,6 @@ export async function aplicarTeste(data, usuarioId) {
 
 // LISTAGR DE UM PACIENTE
 export async function listarAplicacoesPorPaciente(pacienteId) {
-    const response = await fetch(`${BASE_URL}/paciente/${pacienteId}`),
-    return handleResponse(response);
+  const response = await fetch(`${BASE_URL}/paciente/${pacienteId}`);
+  return handleResponse(response);
 }
