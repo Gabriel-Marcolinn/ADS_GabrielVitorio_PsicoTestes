@@ -6,9 +6,14 @@ import {
   inativarPaciente,
   deletarPaciente,
 } from "../../../services/pacienteService";
+import { listarTodosUsuarios } from "../../../services/usuarioService";
 import { mask } from "validation-br/dist/cpf";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import EditIcon from "@mui/icons-material/Edit";
@@ -22,6 +27,8 @@ import ModalInativarPaciente from "./ModalInativarPaciente";
 
 export default function Pacientes() {
   const [pacientes, setPacientes] = useState([]);
+  const [psicologos, setPsicologos] = useState([]);
+  const [psicologoFiltro, setPsicologoFiltro] = useState("");
   const [modalCadastrarAberta, setModalCadastrarAberta] = useState(false);
   const [modalEditarAberta, setModalEditarAberta] = useState(false);
   const [pacienteParaEditar, setPacienteParaEditar] = useState(null);
@@ -31,8 +38,18 @@ export default function Pacientes() {
   const [pacienteParaInativar, setPacienteParaInativar] = useState(null);
 
   useEffect(() => {
-    listarPacientes().then(setPacientes);
+    listarTodosUsuarios()
+      .then((lista) => setPsicologos(lista.filter((u) => u.tipo !== "AD")))
+      .catch(console.error);
   }, []);
+
+  useEffect(() => {
+    if (!psicologoFiltro) {
+      setPacientes([]);
+      return;
+    }
+    listarPacientes(psicologoFiltro).then(setPacientes).catch(console.error);
+  }, [psicologoFiltro]);
 
   // CADASTRAR
   async function handleCadastrar(data) {
@@ -183,6 +200,24 @@ export default function Pacientes() {
         >
           + Novo Paciente
         </Button>
+      </Box>
+
+      {/* FILTRO POR PSICOLOGO */}
+      <Box sx={{ width: "100%", maxWidth: 900, mb: 3 }}>
+        <FormControl fullWidth>
+          <InputLabel>Filtrar por psicólogo</InputLabel>
+          <Select
+            value={psicologoFiltro}
+            label="Filtrar por psicólogo"
+            onChange={(e) => setPsicologoFiltro(e.target.value)}
+          >
+            {psicologos.map((u) => (
+              <MenuItem key={u.id} value={u.id}>
+                {u.nome}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </Box>
 
       {/* LISTAGEM */}

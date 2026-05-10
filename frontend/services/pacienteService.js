@@ -27,8 +27,10 @@ export async function cadastrarPaciente(data) {
 }
 
 // LISTAGEM
-export async function listarPacientes(psicologoId = 1) {
-  const response = await fetch(`${BASE_URL}?psicologoId=${psicologoId}&ativo=true`);
+export async function listarPacientes(psicologoId) {
+  const response = await fetch(
+    `${BASE_URL}?psicologoId=${psicologoId}&ativo=true`,
+  );
   return handleResponse(response);
 }
 
