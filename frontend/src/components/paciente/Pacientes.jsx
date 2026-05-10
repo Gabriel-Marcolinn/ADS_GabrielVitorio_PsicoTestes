@@ -39,7 +39,7 @@ export default function Pacientes() {
 
   useEffect(() => {
     listarTodosUsuarios()
-      .then((lista) => setPsicologos(lista.filter((u) => u.tipo !== "AD")))
+      .then((lista) => setPsicologos(lista.filter((u) => u.tipo === "PS")))
       .catch(console.error);
   }, []);
 
