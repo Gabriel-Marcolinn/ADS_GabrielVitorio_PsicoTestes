@@ -59,12 +59,13 @@ export default function ModalCadastrarPaciente({
             {...register("usuarioId", {
               required: "Usuario e obrigatorio",
             })}
-            label="Usuario"
+            label="Psicólogo"
             select
             fullWidth
+            defaultValue=""
             sx={{ mb: 2 }}
-            error={!!errors.usuario}
-            helperText={errors.usuario?.message}
+            error={!!errors.usuarioId}
+            helperText={errors.usuarioId?.message}
           >
             {usuarios.map((u) => (
               <MenuItem key={u.id} value={u.id}>
