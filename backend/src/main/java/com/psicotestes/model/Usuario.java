@@ -4,7 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.List;
 
 @Table(name="usuarios")
@@ -16,7 +20,7 @@ import java.util.List;
 @Builder
 @SQLDelete(sql = "UPDATE usuarios SET deletado = true WHERE id = ?")
 @SQLRestriction("deletado = false")
-public class Usuario {
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,4 +53,50 @@ public class Usuario {
     @ToString.Exclude
     @OneToMany(mappedBy = "psicologo")
     private List<Paciente> pacientes;
+
+    // =======================================================================
+    // MÉTODOS OBRIGATÓRIOS DA INTERFACE USERDETAILS DO SPRING SECURITY
+    // =======================================================================
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Converte os nossos tipos (DVP) em Roles que o Spring entende
+        if (this.tipo.equals("AD")) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        } else if (this.tipo.equals("PA")) {
+            return List.of(new SimpleGrantedAuthority("ROLE_PSICOLOGO_ADMIN"));
+        } else {
+            return List.of(new SimpleGrantedAuthority("ROLE_PSICOLOGO"));
+        }
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email; // Diz ao Spring que o login é feito pelo email
+    }
+
+    @Override
+    public String getPassword() {
+        return this.senha; // Diz ao Spring onde está a senha
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.ativo; // Bloqueia o login automaticamente se ativo = false
+    }
 }
