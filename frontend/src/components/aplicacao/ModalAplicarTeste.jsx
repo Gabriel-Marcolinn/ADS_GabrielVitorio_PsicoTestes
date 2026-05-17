@@ -24,6 +24,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
     reset,
     watch,
     setValue,
+    getValues,
   } = useForm();
 
   const [usuarios, setUsuarios] = useState([]);
@@ -31,6 +32,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
   const [testes, setTestes] = useState([]);
   const [etapa, setEtapa] = useState(1);
   const [testeCompleto, setTesteCompleto] = useState(null);
+  const [respostas, setRespostas] = useState({});
 
   const usuarioIdSelecionado = watch("usuarioId");
 
@@ -68,6 +70,26 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
     ).then((r) => r.json());
     setTesteCompleto(completo);
     setEtapa(2);
+  }
+
+  async function handleFinalizar() {
+    const { usuarioId, pacienteId, testeId } = getValues();
+    const alternativasIds = Object.values(respostas);
+
+    const resposta = await fetch("http://localhost:8080/api/aplicacoes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Usuario-Id": usuarioId,
+      },
+
+      body: JSON.stringify({ pacienteId, testeId, alternativasIds }),
+    });
+
+    const resultado = await resposta.json();
+    console.log(resultado);
+
+    handleFechar();
   }
 
   return (
@@ -148,7 +170,15 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
             {testeCompleto.perguntas.map((p, index) => (
               <Box key={p.id}>
                 <p>{p.pergunta}</p>
-                <RadioGroup>
+                <RadioGroup
+                  value={respostas[p.id] ?? ""}
+                  onChange={(e) =>
+                    setRespostas((previ) => ({
+                      ...previ,
+                      [p.id]: Number(e.target.value),
+                    }))
+                  }
+                >
                   {p.alternativas.map((alt) => (
                     <FormControlLabel
                       key={alt.id}
@@ -160,6 +190,12 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
                 </RadioGroup>
               </Box>
             ))}
+            <Button variant="contained" onClick={handleFinalizar}>
+              Finalizar
+            </Button>
+            <Button variant="outlined" onClick={handleFechar}>
+              Cancelar
+            </Button>
           </Box>
         )}
       </DialogContent>
