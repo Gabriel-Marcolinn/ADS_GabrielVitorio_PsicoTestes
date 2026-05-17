@@ -24,6 +24,8 @@ import ModalCadastrarPaciente from "./ModalCadastrarPaciente";
 import ModalEditarPaciente from "./ModalEditarPaciente";
 import ModalDeletarPaciente from "./ModalDeletarPaciente";
 import ModalInativarPaciente from "./ModalInativarPaciente";
+import FindInPageIcon from "@mui/icons-material/FindInPage";
+import ModalListarAplicacoes from "./ModalListarAplicacoes";
 
 export default function Pacientes() {
   const [pacientes, setPacientes] = useState([]);
@@ -36,6 +38,8 @@ export default function Pacientes() {
   const [pacienteParaDeletar, setPacienteParaDeletar] = useState(null);
   const [modalInativarAberta, setModalInativarAberta] = useState(false);
   const [pacienteParaInativar, setPacienteParaInativar] = useState(null);
+  const [modalAplicacoesAberta, setModalAplicacoesAberta] = useState(false);
+  const [pacienteParaAplicacoes, setPacienteParaAplicacoes] = useState(null);
 
   useEffect(() => {
     listarTodosUsuarios()
@@ -166,6 +170,14 @@ export default function Pacientes() {
         />
       )}
 
+      {modalAplicacoesAberta && (
+        <ModalListarAplicacoes
+          aberta={modalAplicacoesAberta}
+          onFechar={() => setModalAplicacoesAberta(false)}
+          paciente={pacienteParaAplicacoes}
+        />
+      )}
+
       {/* TITULO E BOTAO */}
       <Box
         sx={{
@@ -273,11 +285,21 @@ export default function Pacientes() {
                   justifyContent: "space-between",
                 }}
               >
-                <IconButton onClick={() => confirmarDeletar(paciente)}>
-                  <DeleteIcon color="error" />
-                </IconButton>
-                <IconButton onClick={() => confirmarInativar(paciente)}>
-                  <BlockIcon color="warning" />
+                <Box>
+                  <IconButton onClick={() => confirmarDeletar(paciente)}>
+                    <DeleteIcon color="error" />
+                  </IconButton>
+                  <IconButton onClick={() => confirmarInativar(paciente)}>
+                    <BlockIcon color="warning" />
+                  </IconButton>
+                </Box>
+                <IconButton
+                  onClick={() => {
+                    setPacienteParaAplicacoes(paciente);
+                    setModalAplicacoesAberta(true);
+                  }}
+                >
+                  <FindInPageIcon />
                 </IconButton>
               </Box>
             </Paper>
