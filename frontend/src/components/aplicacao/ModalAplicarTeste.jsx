@@ -11,6 +11,7 @@ import MenuItem from "@mui/material/MenuItem";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
+import { listarPacientes } from "../../../services/pacienteService";
 
 export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
   const {
@@ -18,17 +19,38 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
+    setValue,
   } = useForm();
 
   const [usuarios, setUsuarios] = useState([]);
+  const [pacientes, setPacientes] = useState([]);
+  const [testes, setTestes] = useState([]);
+
+  const usuarioIdSelecionado = watch("usuarioId");
 
   useEffect(() => {
     if (aberta) {
       listarTodosUsuarios()
         .then((lista) => setUsuarios(lista.filter((u) => u.tipo === "PS")))
         .catch(console.error);
+      fetch("http://localhost:8080/api/testes")
+        .then((r) => r.json())
+        .then(setTestes)
+        .catch(console.error);
     }
   }, [aberta]);
+
+  useEffect(() => {
+    if (!usuarioIdSelecionado) {
+      setPacientes([]);
+      return;
+    }
+    setValue("pacienteId", "");
+    listarPacientes(usuarioIdSelecionado)
+      .then(setPacientes)
+      .catch(console.error);
+  }, [usuarioIdSelecionado]);
 
   function handleFechar() {
     reset();
@@ -58,6 +80,37 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
             {usuarios.map((u) => (
               <MenuItem key={u.id} value={u.id}>
                 {u.nome}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            {...register("pacienteId", { required: "Paciente e obrigatorio" })}
+            label="Pacientes"
+            select
+            fullWidth
+            defaultValue=""
+            error={!!errors.pacienteId}
+            helperText={errors.pacienteId?.message}
+          >
+            {pacientes.map((p) => (
+              <MenuItem key={p.id} value={p.id}>
+                {p.nome}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          <TextField
+            {...register("testeId", { required: "Teste e obrigatorio" })}
+            label="Testes"
+            select
+            fullWidth
+            defaultValue=""
+            error={!!errors.testeId}
+            helperText={errors.testeId?.message}
+          >
+            {testes.map((t) => (
+              <MenuItem key={t.id} value={t.id}>
+                {t.nome}
               </MenuItem>
             ))}
           </TextField>
