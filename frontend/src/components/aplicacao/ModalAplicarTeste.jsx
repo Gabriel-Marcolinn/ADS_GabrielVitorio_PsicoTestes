@@ -33,6 +33,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
   const [etapa, setEtapa] = useState(1);
   const [testeCompleto, setTesteCompleto] = useState(null);
   const [respostas, setRespostas] = useState({});
+  const [resultado, setResultado] = useState(null);
 
   const usuarioIdSelecionado = watch("usuarioId");
 
@@ -87,9 +88,8 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
     });
 
     const resultado = await resposta.json();
-    console.log(resultado);
-
-    handleFechar();
+    setResultado(resultado);
+    setEtapa(3);
   }
 
   return (
@@ -195,6 +195,34 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
             </Button>
             <Button variant="outlined" onClick={handleFechar}>
               Cancelar
+            </Button>
+          </Box>
+        )}
+
+        {etapa === 3 && resultado && (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              pt: 1,
+              alignItems: "center",
+            }}
+          >
+            <p>
+              <strong>Teste:</strong> {resultado.nomeTeste}
+            </p>
+            <p>
+              <strong>Paciente:</strong> {resultado.nomePaciente}
+            </p>
+            <p>
+              <strong>Pontuacao:</strong> {resultado.pontuacaoTotal}
+            </p>
+            <p>
+              <strong>Classificacao:</strong> {resultado.classificacao}
+            </p>
+            <Button variant="contained" onClick={handleFechar}>
+              Fechar
             </Button>
           </Box>
         )}
