@@ -43,6 +43,7 @@ export default function Header() {
           <Button onClick={() => navigate("/empresas")}>Empresas</Button>
           <Button onClick={() => navigate("/pacientes")}>Pacientes</Button>
           <Button onClick={() => navigate("/usuarios")}>Usuários</Button>
+          <Button onClick={() => navigate("/aplicacoes")}>Aplicacoes</Button>
           <Button color="inherit" onClick={() => navigate("/login")}>
             <LogoutIcon></LogoutIcon>Sair
           </Button>

@@ -3,15 +3,28 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
+import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { isCPF } from "validation-br";
+import { listarTodosUsuarios } from "../../../services/usuarioService";
 
 export default function ModalCadastrarPaciente({
   aberta,
   onFechar,
   onCadastrar,
 }) {
+  const [usuarios, setUsuarios] = useState([]);
+
+  useEffect(() => {
+    if (aberta) {
+      listarTodosUsuarios()
+        .then((lista) => setUsuarios(lista.filter((u) => u.tipo === "PS")))
+        .catch(console.error);
+    }
+  }, [aberta]);
+
   const {
     register,
     handleSubmit,
@@ -42,6 +55,24 @@ export default function ModalCadastrarPaciente({
           component="form"
           onSubmit={handleSubmit(onCadastrar)}
         >
+          <TextField
+            {...register("usuarioId", {
+              required: "Usuario e obrigatorio",
+            })}
+            label="Psicólogo"
+            select
+            fullWidth
+            defaultValue=""
+            sx={{ mb: 2 }}
+            error={!!errors.usuarioId}
+            helperText={errors.usuarioId?.message}
+          >
+            {usuarios.map((u) => (
+              <MenuItem key={u.id} value={u.id}>
+                {u.nome}
+              </MenuItem>
+            ))}
+          </TextField>
           <TextField
             {...register("cpf", {
               required: "CPF e obrigatorio",
@@ -79,13 +110,13 @@ export default function ModalCadastrarPaciente({
             helperText={errors.email?.message}
           />
           <DialogActions>
-              <Button variant="outlined" onClick={handleFechar}>
-                Cancelar
-              </Button>
-              <Button type="submit" variant="contained">
-                Cadastrar
-              </Button>
-            </DialogActions>
+            <Button variant="outlined" onClick={handleFechar}>
+              Cancelar
+            </Button>
+            <Button type="submit" variant="contained">
+              Cadastrar
+            </Button>
+          </DialogActions>
         </Box>
       </Box>
     </Dialog>

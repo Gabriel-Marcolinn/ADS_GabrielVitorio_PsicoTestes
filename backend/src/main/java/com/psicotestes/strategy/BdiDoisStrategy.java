@@ -9,7 +9,7 @@ public class BdiDoisStrategy implements CalculadoraTesteStrategy {
 
     @Override
     public String getIdentificadorTeste() {
-        return "BDI-II";
+        return "Inventário de Depressão de Beck - Segunda Edição (BDI-II)";
     }
 
     @Override

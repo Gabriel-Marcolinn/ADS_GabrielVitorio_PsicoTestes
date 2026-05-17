@@ -6,9 +6,14 @@ import {
   inativarPaciente,
   deletarPaciente,
 } from "../../../services/pacienteService";
+import { listarTodosUsuarios } from "../../../services/usuarioService";
 import { mask } from "validation-br/dist/cpf";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import EditIcon from "@mui/icons-material/Edit";
@@ -19,12 +24,13 @@ import ModalCadastrarPaciente from "./ModalCadastrarPaciente";
 import ModalEditarPaciente from "./ModalEditarPaciente";
 import ModalDeletarPaciente from "./ModalDeletarPaciente";
 import ModalInativarPaciente from "./ModalInativarPaciente";
-
-// TODO: substituir por psicologoId vindo do contexto de autenticação
-const PSICOLOGO_ID = 1;
+import FindInPageIcon from "@mui/icons-material/FindInPage";
+import ModalListarAplicacoes from "./ModalListarAplicacoes";
 
 export default function Pacientes() {
   const [pacientes, setPacientes] = useState([]);
+  const [psicologos, setPsicologos] = useState([]);
+  const [psicologoFiltro, setPsicologoFiltro] = useState("");
   const [modalCadastrarAberta, setModalCadastrarAberta] = useState(false);
   const [modalEditarAberta, setModalEditarAberta] = useState(false);
   const [pacienteParaEditar, setPacienteParaEditar] = useState(null);
@@ -32,15 +38,30 @@ export default function Pacientes() {
   const [pacienteParaDeletar, setPacienteParaDeletar] = useState(null);
   const [modalInativarAberta, setModalInativarAberta] = useState(false);
   const [pacienteParaInativar, setPacienteParaInativar] = useState(null);
+  const [modalAplicacoesAberta, setModalAplicacoesAberta] = useState(false);
+  const [pacienteParaAplicacoes, setPacienteParaAplicacoes] = useState(null);
 
   useEffect(() => {
-    listarPacientes(PSICOLOGO_ID).then(setPacientes);
+    listarTodosUsuarios()
+      .then((lista) => setPsicologos(lista.filter((u) => u.tipo === "PS")))
+      .catch(console.error);
   }, []);
+
+  useEffect(() => {
+    if (!psicologoFiltro) {
+      setPacientes([]);
+      return;
+    }
+    listarPacientes(psicologoFiltro).then(setPacientes).catch(console.error);
+  }, [psicologoFiltro]);
 
   // CADASTRAR
   async function handleCadastrar(data) {
     try {
-      const novoPaciente = await cadastrarPaciente({ ...data, psicologoId: PSICOLOGO_ID });
+      const novoPaciente = await cadastrarPaciente({
+        ...data,
+        psicologoId: Number(data.usuarioId),
+      });
       setPacientes([...pacientes, novoPaciente]);
       alert("Paciente cadastrado com sucesso!");
       setModalCadastrarAberta(false);
@@ -59,7 +80,7 @@ export default function Pacientes() {
     try {
       await atualizarPaciente(pacienteParaEditar.id, {
         ...data,
-        psicologoId: PSICOLOGO_ID,
+        psicologoId: Number(data.usuarioId),
       });
       setPacientes(
         pacientes.map((p) =>
@@ -149,6 +170,14 @@ export default function Pacientes() {
         />
       )}
 
+      {modalAplicacoesAberta && (
+        <ModalListarAplicacoes
+          aberta={modalAplicacoesAberta}
+          onFechar={() => setModalAplicacoesAberta(false)}
+          paciente={pacienteParaAplicacoes}
+        />
+      )}
+
       {/* TITULO E BOTAO */}
       <Box
         sx={{
@@ -183,6 +212,24 @@ export default function Pacientes() {
         >
           + Novo Paciente
         </Button>
+      </Box>
+
+      {/* FILTRO POR PSICOLOGO */}
+      <Box sx={{ width: "100%", maxWidth: 900, mb: 3 }}>
+        <FormControl fullWidth>
+          <InputLabel>Filtrar por psicólogo</InputLabel>
+          <Select
+            value={psicologoFiltro}
+            label="Filtrar por psicólogo"
+            onChange={(e) => setPsicologoFiltro(e.target.value)}
+          >
+            {psicologos.map((u) => (
+              <MenuItem key={u.id} value={u.id}>
+                {u.nome}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </Box>
 
       {/* LISTAGEM */}
@@ -238,11 +285,21 @@ export default function Pacientes() {
                   justifyContent: "space-between",
                 }}
               >
-                <IconButton onClick={() => confirmarDeletar(paciente)}>
-                  <DeleteIcon color="error" />
-                </IconButton>
-                <IconButton onClick={() => confirmarInativar(paciente)}>
-                  <BlockIcon color="warning" />
+                <Box>
+                  <IconButton onClick={() => confirmarDeletar(paciente)}>
+                    <DeleteIcon color="error" />
+                  </IconButton>
+                  <IconButton onClick={() => confirmarInativar(paciente)}>
+                    <BlockIcon color="warning" />
+                  </IconButton>
+                </Box>
+                <IconButton
+                  onClick={() => {
+                    setPacienteParaAplicacoes(paciente);
+                    setModalAplicacoesAberta(true);
+                  }}
+                >
+                  <FindInPageIcon />
                 </IconButton>
               </Box>
             </Paper>

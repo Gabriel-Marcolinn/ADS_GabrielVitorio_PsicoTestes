@@ -11,9 +11,15 @@ import { useForm } from "react-hook-form";
 const TIPOS_USUARIO = [
   { value: "AD", label: "Administrador" },
   { value: "PS", label: "Psicólogo" },
+  { value: "PA", label: "Psicólogo Administrador" },
 ];
 
-export default function ModalEditarUsuario({ aberta, onFechar, usuario, onEditar }) {
+export default function ModalEditarUsuario({
+  aberta,
+  onFechar,
+  usuario,
+  onEditar,
+}) {
   const {
     register,
     handleSubmit,
@@ -69,7 +75,9 @@ export default function ModalEditarUsuario({ aberta, onFechar, usuario, onEditar
             autoComplete="new-password"
             fullWidth
             error={!!errors.senha}
-            helperText={errors.senha?.message || "Informe a senha para alterá-la"}
+            helperText={
+              errors.senha?.message || "Informe a senha para alterá-la"
+            }
           />
           <TextField
             {...register("tipo", { required: "Tipo é obrigatório" })}
