@@ -15,6 +15,11 @@ import Empresas from "./components/empresa/Empresas.jsx";
 import Pacientes from "./components/paciente/Pacientes.jsx";
 import Usuarios from "./components/usuario/Usuarios.jsx";
 import Aplicacoes from "./components/aplicacao/Aplicacoes.jsx";
+import { isAuthenticated } from "../services/authService.js";
+
+function RotaProtegida({ children }) {
+  return isAuthenticated() ? children : <Navigate to="/login" replace />;
+}
 
 const theme = createTheme({
   typography: {
@@ -46,10 +51,10 @@ function Layout() {
         <Route path="/" element={<Navigate to="/login" />} />
 
         <Route path="/login" element={<Login />} />
-        <Route path="/empresas" element={<Empresas />} />
-        <Route path="/pacientes" element={<Pacientes />} />
-        <Route path="/usuarios" element={<Usuarios />} />
-        <Route path="/aplicacoes" element={<Aplicacoes />} />
+        <Route path="/empresas" element={<RotaProtegida><Empresas /></RotaProtegida>} />
+        <Route path="/pacientes" element={<RotaProtegida><Pacientes /></RotaProtegida>} />
+        <Route path="/usuarios" element={<RotaProtegida><Usuarios /></RotaProtegida>} />
+        <Route path="/aplicacoes" element={<RotaProtegida><Aplicacoes /></RotaProtegida>} />
       </Routes>
     </>
   );

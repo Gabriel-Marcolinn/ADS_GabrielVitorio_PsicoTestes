@@ -1,3 +1,5 @@
+import { getAuthHeaders } from "./authService.js";
+
 const BASE_URL = "http://localhost:8080/api/empresas";
 
 async function handleResponse(response) {
@@ -20,7 +22,7 @@ async function handleResponse(response) {
 export async function cadastrarEmpresa(data) {
   const response = await fetch(BASE_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     body: JSON.stringify(data),
   });
   return handleResponse(response);
@@ -28,20 +30,25 @@ export async function cadastrarEmpresa(data) {
 
 // LISTAGEM
 export async function listarEmpresas() {
-  const response = await fetch(BASE_URL);
+  const response = await fetch(BASE_URL, {
+    headers: getAuthHeaders(),
+  });
   return handleResponse(response);
 }
 
 // BUSCAR ID
 export async function buscarEmpresaPorId(id) {
-  const response = await fetch(`${BASE_URL}/${id}`);
+  const response = await fetch(`${BASE_URL}/${id}`, {
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(response);
 }
 
 // ATUALIZAR
 export async function atualizarEmpresa(id, data) {
   const response = await fetch(`${BASE_URL}/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     body: JSON.stringify(data),
   });
   return handleResponse(response);
@@ -51,6 +58,7 @@ export async function atualizarEmpresa(id, data) {
 export async function deletarEmpresa(id) {
   const response = await fetch(`${BASE_URL}/${id}`, {
     method: "DELETE",
+    headers: getAuthHeaders(),
   });
   return handleResponse(response);
 }
@@ -59,6 +67,7 @@ export async function deletarEmpresa(id) {
 export async function inativarEmpresa(id) {
   const response = await fetch(`${BASE_URL}/${id}/status`, {
     method: "PATCH",
+    headers: getAuthHeaders(),
   });
   return handleResponse(response);
 }

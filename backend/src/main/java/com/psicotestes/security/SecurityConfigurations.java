@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -27,12 +28,15 @@ public class SecurityConfigurations {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
+                .cors(Customizer.withDefaults())
                 // Desabilita o CSRF (Cross-Site Request Forgery) pois o JWT já nos protege contra isso
                 .csrf(csrf -> csrf.disable())
                 // Diz ao Spring que a nossa autenticação é STATELESS (não guardaremos sessão em memória) cada requisição é independente e deve trazer o Token
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // Configura as regras de acesso das rotas
                 .authorizeHttpRequests(authorize -> authorize
+                        // Libera preflight CORS
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // A rota de Login DEVE ser pública
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
 

@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { logout } from "../../services/authService.js";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ export default function Header() {
           <Button onClick={() => navigate("/pacientes")}>Pacientes</Button>
           <Button onClick={() => navigate("/usuarios")}>Usuários</Button>
           <Button onClick={() => navigate("/aplicacoes")}>Aplicacoes</Button>
-          <Button color="inherit" onClick={() => navigate("/login")}>
+          <Button color="inherit" onClick={() => { logout(); navigate("/login"); }}>
             <LogoutIcon></LogoutIcon>Sair
           </Button>
         </Box>
