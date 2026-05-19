@@ -6,13 +6,14 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
+import { getAuthHeaders } from "../../../services/authService";
 
 export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
   const [aplicacoes, setAplicacoes] = useState([]);
 
   useEffect(() => {
     if (aberta && paciente) {
-      fetch(`http://localhost:8080/api/aplicacoes/paciente/${paciente.id}`)
+      fetch(`http://localhost:8080/api/aplicacoes/paciente/${paciente.id}`, { headers: getAuthHeaders() })
         .then((r) => r.json())
         .then(setAplicacoes)
         .catch(console.error);

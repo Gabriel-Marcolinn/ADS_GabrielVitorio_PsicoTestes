@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { listarTodosUsuarios } from "../../../services/usuarioService";
+import { getAuthHeaders } from "../../../services/authService";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -42,7 +43,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
       listarTodosUsuarios()
         .then((lista) => setUsuarios(lista.filter((u) => u.tipo === "PS")))
         .catch(console.error);
-      fetch("http://localhost:8080/api/testes")
+      fetch("http://localhost:8080/api/testes", { headers: getAuthHeaders() })
         .then((r) => r.json())
         .then(setTestes)
         .catch(console.error);
@@ -68,6 +69,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
   async function handleProximo(data) {
     const completo = await fetch(
       `http://localhost:8080/api/testes/${data.testeId}`,
+      { headers: getAuthHeaders() },
     ).then((r) => r.json());
     setTesteCompleto(completo);
     setEtapa(2);
@@ -80,10 +82,9 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
     const resposta = await fetch("http://localhost:8080/api/aplicacoes", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        ...getAuthHeaders(),
         "Usuario-Id": usuarioId,
       },
-
       body: JSON.stringify({ pacienteId, testeId, alternativasIds }),
     });
 
