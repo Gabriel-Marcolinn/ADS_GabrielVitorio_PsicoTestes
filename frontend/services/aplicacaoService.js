@@ -1,3 +1,5 @@
+import { getAuthHeaders } from "./authService.js";
+
 const BASE_URL = "http://localhost:8080/api/aplicacoes";
 
 async function handleResponse(response) {
@@ -20,17 +22,16 @@ async function handleResponse(response) {
 export async function aplicarTeste(data, usuarioId) {
   const response = await fetch(BASE_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Usuario-Id": usuarioId,
-    },
+    headers: { ...getAuthHeaders(), "Usuario-Id": usuarioId },
     body: JSON.stringify(data),
   });
   return handleResponse(response);
 }
 
-// LISTAGR DE UM PACIENTE
+// LISTAGEM DE UM PACIENTE
 export async function listarAplicacoesPorPaciente(pacienteId) {
-  const response = await fetch(`${BASE_URL}/paciente/${pacienteId}`);
+  const response = await fetch(`${BASE_URL}/paciente/${pacienteId}`, {
+    headers: getAuthHeaders(),
+  });
   return handleResponse(response);
 }

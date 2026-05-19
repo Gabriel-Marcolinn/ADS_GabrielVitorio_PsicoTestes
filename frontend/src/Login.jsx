@@ -5,18 +5,30 @@ import { useForm } from "react-hook-form";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
+import Alert from "@mui/material/Alert";
 import { useState } from "react";
-import Grid from "@mui/material/Grid";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
+import { login } from "../services/authService";
 
 export default function Login() {
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
   const [showPassword, setShowPassword] = useState(false);
+  const [erro, setErro] = useState("");
+  const [carregando, setCarregando] = useState(false);
 
-  function onSubmit(data) {
-    navigate("/empresas");
+  async function onSubmit(data) {
+    setErro("");
+    setCarregando(true);
+    try {
+      await login(data.email, data.senha);
+      navigate("/empresas");
+    } catch (e) {
+      setErro(e.message);
+    } finally {
+      setCarregando(false);
+    }
   }
 
   return (
@@ -37,6 +49,12 @@ export default function Login() {
         >
           Seja bem vindo ao Psicotestes!
         </Typography>
+
+        {erro && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {erro}
+          </Alert>
+        )}
 
         <Box
           sx={{ flexDirection: "column" }}
@@ -70,8 +88,8 @@ export default function Login() {
               },
             }}
           />
-          <Button type="submit" variant="contained" fullWidth>
-            Login
+          <Button type="submit" variant="contained" fullWidth disabled={carregando}>
+            {carregando ? "Entrando..." : "Login"}
           </Button>
         </Box>
       </Paper>

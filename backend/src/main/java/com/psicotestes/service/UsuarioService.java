@@ -7,6 +7,7 @@ import com.psicotestes.model.Usuario;
 import com.psicotestes.repository.EmpresaRepository;
 import com.psicotestes.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final EmpresaRepository empresaRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public UsuarioResponseDTO salvar(UsuarioRequestDTO dto) {
@@ -32,7 +34,7 @@ public class UsuarioService {
         Usuario usuario = Usuario.builder()
                 .nome(dto.nome())
                 .email(dto.email())
-                .senha(dto.senha())
+                .senha(passwordEncoder.encode(dto.senha()))
                 .tipo(dto.tipo())
                 .empresa(empresa)
                 .ativo(true)
@@ -73,7 +75,7 @@ public class UsuarioService {
 
         usuario.setNome(dto.nome());
         usuario.setEmail(dto.email());
-        usuario.setSenha(dto.senha());
+        usuario.setSenha(passwordEncoder.encode(dto.senha()));
         usuario.setTipo(dto.tipo());
         usuario.setEmpresa(empresa);
 

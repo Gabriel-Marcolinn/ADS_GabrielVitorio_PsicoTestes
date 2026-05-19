@@ -1,3 +1,5 @@
+import { getAuthHeaders } from "./authService.js";
+
 const BASE_URL = "http://localhost:8080/api/pacientes";
 
 async function handleResponse(response) {
@@ -20,7 +22,7 @@ async function handleResponse(response) {
 export async function cadastrarPaciente(data) {
   const response = await fetch(BASE_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     body: JSON.stringify(data),
   });
   return handleResponse(response);
@@ -30,6 +32,7 @@ export async function cadastrarPaciente(data) {
 export async function listarPacientes(psicologoId) {
   const response = await fetch(
     `${BASE_URL}?psicologoId=${psicologoId}&ativo=true`,
+    { headers: getAuthHeaders() },
   );
   return handleResponse(response);
 }
@@ -38,7 +41,7 @@ export async function listarPacientes(psicologoId) {
 export async function atualizarPaciente(id, data) {
   const response = await fetch(`${BASE_URL}/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     body: JSON.stringify(data),
   });
   return handleResponse(response);
@@ -48,6 +51,7 @@ export async function atualizarPaciente(id, data) {
 export async function inativarPaciente(id) {
   const response = await fetch(`${BASE_URL}/${id}/status`, {
     method: "PATCH",
+    headers: getAuthHeaders(),
   });
   return handleResponse(response);
 }
@@ -56,6 +60,7 @@ export async function inativarPaciente(id) {
 export async function deletarPaciente(id) {
   const response = await fetch(`${BASE_URL}/${id}`, {
     method: "DELETE",
+    headers: getAuthHeaders(),
   });
   return handleResponse(response);
 }

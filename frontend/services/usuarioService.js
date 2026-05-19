@@ -1,3 +1,5 @@
+import { getAuthHeaders } from "./authService.js";
+
 const BASE_URL = "http://localhost:8080/api/usuarios";
 
 async function handleResponse(response) {
@@ -20,7 +22,7 @@ async function handleResponse(response) {
 export async function cadastrarUsuario(data) {
   const response = await fetch(BASE_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     body: JSON.stringify(data),
   });
   return handleResponse(response);
@@ -30,11 +32,15 @@ export async function cadastrarUsuario(data) {
 export async function listarUsuarios(empresaId, ativo = true) {
   const response = await fetch(
     `${BASE_URL}?empresaId=${empresaId}&ativo=${ativo}`,
+    { headers: getAuthHeaders() },
   );
+  return handleResponse(response);
 }
 
 export async function listarTodosUsuarios() {
-  const response = await fetch(`${BASE_URL}`);
+  const response = await fetch(BASE_URL, {
+    headers: getAuthHeaders(),
+  });
   return handleResponse(response);
 }
 
@@ -42,7 +48,7 @@ export async function listarTodosUsuarios() {
 export async function atualizarUsuario(id, data) {
   const response = await fetch(`${BASE_URL}/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     body: JSON.stringify(data),
   });
   return handleResponse(response);
@@ -52,6 +58,7 @@ export async function atualizarUsuario(id, data) {
 export async function inativarUsuario(id) {
   const response = await fetch(`${BASE_URL}/${id}/status`, {
     method: "PATCH",
+    headers: getAuthHeaders(),
   });
   return handleResponse(response);
 }
@@ -60,6 +67,7 @@ export async function inativarUsuario(id) {
 export async function deletarUsuario(id) {
   const response = await fetch(`${BASE_URL}/${id}`, {
     method: "DELETE",
+    headers: getAuthHeaders(),
   });
   return handleResponse(response);
 }
