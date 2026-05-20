@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { isCPF } from "validation-br";
 import { listarTodosUsuarios } from "../../../services/usuarioService";
+import { getUsuarioLogado } from "../../../services/authService";
 
 export default function ModalCadastrarPaciente({
   aberta,
@@ -16,12 +17,18 @@ export default function ModalCadastrarPaciente({
   onCadastrar,
 }) {
   const [usuarios, setUsuarios] = useState([]);
+  const usuario = getUsuarioLogado();
+  const isPsicologo = usuario?.tipo === "PS" || usuario?.tipo === "PA";
 
   useEffect(() => {
     if (aberta) {
       listarTodosUsuarios()
         .then((lista) => setUsuarios(lista.filter((u) => u.tipo === "PS")))
         .catch(console.error);
+
+        if (isPsicologo) {
+          setValue("usuarioId", usuario.id);
+        }
     }
   }, [aberta]);
 
@@ -30,6 +37,7 @@ export default function ModalCadastrarPaciente({
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm();
 
   function handleFechar() {
@@ -55,6 +63,7 @@ export default function ModalCadastrarPaciente({
           component="form"
           onSubmit={handleSubmit(onCadastrar)}
         >
+          {!isPsicologo && (
           <TextField
             {...register("usuarioId", {
               required: "Usuario e obrigatorio",
@@ -73,6 +82,7 @@ export default function ModalCadastrarPaciente({
               </MenuItem>
             ))}
           </TextField>
+          )}
           <TextField
             {...register("cpf", {
               required: "CPF e obrigatorio",

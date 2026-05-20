@@ -29,6 +29,17 @@ export function isAuthenticated() {
   return !!getToken();
 }
 
+export function getUsuarioLogado() {
+  const token = getToken();
+  if (!token) return null;
+
+  const payload = token.split('.')[1];
+  const decoded = atob(payload);
+  const usuario = JSON.parse(decoded);
+
+  return usuario;
+}
+
 export function getAuthHeaders() {
   return {
     "Content-Type": "application/json",

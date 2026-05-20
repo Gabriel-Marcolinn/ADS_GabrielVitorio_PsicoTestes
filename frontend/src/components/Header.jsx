@@ -6,10 +6,11 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { logout } from "../../services/authService.js";
+import { getUsuarioLogado, logout } from "../../services/authService.js";
 
 export default function Header() {
   const navigate = useNavigate();
+  const usuario = getUsuarioLogado();
 
   return (
     <AppBar position="static" sx={{ background: "white", boxShadow: "1" }}>
@@ -37,7 +38,7 @@ export default function Header() {
             <PsychologyIcon sx={{ color: "white", fontSize: 32 }} />
           </Box>
           <Typography variant="h6" sx={{ ml: "20px" }}>
-            Nome do usuario
+            {usuario?.nome}
           </Typography>
         </Box>
         <Box>
