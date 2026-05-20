@@ -29,6 +29,7 @@ public class TokenService {
                     .withClaim("id", usuario.getId())
                     .withClaim("tipo", usuario.getTipo())
                     .withClaim("empresaId", usuario.getEmpresa().getId()) // Garante o RNF-7
+                    .withClaim("nome", usuario.getNome())
                     .withExpiresAt(gerarDataExpiracao())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
