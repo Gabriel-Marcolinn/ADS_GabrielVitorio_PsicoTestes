@@ -11,6 +11,7 @@ import { getUsuarioLogado, logout } from "../../services/authService.js";
 export default function Header() {
   const navigate = useNavigate();
   const usuario = getUsuarioLogado();
+  const tipo = usuario?.tipo;
 
   return (
     <AppBar position="static" sx={{ background: "white", boxShadow: "1" }}>
@@ -42,11 +43,26 @@ export default function Header() {
           </Typography>
         </Box>
         <Box>
-          <Button onClick={() => navigate("/empresas")}>Empresas</Button>
-          <Button onClick={() => navigate("/pacientes")}>Pacientes</Button>
-          <Button onClick={() => navigate("/usuarios")}>Usuários</Button>
-          <Button onClick={() => navigate("/aplicacoes")}>Aplicacoes</Button>
-          <Button color="inherit" onClick={() => { logout(); navigate("/login"); }}>
+          {tipo === "AD" && (
+            <Button onClick={() => navigate("/empresas")}>Empresas</Button>
+          )}
+          {tipo === "PA" ||
+            (tipo === "AD" && (
+              <Button onClick={() => navigate("/usuarios")}>Usuários</Button>
+            ))}
+          {(tipo === "PA" || tipo === "PS") && (
+            <Button onClick={() => navigate("/pacientes")}>Pacientes</Button>
+          )}
+          {(tipo === "PA" || tipo === "PS") && (
+            <Button onClick={() => navigate("/aplicacoes")}>Aplicacoes</Button>
+          )}
+          <Button
+            color="inherit"
+            onClick={() => {
+              logout();
+              navigate("/login");
+            }}
+          >
             <LogoutIcon></LogoutIcon>Sair
           </Button>
         </Box>
