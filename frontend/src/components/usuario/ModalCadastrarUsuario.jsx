@@ -8,11 +8,17 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import { useForm } from "react-hook-form";
 import { listarEmpresas } from "../../../services/empresaService";
+import { getUsuarioLogado } from "../../../services/authService";
 import { useEffect, useState } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 
-const TIPOS_USUARIO = [
+const TIPOS_USUARIO_PA = [
+  { value: "PS", label: "Psicólogo" },
+  { value: "PA", label: "Psicólogo Administrador" },
+];
+
+const TIPOS_USUARIO_AD = [
   { value: "AD", label: "Administrador" },
   { value: "PS", label: "Psicólogo" },
   { value: "PA", label: "Psicólogo Administrador" },
@@ -28,14 +34,23 @@ export default function ModalCadastrarUsuario({
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm();
+
+  const usuarioLogado = getUsuarioLogado();
+  const isPA = usuarioLogado?.tipo === "PA";
+  const tiposUsuario = usuarioLogado?.tipo === "AD" ? TIPOS_USUARIO_AD : TIPOS_USUARIO_PA;
 
   const [showPassword, setShowPassword] = useState(false);
   const [empresas, setEmpresas] = useState([]);
 
   useEffect(() => {
     if (aberta) {
-      listarEmpresas().then(setEmpresas);
+      if (isPA) {
+        setValue("empresaId", usuarioLogado.empresaId);
+      } else {
+        listarEmpresas().then(setEmpresas);
+      }
     }
   }, [aberta]);
 
@@ -108,27 +123,29 @@ export default function ModalCadastrarUsuario({
             error={!!errors.tipo}
             helperText={errors.tipo?.message}
           >
-            {TIPOS_USUARIO.map((tipo) => (
+            {tiposUsuario.map((tipo) => (
               <MenuItem key={tipo.value} value={tipo.value}>
                 {tipo.label}
               </MenuItem>
             ))}
           </TextField>
-          <TextField
-            {...register("empresaId", { required: "Empresa é obrigatória" })}
-            label="Empresa"
-            select
-            fullWidth
-            defaultValue=""
-            error={!!errors.empresaId}
-            helperText={errors.empresaId?.message}
-          >
-            {empresas.map((e) => (
-              <MenuItem key={e.id} value={e.id}>
-                {e.razaoSocial}
-              </MenuItem>
-            ))}
-          </TextField>
+          {!isPA && (
+            <TextField
+              {...register("empresaId", { required: "Empresa é obrigatória" })}
+              label="Empresa"
+              select
+              fullWidth
+              defaultValue=""
+              error={!!errors.empresaId}
+              helperText={errors.empresaId?.message}
+            >
+              {empresas.map((e) => (
+                <MenuItem key={e.id} value={e.id}>
+                  {e.razaoSocial}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
           <DialogActions>
             <Button variant="outlined" onClick={handleFechar}>
               Cancelar
