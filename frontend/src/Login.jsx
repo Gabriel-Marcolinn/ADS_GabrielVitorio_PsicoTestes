@@ -9,7 +9,7 @@ import Alert from "@mui/material/Alert";
 import { useState } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
-import { login } from "../services/authService";
+import { login, getUsuarioLogado } from "../services/authService";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -23,7 +23,10 @@ export default function Login() {
     setCarregando(true);
     try {
       await login(data.email, data.senha);
-      navigate("/empresas");
+      const usuario = getUsuarioLogado();
+      if (usuario.tipo === "AD") navigate("/empresas");
+      else if (usuario.tipo === "PA") navigate("/usuarios");
+      else navigate("/pacientes");
     } catch (e) {
       setErro(e.message);
     } finally {
@@ -88,7 +91,12 @@ export default function Login() {
               },
             }}
           />
-          <Button type="submit" variant="contained" fullWidth disabled={carregando}>
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            disabled={carregando}
+          >
             {carregando ? "Entrando..." : "Login"}
           </Button>
         </Box>
