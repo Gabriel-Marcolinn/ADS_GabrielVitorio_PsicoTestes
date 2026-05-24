@@ -46,10 +46,9 @@ export default function Header() {
           {tipo === "AD" && (
             <Button onClick={() => navigate("/empresas")}>Empresas</Button>
           )}
-          {tipo === "PA" ||
-            (tipo === "AD" && (
-              <Button onClick={() => navigate("/usuarios")}>Usuários</Button>
-            ))}
+          {(tipo === "AD" || tipo === "PA") && (
+            <Button onClick={() => navigate("/usuarios")}>Usuários</Button>
+          )}
           {(tipo === "PA" || tipo === "PS") && (
             <Button onClick={() => navigate("/pacientes")}>Pacientes</Button>
           )}
