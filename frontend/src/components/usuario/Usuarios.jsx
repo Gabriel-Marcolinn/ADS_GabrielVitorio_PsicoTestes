@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import {
   deletarUsuario,
   listarUsuarios,
+  listarTodosUsuarios,
   atualizarUsuario,
   inativarUsuario,
   cadastrarUsuario,
-  listarTodosUsuarios,
 } from "../../../services/usuarioService";
+import { getUsuarioLogado } from "../../../services/authService";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -20,9 +21,6 @@ import ModalDeletarUsuario from "./ModalDeletarUsuario";
 import ModalInativarUsuario from "./ModalInativarUsuario";
 import ModalCadastrarUsuario from "./ModalCadastrarUsuario";
 import ModalEditarUsuario from "./ModalEditarUsuario";
-
-// TODO: substituir por empresaId vindo do contexto de autenticação
-const EMPRESA_ID = 1;
 
 const TIPO_LABELS = {
   AD: { label: "Administrador", color: "primary" },
@@ -40,10 +38,13 @@ export default function Usuarios() {
   const [modalInativarAberta, setModalInativarAberta] = useState(false);
   const [modalCadastrarAberta, setModalCadastrarAberta] = useState(false);
 
+  const usuarioLogado = getUsuarioLogado();
+
   useEffect(() => {
-    listarTodosUsuarios()
-      .then((data) => setUsuarios(data ?? []))
-      .catch(() => setUsuarios([]));
+    const busca = usuarioLogado.tipo === "AD"
+      ? listarTodosUsuarios()
+      : listarUsuarios(usuarioLogado.empresaId);
+    busca.then((data) => setUsuarios(data ?? [])).catch(() => setUsuarios([]));
   }, []);
 
   // DELETAR
@@ -88,7 +89,7 @@ export default function Usuarios() {
     try {
       await atualizarUsuario(usuarioParaEditar.id, {
         ...data,
-        empresaId: EMPRESA_ID,
+        empresaId: usuarioLogado.empresaId,
       });
       setUsuarios(
         usuarios.map((u) =>
