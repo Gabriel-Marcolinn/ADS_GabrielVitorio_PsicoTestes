@@ -5,7 +5,10 @@ import com.psicotestes.model.Alternativa;
 import java.util.Comparator;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 /// TESTE 3 - Remix Inspirado no WHOQOL-BREF
+@Component
 public class WhoStrategy implements CalculadoraTesteStrategy {
 
     @Override
@@ -25,7 +28,8 @@ public class WhoStrategy implements CalculadoraTesteStrategy {
                 .toList();
 
         // Mapear as respostas para um array de 1 a 26.
-        // Crio com tamanho 27 para ignorar o index 0 e a leitura do código ficar idêntica à fórmula visual (q[1] = Q1).
+        // Crio com tamanho 27 para ignorar o index 0 e a leitura do código ficar
+        // idêntica à fórmula visual (q[1] = Q1).
         double[] q = new double[27];
         for (int i = 0; i < 26; i++) {
             q[i + 1] = ordenadas.get(i).getPontuacao();
@@ -48,7 +52,8 @@ public class WhoStrategy implements CalculadoraTesteStrategy {
         double domSocial100 = ((domSocial - 4.0) / 16.0) * 100.0;
         double domAmbiente100 = ((domAmbiente - 4.0) / 16.0) * 100.0;
 
-        // Retorno de um único Double exigido pela interface (Score Global: Média dos 4 domínios transformados)
+        // Retorno de um único Double exigido pela interface (Score Global: Média dos 4
+        // domínios transformados)
         return (domFisico100 + domPsicologico100 + domSocial100 + domAmbiente100) / 4.0;
     }
 
