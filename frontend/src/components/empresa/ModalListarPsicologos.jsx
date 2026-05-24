@@ -45,8 +45,11 @@ export default function ModalListarPsicologos({ aberta, onFechar, empresa }) {
       )}
       <Dialog open={aberta} onClose={onFechar}>
         <DialogTitle>
-          Psicologos de <strong>{empresa.razaoSocial}</strong>
+          Psicologos - <strong>{empresa.razaoSocial}</strong>
         </DialogTitle>
+        <Typography variant="caption" color="text.secondary" sx={{ px: 3 }}>
+          {psicologos.length} psicólogos cadastrados
+        </Typography>
         <DialogContent>
           <Box
             sx={{
@@ -68,7 +71,11 @@ export default function ModalListarPsicologos({ aberta, onFechar, empresa }) {
                   sx={{ border: "1px solid #ddd", borderRadius: 2, p: 2 }}
                 >
                   <Box
-                    sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "flex-start",
+                    }}
                   >
                     <Box>
                       <Box sx={{ display: "flex", alignItems: "center" }}>
