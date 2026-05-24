@@ -20,6 +20,8 @@ import ModalDeletarEmpresa from "./ModalDeletarEmpresa";
 import ModalInativarEmpresa from "./ModalInativarEmpresa";
 import ModalCadastrarEmpresa from "./ModalCadastrarEmpresa";
 import ModalEditarEmpresa from "./ModalEditarEmpresa";
+import ModalListarPsicologos from "./ModalListarPsicologos";
+import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 
 export default function Empresas() {
   const [empresas, setEmpresas] = useState([]);
@@ -30,6 +32,8 @@ export default function Empresas() {
   const [empresaParaInativar, setEmpresaParaInativar] = useState(null);
   const [modalInativarAberta, setModalInativarAberta] = useState(false);
   const [modalCadastrarAberta, setModalCadastrarAberta] = useState(false);
+  const [modalPsicologosAberta, setModalPsicologosAberta] = useState(false);
+  const [empresaParaPsicologos, setEmpresaParaPsicologos] = useState(null);
 
   const navigate = useNavigate();
 
@@ -150,6 +154,14 @@ export default function Empresas() {
         />
       )}
 
+      {modalPsicologosAberta && (
+        <ModalListarPsicologos
+          aberta={modalPsicologosAberta}
+          onFechar={() => setModalPsicologosAberta(false)}
+          empresa={empresaParaPsicologos}
+        />
+      )}
+
       {/* TITULO E BOTAO PARA CADASTRAR EMPRESA */}
       <Box
         sx={{
@@ -248,6 +260,14 @@ export default function Empresas() {
                   <DeleteIcon size="small" color="error" variant="outlined">
                     Deletar
                   </DeleteIcon>
+                </IconButton>
+                <IconButton
+                  onClick={() => {
+                    setEmpresaParaPsicologos(empresa);
+                    setModalPsicologosAberta(true);
+                  }}
+                >
+                  <PersonSearchIcon />
                 </IconButton>
                 <IconButton onClick={() => confirmarInativar(empresa)}>
                   <BlockIcon size="small" color="warning" variant="outlined">
