@@ -6,7 +6,11 @@ import {
   inativarPaciente,
   deletarPaciente,
 } from "../../../services/pacienteService";
-import { listarTodosUsuarios } from "../../../services/usuarioService";
+import {
+  listarUsuarios,
+  listarTodosUsuarios,
+} from "../../../services/usuarioService";
+import { getUsuarioLogado } from "../../../services/authService";
 import { mask } from "validation-br/dist/cpf";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -41,10 +45,23 @@ export default function Pacientes() {
   const [modalAplicacoesAberta, setModalAplicacoesAberta] = useState(false);
   const [pacienteParaAplicacoes, setPacienteParaAplicacoes] = useState(null);
 
+  const usuarioLogado = getUsuarioLogado();
+  const tipo = usuarioLogado?.tipo;
+  const isPS = tipo === "PS";
+  const isPA = tipo === "PA";
+
   useEffect(() => {
-    listarTodosUsuarios()
-      .then((lista) => setPsicologos(lista.filter((u) => u.tipo === "PS")))
-      .catch(console.error);
+    if (isPS) {
+      setPsicologoFiltro(usuarioLogado?.id);
+    } else if (isPA) {
+      listarUsuarios(usuarioLogado?.empresaId)
+        .then((lista) => setPsicologos(lista.filter((u) => u.tipo === "PS")))
+        .catch(console.error);
+    } else {
+      listarTodosUsuarios()
+        .then((lista) => setPsicologos(lista.filter((u) => u.tipo === "PS")))
+        .catch(console.error);
+    }
   }, []);
 
   useEffect(() => {
@@ -215,22 +232,24 @@ export default function Pacientes() {
       </Box>
 
       {/* FILTRO POR PSICOLOGO */}
-      <Box sx={{ width: "100%", maxWidth: 900, mb: 3 }}>
-        <FormControl fullWidth>
-          <InputLabel>Filtrar por psicólogo</InputLabel>
-          <Select
-            value={psicologoFiltro}
-            label="Filtrar por psicólogo"
-            onChange={(e) => setPsicologoFiltro(e.target.value)}
-          >
-            {psicologos.map((u) => (
-              <MenuItem key={u.id} value={u.id}>
-                {u.nome}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
+      {!isPS && (
+        <Box sx={{ width: "100%", maxWidth: 900, mb: 3 }}>
+          <FormControl fullWidth>
+            <InputLabel>Filtrar por psicólogo</InputLabel>
+            <Select
+              value={psicologoFiltro}
+              label="Filtrar por psicólogo"
+              onChange={(e) => setPsicologoFiltro(e.target.value)}
+            >
+              {psicologos.map((u) => (
+                <MenuItem key={u.id} value={u.id}>
+                  {u.nome}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+      )}
 
       {/* LISTAGEM */}
       <Box
