@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
-import { listarTodosUsuarios } from "../../../services/usuarioService";
-import { getAuthHeaders } from "../../../services/authService";
+import { listarUsuarios, listarTodosUsuarios } from "../../../services/usuarioService";
+import { getAuthHeaders, getUsuarioLogado } from "../../../services/authService";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -18,6 +18,10 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 
 export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
+  const usuarioLogado = getUsuarioLogado();
+  const tipo = usuarioLogado?.tipo;
+  const isPS = tipo === "PS";
+  const isPA = tipo === "PA";
   const {
     register,
     handleSubmit,
@@ -40,9 +44,17 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
 
   useEffect(() => {
     if (aberta) {
-      listarTodosUsuarios()
-        .then((lista) => setUsuarios(lista.filter((u) => u.tipo === "PS")))
-        .catch(console.error);
+      if (isPS) {
+        setValue("usuarioId", usuarioLogado.id);
+      } else if (isPA) {
+        listarUsuarios(usuarioLogado?.empresaId)
+          .then((lista) => setUsuarios(lista.filter((u) => u.tipo === "PS")))
+          .catch(console.error);
+      } else {
+        listarTodosUsuarios()
+          .then((lista) => setUsuarios(lista.filter((u) => u.tipo === "PS")))
+          .catch(console.error);
+      }
       fetch("http://localhost:8080/api/testes", { headers: getAuthHeaders() })
         .then((r) => r.json())
         .then(setTestes)
@@ -106,21 +118,23 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
             component="form"
             onSubmit={handleSubmit(handleProximo)}
           >
-            <TextField
-              {...register("usuarioId", { required: "Usuario e obrigatorio" })}
-              label="Usuarios"
-              select
-              fullWidth
-              defaultValue=""
-              error={!!errors.usuarioId}
-              helperText={errors.usuarioId?.message}
-            >
-              {usuarios.map((u) => (
-                <MenuItem key={u.id} value={u.id}>
-                  {u.nome}
-                </MenuItem>
-              ))}
-            </TextField>
+            {!isPS && (
+              <TextField
+                {...register("usuarioId", { required: "Usuario e obrigatorio" })}
+                label="Usuarios"
+                select
+                fullWidth
+                defaultValue=""
+                error={!!errors.usuarioId}
+                helperText={errors.usuarioId?.message}
+              >
+                {usuarios.map((u) => (
+                  <MenuItem key={u.id} value={u.id}>
+                    {u.nome}
+                  </MenuItem>
+                ))}
+              </TextField>
+            )}
             <TextField
               {...register("pacienteId", {
                 required: "Paciente e obrigatorio",
