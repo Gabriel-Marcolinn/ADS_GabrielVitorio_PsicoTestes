@@ -18,7 +18,7 @@ export default function ModalCadastrarPaciente({
 }) {
   const [usuarios, setUsuarios] = useState([]);
   const usuario = getUsuarioLogado();
-  const isPsicologo = usuario?.tipo === "PS" || usuario?.tipo === "PA";
+  const isPsicologo = usuario?.tipo === "PS";
 
   useEffect(() => {
     if (aberta) {
@@ -26,9 +26,9 @@ export default function ModalCadastrarPaciente({
         .then((lista) => setUsuarios(lista.filter((u) => u.tipo === "PS")))
         .catch(console.error);
 
-        if (isPsicologo) {
-          setValue("usuarioId", usuario.id);
-        }
+      if (isPsicologo) {
+        setValue("usuarioId", usuario.id);
+      }
     }
   }, [aberta]);
 
@@ -64,24 +64,24 @@ export default function ModalCadastrarPaciente({
           onSubmit={handleSubmit(onCadastrar)}
         >
           {!isPsicologo && (
-          <TextField
-            {...register("usuarioId", {
-              required: "Usuario e obrigatorio",
-            })}
-            label="Psicólogo"
-            select
-            fullWidth
-            defaultValue=""
-            sx={{ mb: 2 }}
-            error={!!errors.usuarioId}
-            helperText={errors.usuarioId?.message}
-          >
-            {usuarios.map((u) => (
-              <MenuItem key={u.id} value={u.id}>
-                {u.nome}
-              </MenuItem>
-            ))}
-          </TextField>
+            <TextField
+              {...register("usuarioId", {
+                required: "Usuario e obrigatorio",
+              })}
+              label="Psicólogo"
+              select
+              fullWidth
+              defaultValue=""
+              sx={{ mb: 2 }}
+              error={!!errors.usuarioId}
+              helperText={errors.usuarioId?.message}
+            >
+              {usuarios.map((u) => (
+                <MenuItem key={u.id} value={u.id}>
+                  {u.nome}
+                </MenuItem>
+              ))}
+            </TextField>
           )}
           <TextField
             {...register("cpf", {
