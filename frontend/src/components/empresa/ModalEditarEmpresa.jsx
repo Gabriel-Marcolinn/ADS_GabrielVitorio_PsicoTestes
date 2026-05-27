@@ -71,7 +71,7 @@ export default function ModalEditarEmpresa({
               type="submit"
               variant="contained"
               sx={{
-                color: "white",
+                color: "#fafafa",
               }}
             >
               Salvar

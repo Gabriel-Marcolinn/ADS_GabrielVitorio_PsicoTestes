@@ -8,13 +8,19 @@ import Button from "@mui/material/Button";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { getUsuarioLogado, logout } from "../../services/authService.js";
 
+const btnSx = {
+  background: "#0097a7",
+  color: "#fafafa",
+  "&:hover": { background: "#00838f" },
+};
+
 export default function Header() {
   const navigate = useNavigate();
   const usuario = getUsuarioLogado();
   const tipo = usuario?.tipo;
 
   return (
-    <AppBar position="static" sx={{ background: "white", boxShadow: "1" }}>
+    <AppBar position="static" sx={{ background: "#f5f5f5", boxShadow: "1" }}>
       <Toolbar
         sx={{
           display: "flex",
@@ -28,41 +34,67 @@ export default function Header() {
         <Box sx={{ display: "flex" }}>
           <Box
             sx={{
-              background: "linear-gradient(135deg, #1565c0, #1581c0)",
+              background: "linear-gradient(135deg, #0097a7, #00bcd4)",
               borderRadius: 2,
               p: 1,
               display: "flex",
               alignItems: "center",
-              justifyContent: "centere",
+              justifyContent: "center",
             }}
           >
-            <PsychologyIcon sx={{ color: "white", fontSize: 32 }} />
+            <PsychologyIcon sx={{ color: "#fafafa", fontSize: 32 }} />
           </Box>
-          <Typography variant="h6" sx={{ ml: "20px" }}>
+          <Typography variant="h6" sx={{ color: "black", ml: "20px" }}>
             {usuario?.nome}
           </Typography>
         </Box>
-        <Box>
+        <Box sx={{ display: "flex", gap: 1 }}>
           {tipo === "AD" && (
-            <Button onClick={() => navigate("/empresas")}>Empresas</Button>
+            <Button
+              variant="contained"
+              sx={btnSx}
+              onClick={() => navigate("/empresas")}
+            >
+              Empresas
+            </Button>
           )}
           {(tipo === "AD" || tipo === "PA") && (
-            <Button onClick={() => navigate("/usuarios")}>Usuários</Button>
+            <Button
+              variant="contained"
+              sx={btnSx}
+              onClick={() => navigate("/usuarios")}
+            >
+              Usuários
+            </Button>
           )}
           {(tipo === "PA" || tipo === "PS") && (
-            <Button onClick={() => navigate("/pacientes")}>Pacientes</Button>
+            <Button
+              variant="contained"
+              sx={btnSx}
+              onClick={() => navigate("/pacientes")}
+            >
+              Pacientes
+            </Button>
           )}
           {(tipo === "PA" || tipo === "PS") && (
-            <Button onClick={() => navigate("/aplicacoes")}>Aplicacoes</Button>
+            <Button
+              variant="contained"
+              sx={btnSx}
+              onClick={() => navigate("/aplicacoes")}
+            >
+              Aplicações
+            </Button>
           )}
           <Button
-            color="inherit"
+            variant="contained"
+            sx={btnSx}
             onClick={() => {
               logout();
               navigate("/login");
             }}
           >
-            <LogoutIcon></LogoutIcon>Sair
+            <LogoutIcon sx={{ mr: 0.5 }} />
+            Sair
           </Button>
         </Box>
       </Toolbar>

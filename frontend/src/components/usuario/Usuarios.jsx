@@ -181,13 +181,13 @@ export default function Usuarios() {
           size="large"
           onClick={() => setModalCadastrarAberta(true)}
           sx={{
-            background: "linear-gradient(135deg, #1565c0, #1581c0)",
-            color: "white",
+            background: "linear-gradient(135deg, #0097a7, #00bcd4)",
+            color: "#fafafa",
             borderRadius: 3,
-            boxShadow: "0px 0px 30px rgba(24, 161, 219, 0.4)",
+            boxShadow: "0px 0px 30px rgba(0, 188, 212, 0.4)",
             "&:hover": {
-              background: "linear-gradient(135deg, #1255a1, #0f689b)",
-              boxShadow: "0px 0px 30px rgba(24, 161, 219, 0.6)",
+              background: "linear-gradient(135deg, #00838f, #0097a7)",
+              boxShadow: "0px 0px 30px rgba(0, 188, 212, 0.6)",
             },
           }}
         >

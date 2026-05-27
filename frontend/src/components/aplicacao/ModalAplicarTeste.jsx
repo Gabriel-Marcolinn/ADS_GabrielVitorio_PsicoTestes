@@ -1,6 +1,12 @@
 import { useForm } from "react-hook-form";
-import { listarUsuarios, listarTodosUsuarios } from "../../../services/usuarioService";
-import { getAuthHeaders, getUsuarioLogado } from "../../../services/authService";
+import {
+  listarUsuarios,
+  listarTodosUsuarios,
+} from "../../../services/usuarioService";
+import {
+  getAuthHeaders,
+  getUsuarioLogado,
+} from "../../../services/authService";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -16,6 +22,7 @@ import { listarPacientes } from "../../../services/pacienteService";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
+import Paper from "@mui/material/Paper";
 
 export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
   const usuarioLogado = getUsuarioLogado();
@@ -120,7 +127,9 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
           >
             {!isPS && (
               <TextField
-                {...register("usuarioId", { required: "Usuario e obrigatorio" })}
+                {...register("usuarioId", {
+                  required: "Usuario e obrigatorio",
+                })}
                 label="Usuarios"
                 select
                 fullWidth
@@ -183,7 +192,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
         {etapa === 2 && testeCompleto && (
           <Box sx={{ display: "flex", flexDirection: "column", gap: 3, pt: 1 }}>
             {testeCompleto.perguntas.map((p, index) => (
-              <Box key={p.id}>
+              <Paper sx={{ p: 1 }} key={p.id}>
                 <p>{p.pergunta}</p>
                 <RadioGroup
                   value={respostas[p.id] ?? ""}
@@ -203,7 +212,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
                     />
                   ))}
                 </RadioGroup>
-              </Box>
+              </Paper>
             ))}
             <Button variant="contained" onClick={handleFinalizar}>
               Finalizar
