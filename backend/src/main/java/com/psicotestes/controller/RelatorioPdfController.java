@@ -2,6 +2,7 @@ package com.psicotestes.controller;
 
 import com.psicotestes.model.AplicacaoTeste;
 import com.psicotestes.service.AplicacaoTesteService;
+import com.psicotestes.service.EmailService;
 import com.psicotestes.service.RelatorioPdfService;
 import com.psicotestes.strategy.CalculadoraFactory;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +24,12 @@ public class RelatorioPdfController {
 
     private final RelatorioPdfService relatorioPdfService;
     private final AplicacaoTesteService aplicacaoTesteService;
+    private final EmailService emailService;
 
     @GetMapping("/aplicacao/{id}/simplificado")
     public ResponseEntity<byte[]> baixarRelatorioSimplificado(@PathVariable Long id) {
         try {
             AplicacaoTeste aplicacaoTeste = aplicacaoTesteService.buscarAplicacaoCompleta(id);
-            String dataAtualFormatada = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
             // Executa a geração do documento em memória
             byte[] pdfBytes = relatorioPdfService.gerarRelatorioSimplificado(aplicacaoTeste);
@@ -55,5 +56,20 @@ public class RelatorioPdfController {
             e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @PostMapping("/aplicacao/{id}/enviar-email")
+    public ResponseEntity<String> enviarRelatorioPorEmail(
+            @PathVariable Long id,
+            @RequestParam String emailDestinatario) {
+
+        AplicacaoTeste aplicacaoTeste = aplicacaoTesteService.buscarAplicacaoCompleta(id);
+        byte[] pdfBytes = relatorioPdfService.gerarRelatorioSimplificado(aplicacaoTeste);
+        if (emailDestinatario == null || emailDestinatario.isEmpty()) {
+            emailDestinatario = aplicacaoTeste.getPaciente().getEmail();
+        }
+
+        emailService.enviarRelatorioComAnexo(emailDestinatario, aplicacaoTeste.getPaciente().getNome(), pdfBytes);
+        return ResponseEntity.ok("E-mail enviado com sucesso para " + emailDestinatario);
     }
 }
