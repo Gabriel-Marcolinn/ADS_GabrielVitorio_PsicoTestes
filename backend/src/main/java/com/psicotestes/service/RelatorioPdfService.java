@@ -1,18 +1,32 @@
 package com.psicotestes.service;
 
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
+import com.psicotestes.model.AplicacaoTeste;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.io.ByteArrayOutputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
 public class RelatorioPdfService {
 
     private final TemplateEngine templateEngine;
+
+    public byte[] gerarRelatorioSimplificado(AplicacaoTeste aplicacaoTeste) {
+        return gerarRelatorioSimplificado(
+                aplicacaoTeste.getPaciente().getNome(),
+                aplicacaoTeste.getUsuario().getNome(),
+                aplicacaoTeste.getTeste().getNome(),
+                aplicacaoTeste.getPontuacaoTotal(),
+                aplicacaoTeste.getClassificacao(),
+                LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+        );
+    }
 
     public byte[] gerarRelatorioSimplificado(String pacienteNome, String psicologoNome, String testeNome, Double pontuacao, String classificacao, String dataStr) {
 

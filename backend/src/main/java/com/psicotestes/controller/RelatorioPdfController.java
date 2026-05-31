@@ -31,14 +31,7 @@ public class RelatorioPdfController {
             String dataAtualFormatada = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
             // Executa a geração do documento em memória
-            byte[] pdfBytes = relatorioPdfService.gerarRelatorioSimplificado(
-                    aplicacaoTeste.getPaciente().getNome(),
-                    aplicacaoTeste.getUsuario().getNome(),
-                    aplicacaoTeste.getTeste().getNome(),
-                    aplicacaoTeste.getPontuacaoTotal(),
-                    aplicacaoTeste.getClassificacao(),
-                    dataAtualFormatada
-            );
+            byte[] pdfBytes = relatorioPdfService.gerarRelatorioSimplificado(aplicacaoTeste);
 
             // Prepara os Headers HTTP informando ao navegador/React que o payload é um anexo binário de PDF
             HttpHeaders headers = new HttpHeaders();
