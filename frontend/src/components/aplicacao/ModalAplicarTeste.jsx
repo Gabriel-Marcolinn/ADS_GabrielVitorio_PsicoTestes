@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { gerarPDF } from "../../../services/aplicacaoService";
 import {
   listarUsuarios,
   listarTodosUsuarios,
@@ -46,6 +47,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
   const [testeCompleto, setTesteCompleto] = useState(null);
   const [respostas, setRespostas] = useState({});
   const [resultado, setResultado] = useState(null);
+  const [pdfUrl, setPdfUrl] = useState(null);
 
   const usuarioIdSelecionado = watch("usuarioId");
 
@@ -85,6 +87,13 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
     onFechar();
   }
 
+  async function handleGerarPdf() {
+    const blob = await gerarPDF(resultado.id);
+    const url = URL.createObjectURL(blob);
+    setPdfUrl(url);
+    setEtapa(4);
+  }
+
   async function handleProximo(data) {
     const completo = await fetch(
       `http://localhost:8080/api/testes/${data.testeId}`,
@@ -113,7 +122,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
   }
 
   return (
-    <Dialog open={aberta} onClose={handleFechar}>
+    <Dialog open={aberta} onClose={handleFechar} maxWidth="lg" fullWidth>
       <DialogTitle sx={{ textAlign: "center" }} variant="h5" fontWeight="bold">
         Cadastrar aplicacao
       </DialogTitle>
@@ -245,6 +254,18 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
             <p>
               <strong>Classificacao:</strong> {resultado.classificacao}
             </p>
+            <Button variant="outllined" onClick={handleGerarPdf}>
+              Gerar PDF
+            </Button>
+            <Button variant="contained" onClick={handleFechar}>
+              Fechar
+            </Button>
+          </Box>
+        )}
+
+        {etapa === 4 && pdfUrl && (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
+            <iframe src={pdfUrl} width="100%" height="800px" />
             <Button variant="contained" onClick={handleFechar}>
               Fechar
             </Button>

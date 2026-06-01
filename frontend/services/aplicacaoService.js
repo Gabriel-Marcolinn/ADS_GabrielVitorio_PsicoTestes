@@ -35,3 +35,15 @@ export async function listarAplicacoesPorPaciente(pacienteId) {
   });
   return handleResponse(response);
 }
+
+// GERAR PDF
+export async function gerarPDF(id) {
+  const response = await fetch(
+    `http://localhost:8080/api/relatorios/aplicacao/${id}/simplificado`,
+    {
+      headers: getAuthHeaders(),
+    },
+  );
+  if (!response.ok) throw new Error("Erro ao gerar PDF");
+  return response.blob();
+}

@@ -7,18 +7,32 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import { getAuthHeaders } from "../../../services/authService";
+import ModalPdfAplicacao from "./ModalPdfAplicacao";
+import { gerarPDF } from "../../../services/aplicacaoService";
 
 export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
   const [aplicacoes, setAplicacoes] = useState([]);
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [modalPdfAplicacaoAberta, setModalPdfAplicacaoAberta] = useState(false);
+  const [resultado, setResultado] = useState(null);
 
   useEffect(() => {
     if (aberta && paciente) {
-      fetch(`http://localhost:8080/api/aplicacoes/paciente/${paciente.id}`, { headers: getAuthHeaders() })
+      fetch(`http://localhost:8080/api/aplicacoes/paciente/${paciente.id}`, {
+        headers: getAuthHeaders(),
+      })
         .then((r) => r.json())
         .then(setAplicacoes)
         .catch(console.error);
     }
   }, [aberta, paciente]);
+
+  async function handleGerarPdf(id) {
+    const blob = await gerarPDF(id);
+    const url = URL.createObjectURL(blob);
+    setPdfUrl(url);
+    setModalPdfAplicacaoAberta(true);
+  }
 
   return (
     <Dialog open={aberta} onClose={onFechar}>
@@ -56,10 +70,21 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
                   Data Aplicacao:{" "}
                   {new Date(a.dataAplicacao).toLocaleDateString("pt-BR")}
                 </Typography>
+                <Button variant="outlined" onClick={() => handleGerarPdf(a.id)}>
+                  Gerar PDF
+                </Button>
               </Box>
             ))
           )}
         </Box>
+
+        {modalPdfAplicacaoAberta && (
+          <ModalPdfAplicacao
+            aberta={modalPdfAplicacaoAberta}
+            onFechar={() => setModalPdfAplicacaoAberta(false)}
+            pdfUrl={pdfUrl}
+          />
+        )}
       </DialogContent>
       <DialogActions>
         <Button variant="outlined" onClick={onFechar}>
