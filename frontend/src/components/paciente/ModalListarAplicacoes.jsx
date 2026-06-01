@@ -15,6 +15,7 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
   const [pdfUrl, setPdfUrl] = useState(null);
   const [modalPdfAplicacaoAberta, setModalPdfAplicacaoAberta] = useState(false);
   const [resultado, setResultado] = useState(null);
+  const [aplicacaoSelecionadaId, setAplicacaoSelecionadaId] = useState(null);
 
   useEffect(() => {
     if (aberta && paciente) {
@@ -32,6 +33,7 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
     const url = URL.createObjectURL(blob);
     setPdfUrl(url);
     setModalPdfAplicacaoAberta(true);
+    setAplicacaoSelecionadaId(id);
   }
 
   return (
@@ -83,6 +85,7 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
             aberta={modalPdfAplicacaoAberta}
             onFechar={() => setModalPdfAplicacaoAberta(false)}
             pdfUrl={pdfUrl}
+            idAplicacao={aplicacaoSelecionadaId}
           />
         )}
       </DialogContent>

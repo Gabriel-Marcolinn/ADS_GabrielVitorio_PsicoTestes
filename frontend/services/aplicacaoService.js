@@ -47,3 +47,16 @@ export async function gerarPDF(id) {
   if (!response.ok) throw new Error("Erro ao gerar PDF");
   return response.blob();
 }
+
+// ENVIAR EMAIL
+export async function enviarEmailPdf(id, email) {
+  const response = await fetch(
+    `http://localhost:8080/api/relatorios/aplicacao/${id}/enviar-email?emailDestinatario=${encodeURIComponent(email)}`,
+    {
+      method: "POST",
+      headers: getAuthHeaders(),
+    },
+  );
+  if (!response.ok) throw new Error("Erro ao enviar e-mail");
+  return handleResponse(response);
+}

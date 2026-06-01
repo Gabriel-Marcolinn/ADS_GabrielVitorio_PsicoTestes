@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { gerarPDF } from "../../../services/aplicacaoService";
+import ModalEnviarEmail from "../paciente/ModalEnviarEmail";
 import {
   listarUsuarios,
   listarTodosUsuarios,
@@ -48,6 +49,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
   const [respostas, setRespostas] = useState({});
   const [resultado, setResultado] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
+  const [modalEmailAberta, setModalEmailAberta] = useState(false);
 
   const usuarioIdSelecionado = watch("usuarioId");
 
@@ -265,11 +267,24 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
 
         {etapa === 4 && pdfUrl && (
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
-            <iframe src={pdfUrl} width="100%" height="800px" />
-            <Button variant="contained" onClick={handleFechar}>
-              Fechar
-            </Button>
+            <iframe src={pdfUrl} width="100%" height="800px" style={{ border: "none" }} />
+            <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
+              <Button variant="outlined" onClick={() => setModalEmailAberta(true)}>
+                Enviar e-mail
+              </Button>
+              <Button variant="contained" onClick={handleFechar}>
+                Fechar
+              </Button>
+            </Box>
           </Box>
+        )}
+
+        {modalEmailAberta && (
+          <ModalEnviarEmail
+            aberta={modalEmailAberta}
+            onFechar={() => setModalEmailAberta(false)}
+            idAplicacao={resultado?.id}
+          />
         )}
       </DialogContent>
     </Dialog>
