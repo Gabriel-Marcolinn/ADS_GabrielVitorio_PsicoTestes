@@ -1,5 +1,6 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Chip from "@mui/material/Chip";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -59,19 +60,69 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
             aplicacoes.map((a) => (
               <Box
                 key={a.id}
-                sx={{ border: "1px solid #ddd", borderRadius: 2, p: 2 }}
+                sx={{
+                  border: "1px solid #ddd",
+                  borderRadius: 2,
+                  p: 2,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 2,
+                }}
               >
-                <Typography fontWeight="bold">{a.nomeTeste}</Typography>
-                <Typography varian="body2">
-                  Pontuacao: {a.pontuacaoTotal}
-                </Typography>
-                <Typography varian="body2">
-                  Classificacao: {a.classificacao}
-                </Typography>
-                <Typography varian="body2" color="text.secondary">
-                  Data Aplicacao:{" "}
-                  {new Date(a.dataAplicacao).toLocaleDateString("pt-BR")}
-                </Typography>
+                <Box sx={{ flex: 1 }}>
+                  <Typography sx={{ fontWeight: "bold" }} gutterBottom>
+                    {a.nomeTeste}
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 4,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Box>
+                      <Typography
+                        sx={{ fontWeight: "bold" }}
+                        variant="caption"
+                        color="text.secondary"
+                      >
+                        Data
+                      </Typography>
+                      <Typography variant="body2">
+                        {new Date(a.dataAplicacao).toLocaleDateString("pt-BR")}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography
+                        sx={{ fontWeight: "bold" }}
+                        variant="caption"
+                        color="text.secondary"
+                      >
+                        Pontuação
+                      </Typography>
+                      <Typography variant="body2" fontWeight="bold">
+                        {a.pontuacaoTotal}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography
+                        sx={{ fontWeight: "bold" }}
+                        variant="caption"
+                        color="text.secondary"
+                      >
+                        Resultado
+                      </Typography>
+                      <Box>
+                        <Chip
+                          label={a.classificacao}
+                          size="small"
+                          sx={{ backgroundColor: "#e8f5e9", color: "#2e7d32" }}
+                        />
+                      </Box>
+                    </Box>
+                  </Box>
+                </Box>
                 <Button
                   variant="contained"
                   onClick={() => handleGerarPdf(a.id)}
