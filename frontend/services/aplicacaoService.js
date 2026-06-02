@@ -58,5 +58,5 @@ export async function enviarEmailPdf(id, email) {
     },
   );
   if (!response.ok) throw new Error("Erro ao enviar e-mail");
-  return handleResponse(response);
+  return response.text();
 }

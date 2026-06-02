@@ -72,7 +72,10 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
                   Data Aplicacao:{" "}
                   {new Date(a.dataAplicacao).toLocaleDateString("pt-BR")}
                 </Typography>
-                <Button variant="outlined" onClick={() => handleGerarPdf(a.id)}>
+                <Button
+                  variant="contained"
+                  onClick={() => handleGerarPdf(a.id)}
+                >
                   Gerar PDF
                 </Button>
               </Box>

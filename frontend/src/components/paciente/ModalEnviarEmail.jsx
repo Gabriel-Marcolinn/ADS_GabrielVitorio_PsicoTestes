@@ -5,47 +5,62 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
+import Alert from "@mui/material/Alert";
 import { useState } from "react";
 import { enviarEmailPdf } from "../../../services/aplicacaoService";
 
 export default function ModalEnviarEmail({ aberta, onFechar, idAplicacao }) {
   const [email, setEmail] = useState("");
   const [enviando, setEnviando] = useState(false);
+  const [feedback, setFeedback] = useState(null); // { tipo: "success"|"error", mensagem: string }
 
   async function handleConfirmar() {
     setEnviando(true);
+    setFeedback(null);
     try {
       await enviarEmailPdf(idAplicacao, email);
+      setFeedback({ tipo: "success", mensagem: "E-mail enviado com sucesso!" });
     } catch (e) {
-      console.error(e);
+      setFeedback({ tipo: "error", mensagem: "Erro ao enviar e-mail." });
     }
     setEnviando(false);
+  }
+
+  function handleFechar() {
+    setFeedback(null);
+    setEmail("");
     onFechar();
   }
   return (
-    <Dialog open={aberta} onClose={onFechar}>
+    <Dialog open={aberta} onClose={handleFechar}>
       <DialogTitle>Enviar PDF por e-mail</DialogTitle>
       <DialogContent>
-        <Box sx={{ pt: 1, minWidth: 350 }}>
+        <Box sx={{ pt: 1, minWidth: 350, display: "flex", flexDirection: "column", gap: 2 }}>
           <TextField
             label="E-mail destinatário"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             fullWidth
+            disabled={!!feedback?.tipo === "success"}
           />
+          {feedback && (
+            <Alert severity={feedback.tipo}>{feedback.mensagem}</Alert>
+          )}
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button variant="outlined" onClick={onFechar}>
-          Cancelar
+        <Button variant="outlined" onClick={handleFechar}>
+          {feedback ? "Fechar" : "Cancelar"}
         </Button>
-        <Button
-          variant="contained"
-          onClick={handleConfirmar}
-          disabled={!email || enviando}
-        >
-          {enviando ? "Enviando..." : "Confirmar"}
-        </Button>
+        {!feedback && (
+          <Button
+            variant="contained"
+            onClick={handleConfirmar}
+            disabled={!email || enviando}
+          >
+            {enviando ? "Enviando..." : "Confirmar"}
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );
