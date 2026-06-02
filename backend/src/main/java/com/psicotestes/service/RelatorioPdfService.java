@@ -8,7 +8,6 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.io.ByteArrayOutputStream;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Service
@@ -24,7 +23,7 @@ public class RelatorioPdfService {
                 aplicacaoTeste.getTeste().getNome(),
                 aplicacaoTeste.getPontuacaoTotal(),
                 aplicacaoTeste.getClassificacao(),
-                LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                aplicacaoTeste.getDataAplicacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
         );
     }
 
