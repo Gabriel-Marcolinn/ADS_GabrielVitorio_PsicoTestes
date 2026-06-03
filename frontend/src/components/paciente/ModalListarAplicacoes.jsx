@@ -11,6 +11,12 @@ import { getAuthHeaders } from "../../../services/authService";
 import ModalPdfAplicacao from "./ModalPdfAplicacao";
 import { gerarPDF } from "../../../services/aplicacaoService";
 
+const TIPO_LABELS = {
+  "Mínimo/Sem Depressão": { label: "Mínimo/Sem Depressão", color: "success" },
+  "Depressão Leve": { label: "Depressão Leve", color: "warning" },
+  "Depressão Grave": { label: "Depressão Grave", color: "error" },
+};
+
 export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
   const [aplicacoes, setAplicacoes] = useState([]);
   const [pdfUrl, setPdfUrl] = useState(null);
@@ -115,9 +121,14 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
                       </Typography>
                       <Box>
                         <Chip
-                          label={a.classificacao}
+                          label={
+                            TIPO_LABELS[a.classificacao]?.label ??
+                            a.classificacao
+                          }
+                          color={
+                            TIPO_LABELS[a.classificacao]?.color ?? "default"
+                          }
                           size="small"
-                          sx={{ backgroundColor: "#e8f5e9", color: "#2e7d32" }}
                         />
                       </Box>
                     </Box>
