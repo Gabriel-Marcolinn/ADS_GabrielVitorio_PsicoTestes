@@ -25,6 +25,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 import Paper from "@mui/material/Paper";
+import ModalConfirmacaoAplicacao from "./ModalConfirmacaoAplicacao";
 
 export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
   const usuarioLogado = getUsuarioLogado();
@@ -50,6 +51,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
   const [resultado, setResultado] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [modalEmailAberta, setModalEmailAberta] = useState(false);
+  const [modalConfirmacaoAberta, setModalConfirmacaoAberta] = useState(false);
 
   const usuarioIdSelecionado = watch("usuarioId");
 
@@ -121,180 +123,200 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
     const resultado = await resposta.json();
     setResultado(resultado);
     setEtapa(3);
+    setModalConfirmacaoAberta(false);
   }
 
   return (
-    <Dialog open={aberta} onClose={handleFechar} maxWidth="lg" fullWidth>
-      <DialogTitle sx={{ textAlign: "center" }} variant="h5" fontWeight="bold">
-        Cadastrar aplicacao
-      </DialogTitle>
+    <>
+      <Dialog open={aberta} onClose={handleFechar} maxWidth="lg" fullWidth>
+        <DialogTitle
+          sx={{ textAlign: "center" }}
+          variant="h5"
+          fontWeight="bold"
+        >
+          Cadastrar aplicacao
+        </DialogTitle>
 
-      <DialogContent>
-        {etapa === 1 && (
-          <Box
-            sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}
-            component="form"
-            onSubmit={handleSubmit(handleProximo)}
-          >
-            {!isPS && (
+        <DialogContent>
+          {etapa === 1 && (
+            <Box
+              sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}
+              component="form"
+              onSubmit={handleSubmit(handleProximo)}
+            >
+              {!isPS && (
+                <TextField
+                  {...register("usuarioId", {
+                    required: "Usuario e obrigatorio",
+                  })}
+                  label="Usuarios"
+                  select
+                  fullWidth
+                  defaultValue=""
+                  error={!!errors.usuarioId}
+                  helperText={errors.usuarioId?.message}
+                >
+                  {usuarios.map((u) => (
+                    <MenuItem key={u.id} value={u.id}>
+                      {u.nome}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
               <TextField
-                {...register("usuarioId", {
-                  required: "Usuario e obrigatorio",
+                {...register("pacienteId", {
+                  required: "Paciente e obrigatorio",
                 })}
-                label="Usuarios"
+                label="Pacientes"
                 select
                 fullWidth
                 defaultValue=""
-                error={!!errors.usuarioId}
-                helperText={errors.usuarioId?.message}
+                error={!!errors.pacienteId}
+                helperText={errors.pacienteId?.message}
               >
-                {usuarios.map((u) => (
-                  <MenuItem key={u.id} value={u.id}>
-                    {u.nome}
+                {pacientes.map((p) => (
+                  <MenuItem key={p.id} value={p.id}>
+                    {p.nome}
                   </MenuItem>
                 ))}
               </TextField>
-            )}
-            <TextField
-              {...register("pacienteId", {
-                required: "Paciente e obrigatorio",
-              })}
-              label="Pacientes"
-              select
-              fullWidth
-              defaultValue=""
-              error={!!errors.pacienteId}
-              helperText={errors.pacienteId?.message}
-            >
-              {pacientes.map((p) => (
-                <MenuItem key={p.id} value={p.id}>
-                  {p.nome}
-                </MenuItem>
-              ))}
-            </TextField>
 
-            <TextField
-              {...register("testeId", { required: "Teste e obrigatorio" })}
-              label="Testes"
-              select
-              fullWidth
-              defaultValue=""
-              error={!!errors.testeId}
-              helperText={errors.testeId?.message}
-            >
-              {testes.map((t) => (
-                <MenuItem key={t.id} value={t.id}>
-                  {t.nome}
-                </MenuItem>
-              ))}
-            </TextField>
+              <TextField
+                {...register("testeId", { required: "Teste e obrigatorio" })}
+                label="Testes"
+                select
+                fullWidth
+                defaultValue=""
+                error={!!errors.testeId}
+                helperText={errors.testeId?.message}
+              >
+                {testes.map((t) => (
+                  <MenuItem key={t.id} value={t.id}>
+                    {t.nome}
+                  </MenuItem>
+                ))}
+              </TextField>
 
-            <DialogActions>
+              <DialogActions>
+                <Button variant="outlined" onClick={handleFechar}>
+                  Cancelar
+                </Button>
+                <Button type="submit" variant="contained">
+                  Proximo
+                </Button>
+              </DialogActions>
+            </Box>
+          )}
+
+          {etapa === 2 && testeCompleto && (
+            <Box
+              sx={{ display: "flex", flexDirection: "column", gap: 3, pt: 1 }}
+            >
+              {testeCompleto.perguntas.map((p, index) => (
+                <Paper sx={{ p: 1 }} key={p.id}>
+                  <p>{p.pergunta}</p>
+                  <RadioGroup
+                    value={respostas[p.id] ?? ""}
+                    onChange={(e) =>
+                      setRespostas((previ) => ({
+                        ...previ,
+                        [p.id]: Number(e.target.value),
+                      }))
+                    }
+                  >
+                    {p.alternativas.map((alt) => (
+                      <FormControlLabel
+                        key={alt.id}
+                        value={alt.id}
+                        control={<Radio />}
+                        label={alt.alternativa}
+                      />
+                    ))}
+                  </RadioGroup>
+                </Paper>
+              ))}
+              <Button
+                variant="contained"
+                onClick={() => setModalConfirmacaoAberta(true)}
+              >
+                Finalizar
+              </Button>
               <Button variant="outlined" onClick={handleFechar}>
                 Cancelar
               </Button>
-              <Button type="submit" variant="contained">
-                Proximo
-              </Button>
-            </DialogActions>
-          </Box>
-        )}
+            </Box>
+          )}
 
-        {etapa === 2 && testeCompleto && (
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 3, pt: 1 }}>
-            {testeCompleto.perguntas.map((p, index) => (
-              <Paper sx={{ p: 1 }} key={p.id}>
-                <p>{p.pergunta}</p>
-                <RadioGroup
-                  value={respostas[p.id] ?? ""}
-                  onChange={(e) =>
-                    setRespostas((previ) => ({
-                      ...previ,
-                      [p.id]: Number(e.target.value),
-                    }))
-                  }
-                >
-                  {p.alternativas.map((alt) => (
-                    <FormControlLabel
-                      key={alt.id}
-                      value={alt.id}
-                      control={<Radio />}
-                      label={alt.alternativa}
-                    />
-                  ))}
-                </RadioGroup>
-              </Paper>
-            ))}
-            <Button variant="contained" onClick={handleFinalizar}>
-              Finalizar
-            </Button>
-            <Button variant="outlined" onClick={handleFechar}>
-              Cancelar
-            </Button>
-          </Box>
-        )}
-
-        {etapa === 3 && resultado && (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              pt: 1,
-              alignItems: "center",
-            }}
-          >
-            <p>
-              <strong>Teste:</strong> {resultado.nomeTeste}
-            </p>
-            <p>
-              <strong>Paciente:</strong> {resultado.nomePaciente}
-            </p>
-            <p>
-              <strong>Pontuacao:</strong> {resultado.pontuacaoTotal}
-            </p>
-            <p>
-              <strong>Classificacao:</strong> {resultado.classificacao}
-            </p>
-            <Button variant="contained" onClick={handleGerarPdf}>
-              Gerar PDF
-            </Button>
-            <Button variant="outlined" onClick={handleFechar}>
-              Fechar
-            </Button>
-          </Box>
-        )}
-
-        {etapa === 4 && pdfUrl && (
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
-            <iframe
-              src={pdfUrl}
-              width="100%"
-              height="800px"
-              style={{ border: "none" }}
-            />
-            <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
-              <Button
-                variant="contained"
-                onClick={() => setModalEmailAberta(true)}
-              >
-                Enviar e-mail
+          {etapa === 3 && resultado && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+                pt: 1,
+                alignItems: "center",
+              }}
+            >
+              <p>
+                <strong>Teste:</strong> {resultado.nomeTeste}
+              </p>
+              <p>
+                <strong>Paciente:</strong> {resultado.nomePaciente}
+              </p>
+              <p>
+                <strong>Pontuacao:</strong> {resultado.pontuacaoTotal}
+              </p>
+              <p>
+                <strong>Classificacao:</strong> {resultado.classificacao}
+              </p>
+              <Button variant="contained" onClick={handleGerarPdf}>
+                Gerar PDF
               </Button>
               <Button variant="outlined" onClick={handleFechar}>
                 Fechar
               </Button>
             </Box>
-          </Box>
-        )}
+          )}
 
-        {modalEmailAberta && (
-          <ModalEnviarEmail
-            aberta={modalEmailAberta}
-            onFechar={() => setModalEmailAberta(false)}
-            idAplicacao={resultado?.id}
-          />
-        )}
-      </DialogContent>
-    </Dialog>
+          {etapa === 4 && pdfUrl && (
+            <Box
+              sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}
+            >
+              <iframe
+                src={pdfUrl}
+                width="100%"
+                height="800px"
+                style={{ border: "none" }}
+              />
+              <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
+                <Button
+                  variant="contained"
+                  onClick={() => setModalEmailAberta(true)}
+                >
+                  Enviar e-mail
+                </Button>
+                <Button variant="outlined" onClick={handleFechar}>
+                  Fechar
+                </Button>
+              </Box>
+            </Box>
+          )}
+
+          {modalEmailAberta && (
+            <ModalEnviarEmail
+              aberta={modalEmailAberta}
+              onFechar={() => setModalEmailAberta(false)}
+              idAplicacao={resultado?.id}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <ModalConfirmacaoAplicacao
+        aberta={modalConfirmacaoAberta}
+        onFechar={() => setModalConfirmacaoAberta(false)}
+        onConfirmar={handleFinalizar}
+      />
+    </>
   );
 }
