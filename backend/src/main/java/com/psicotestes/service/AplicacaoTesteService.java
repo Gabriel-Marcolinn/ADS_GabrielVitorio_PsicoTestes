@@ -1,5 +1,6 @@
 package com.psicotestes.service;
 
+import com.psicotestes.dto.AplicacaoCompletaResponseDTO;
 import com.psicotestes.dto.AplicacaoRequestDTO;
 import com.psicotestes.dto.AplicacaoResponseDTO;
 import com.psicotestes.model.Alternativa;
@@ -94,11 +95,41 @@ public class AplicacaoTesteService {
                 .toList();
     }
 
-    // Buscar aplicação completa
+    // Buscar aplicação completa, usado para geração dos relatórios em PDF, retorna a entidade mas não é usado pelo FrontEnd
     @Transactional(readOnly = true)
     public AplicacaoTeste buscarAplicacaoCompleta(Long aplicacaoId) {
         return aplicacaoTesteRepository.findById(aplicacaoId)
                 .orElseThrow(() -> new RuntimeException("Aplicação de teste não encontrada."));
+    }
+
+    // Buscar Aplicação completa, retornando um DTO para usar nas requests do FrontEnd
+    @Transactional(readOnly = true)
+    public AplicacaoCompletaResponseDTO buscarAplicacaoCompletaDTO(Long aplicacaoId) {
+        AplicacaoTeste aplicacao = buscarAplicacaoCompleta(aplicacaoId);
+        List<AplicacaoCompletaResponseDTO.RespostaDTO> respostasDTO = aplicacao.getRespostas().stream()
+                .map(resposta -> new AplicacaoCompletaResponseDTO.RespostaDTO(
+                        resposta.getId(),
+
+                        // Navega: Resposta -> Alternativa -> Pergunta
+                        (resposta.getAlternativa() != null && resposta.getAlternativa().getPergunta() != null)
+                                ? resposta.getAlternativa().getPergunta().getPergunta()
+                                : null,
+
+                        new AplicacaoCompletaResponseDTO.AlternativaDTO(
+                                resposta.getAlternativa().getId(),
+                                resposta.getAlternativa().getAlternativa(),
+                                resposta.getAlternativa().getPontuacao()
+                        )
+                ))
+                .toList();
+
+        return new AplicacaoCompletaResponseDTO(
+                aplicacao.getId(),
+                aplicacao.getDataAplicacao(),
+                aplicacao.getPaciente() != null ? aplicacao.getPaciente().getNome() : null,
+                aplicacao.getTeste() != null ? aplicacao.getTeste().getNome() : null,
+                respostasDTO
+        );
     }
 
     // Centraliza o mapeamento para evitar código repetido
