@@ -61,8 +61,11 @@ public class AplicacaoTesteService {
         if (alternativasEscolhidas.size() != dto.alternativasIds().size()) {
             throw new RuntimeException("Uma ou mais alternativas enviadas são inválidas ou não pertencem a este teste.");
         }
-
+        
         CalculadoraTesteStrategy calculadora = calculadoraFactory.obterCalculadora(teste.getNome());
+        if (calculadora == null) {
+            throw new RuntimeException("O teste não foi encontrado no sistema");
+        }
 
         Double pontuacaoTotal = calculadora.calcular(alternativasEscolhidas);
         String classificacaoFinal = calculadora.classificar(pontuacaoTotal);
