@@ -7,10 +7,18 @@ import DialogTitle from "@mui/material/DialogTitle";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { isCPF } from "validation-br";
-import { normalize } from "validation-br/dist/cpf";
 import { listarTodosUsuarios } from "../../../services/usuarioService";
+
+function maskCPF(value) {
+  return value
+    .replace(/\D/g, "")
+    .slice(0, 11)
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+}
 
 export default function ModalEditarPaciente({ aberta, onFechar, paciente, onEditar }) {
   const [usuarios, setUsuarios] = useState([]);
@@ -26,6 +34,7 @@ export default function ModalEditarPaciente({ aberta, onFechar, paciente, onEdit
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
     reset,
   } = useForm();
@@ -70,17 +79,26 @@ export default function ModalEditarPaciente({ aberta, onFechar, paciente, onEdit
             error={!!errors.nome}
             helperText={errors.nome?.message}
           />
-          <TextField
-            {...register("cpf", {
-              required: "CPF é obrigatório",
-              validate: (value) => isCPF(value) || "CPF inválido",
-            })}
-            label="CPF"
-            placeholder="Digite o CPF do paciente"
-            fullWidth
-            defaultValue={normalize(paciente?.cpf)}
-            error={!!errors.cpf}
-            helperText={errors.cpf?.message}
+          <Controller
+            name="cpf"
+            control={control}
+            defaultValue={paciente?.cpf ? maskCPF(paciente.cpf) : ""}
+            rules={{
+              required: "CPF eh obrigatorio",
+              validate: (value) => isCPF(value) || "CPF invalido",
+            }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                onChange={(e) => field.onChange(maskCPF(e.target.value))}
+                label="CPF"
+                inputProps={{ maxLength: 14 }}
+                fullWidth
+                sx={{ mb: 2 }}
+                error={!!errors.cpf}
+                helperText={errors.cpf?.message}
+              />
+            )}
           />
           <TextField
             {...register("email", {
