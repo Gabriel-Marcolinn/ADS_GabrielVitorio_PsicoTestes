@@ -1,5 +1,6 @@
 package com.psicotestes.controller;
 
+import com.psicotestes.dto.AplicacaoCompletaResponseDTO;
 import com.psicotestes.dto.AplicacaoRequestDTO;
 import com.psicotestes.dto.AplicacaoResponseDTO;
 import com.psicotestes.service.AplicacaoTesteService;
@@ -34,5 +35,10 @@ public class AplicacaoTesteController {
     public ResponseEntity<List<AplicacaoResponseDTO>> listarPorPaciente(@PathVariable Long pacienteId) {
         List<AplicacaoResponseDTO> historico = aplicacaoTesteService.listarAplicacoesPorPaciente(pacienteId);
         return ResponseEntity.ok(historico);
+    }
+
+    @GetMapping("/{AplicacaoId}")
+    public ResponseEntity<AplicacaoCompletaResponseDTO> buscarAplicacaoCompleta(@PathVariable Long AplicacaoId) {
+        return ResponseEntity.ok(aplicacaoTesteService.buscarAplicacaoCompletaDTO(AplicacaoId));
     }
 }
