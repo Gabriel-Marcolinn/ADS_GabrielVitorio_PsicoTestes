@@ -23,6 +23,7 @@ import Paper from "@mui/material/Paper";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 import BlockIcon from "@mui/icons-material/Block";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModalCadastrarPaciente from "./ModalCadastrarPaciente";
 import ModalEditarPaciente from "./ModalEditarPaciente";
@@ -44,6 +45,7 @@ export default function Pacientes() {
   const [pacienteParaInativar, setPacienteParaInativar] = useState(null);
   const [modalAplicacoesAberta, setModalAplicacoesAberta] = useState(false);
   const [pacienteParaAplicacoes, setPacienteParaAplicacoes] = useState(null);
+  const [ativosTrue, setAtivosTrue] = useState(true);
 
   const usuarioLogado = getUsuarioLogado();
   const tipo = usuarioLogado?.tipo;
@@ -69,8 +71,10 @@ export default function Pacientes() {
       setPacientes([]);
       return;
     }
-    listarPacientes(psicologoFiltro).then(setPacientes).catch(console.error);
-  }, [psicologoFiltro]);
+    listarPacientes(psicologoFiltro, ativosTrue)
+      .then(setPacientes)
+      .catch(console.error);
+  }, [psicologoFiltro, ativosTrue]);
 
   // CADASTRAR
   async function handleCadastrar(data) {
@@ -152,6 +156,15 @@ export default function Pacientes() {
         pt: 3,
       }}
     >
+      <Select defaultValue={true}>
+        <MenuItem value={true} onClick={() => setAtivosTrue(true)}>
+          Ativos
+        </MenuItem>
+        <MenuItem value={false} onClick={() => setAtivosTrue(false)}>
+          Inativos
+        </MenuItem>
+      </Select>
+
       {modalCadastrarAberta && (
         <ModalCadastrarPaciente
           aberta={modalCadastrarAberta}
@@ -260,69 +273,71 @@ export default function Pacientes() {
           maxWidth: 1200,
         }}
       >
-        {pacientes
-          .filter((paciente) => paciente.ativo)
-          .map((paciente) => (
-            <Paper
-              key={paciente.id}
-              elevation={2}
+        {pacientes.map((paciente) => (
+          <Paper
+            key={paciente.id}
+            elevation={2}
+            sx={{
+              p: 3,
+              width: 380,
+              borderRadius: 3,
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
+          >
+            <Box
               sx={{
-                p: 3,
-                width: 380,
-                borderRadius: 3,
-                flexDirection: "column",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Box>
+                <Typography fontWeight="bold" variant="h5">
+                  {paciente.nome}
+                </Typography>
+                <Typography variant="body2" color="primary">
+                  {mask(paciente.cpf)}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {paciente.email}
+                </Typography>
+              </Box>
+              <IconButton onClick={() => abrirEditar(paciente)}>
+                <EditIcon />
+              </IconButton>
+            </Box>
+
+            <Box
+              sx={{
+                mt: 2,
+                display: "flex",
                 justifyContent: "space-between",
               }}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Box>
-                  <Typography fontWeight="bold" variant="h5">
-                    {paciente.nome}
-                  </Typography>
-                  <Typography variant="body2" color="primary">
-                    {mask(paciente.cpf)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {paciente.email}
-                  </Typography>
-                </Box>
-                <IconButton onClick={() => abrirEditar(paciente)}>
-                  <EditIcon />
+              <Box>
+                <IconButton onClick={() => confirmarDeletar(paciente)}>
+                  <DeleteIcon color="error" />
                 </IconButton>
-              </Box>
-
-              <Box
-                sx={{
-                  mt: 2,
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Box>
-                  <IconButton onClick={() => confirmarDeletar(paciente)}>
-                    <DeleteIcon color="error" />
-                  </IconButton>
-                  <IconButton onClick={() => confirmarInativar(paciente)}>
+                <IconButton onClick={() => confirmarInativar(paciente)}>
+                  {paciente.ativo ? (
                     <BlockIcon color="warning" />
-                  </IconButton>
-                </Box>
-                <IconButton
-                  onClick={() => {
-                    setPacienteParaAplicacoes(paciente);
-                    setModalAplicacoesAberta(true);
-                  }}
-                >
-                  <FindInPageIcon />
+                  ) : (
+                    <CheckCircleOutlinedIcon color="success" />
+                  )}
                 </IconButton>
               </Box>
-            </Paper>
-          ))}
+              <IconButton
+                onClick={() => {
+                  setPacienteParaAplicacoes(paciente);
+                  setModalAplicacoesAberta(true);
+                }}
+              >
+                <FindInPageIcon />
+              </IconButton>
+            </Box>
+          </Paper>
+        ))}
       </Box>
     </Box>
   );
