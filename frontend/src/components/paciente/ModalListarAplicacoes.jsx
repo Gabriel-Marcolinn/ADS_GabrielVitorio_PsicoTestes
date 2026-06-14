@@ -12,9 +12,39 @@ import ModalPdfAplicacao from "./ModalPdfAplicacao";
 import { gerarPDF } from "../../../services/aplicacaoService";
 
 const TIPO_LABELS = {
+  //BDI-DOIS
   "Mínimo/Sem Depressão": { label: "Mínimo/Sem Depressão", color: "success" },
-  "Depressão Leve": { label: "Depressão Leve", color: "warning" },
+  "Depressão Leve": { label: "Depressão Leve", color: "secondary" },
+  "Depressão Moderada": { label: "Depressão Moderada", color: "warning" },
   "Depressão Grave": { label: "Depressão Grave", color: "error" },
+
+  //BSS
+  "Poucos sinais de risco suicida.": {
+    label: "Poucos sinais de risco suicida.",
+    color: "success",
+  },
+  "Pensamentos suicidas ou sofrimento importante.": {
+    label: "Pensamentos suicidas ou sofrimento importante.",
+    color: "warning",
+  },
+  "Risco elevado de tentativa suicida.": {
+    label: "Risco elevado de tentativa suicida.",
+    color: "error",
+  },
+
+  //WHO
+  "Satisfatória (Qualidade de vida boa)": {
+    label: "Qualidade de vida indicativa satisfatória",
+    color: "success",
+  },
+  "Regular (Qualidade de vida moderada)": {
+    label: "Qualidade de vida indicativa regular",
+    color: "warning",
+  },
+  "Qualidade de vida indicativa baixa": {
+    label: "Qualidade de vida indicativa baixa",
+    color: "error",
+  },
 };
 
 export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
@@ -44,7 +74,7 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
   }
 
   return (
-    <Dialog open={aberta} onClose={onFechar}>
+    <Dialog open={aberta} onClose={onFechar} maxWidth="xl">
       <DialogTitle>
         Aplicacoes de <strong>{paciente?.nome}</strong>
       </DialogTitle>
@@ -55,7 +85,7 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
             flexDirection: "column",
             gap: 2,
             pt: 1,
-            minWidth: 400,
+            minWidth: 600,
           }}
         >
           {aplicacoes.length === 0 ? (
@@ -134,12 +164,16 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
                     </Box>
                   </Box>
                 </Box>
-                <Button
-                  variant="contained"
-                  onClick={() => handleGerarPdf(a.id)}
-                >
-                  Gerar PDF
-                </Button>
+                <Box sx={{ pl: 3, display: "flex", flexDirection: "column" }}>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleGerarPdf(a.id)}
+                    sx={{ mb: 1 }}
+                  >
+                    Gerar PDF
+                  </Button>
+                  <Button variant="outlined">Detalhes</Button>
+                </Box>
               </Box>
             ))
           )}
