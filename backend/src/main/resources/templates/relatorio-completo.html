@@ -6,7 +6,10 @@
     <style>
         @page {
             size: A4;
-            margin: 20mm;
+            margin: 20mm 20mm 30mm 20mm;
+            @bottom-center {
+                content: element(rodape-pdf);
+            }
         }
         body {
             font-family: 'Arial', sans-serif;
@@ -106,7 +109,7 @@
             page-break-inside: avoid; /* Evita que uma linha seja cortada no meio da página */
         }
         .signature-box {
-            margin-top: 60px;
+            margin-top: 40px;
             text-align: center;
             page-break-inside: avoid;
         }
@@ -118,9 +121,7 @@
         }
 
         .footer {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
+            position: running(rodape-pdf);
             text-align: center;
             font-size: 11px;
             color: #95a5a6;
