@@ -89,7 +89,13 @@ public class AplicacaoTesteService {
         return mapearParaDTO(aplicacaoSalva);
     }
 
-    // Visualizar histórico de um paciente
+    public List<AplicacaoTeste>listarAplicacoesPorPacienteEntity(Long pacienteId) {
+        return aplicacaoTesteRepository.findByPacienteIdOrderByDataAplicacaoDesc(pacienteId)
+                .stream()
+                .toList();
+    }
+
+    // Visualizar histórico de um paciente, usado pelo FrontEnd
     @Transactional(readOnly = true)
     public List<AplicacaoResponseDTO> listarAplicacoesPorPaciente(Long pacienteId) {
         return aplicacaoTesteRepository.findByPacienteIdOrderByDataAplicacaoDesc(pacienteId)

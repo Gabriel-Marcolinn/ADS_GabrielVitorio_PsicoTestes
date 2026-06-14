@@ -19,6 +19,12 @@ public class PacienteService {
     private final PacienteRepository pacienteRepository;
     private final UsuarioRepository usuarioRepository;
 
+    // Usado na integração por IA, retorna uma entidade mas não é manipulado pelo frontend
+    @Transactional
+    public Paciente buscarPorId(Long idPaciente) {
+        return pacienteRepository.findById(idPaciente).orElseThrow(() -> new RuntimeException("Paciente não encontrado."));
+    }
+
     @Transactional
     public PacienteResponseDTO salvar(PacienteRequestDTO dto) {
         if (pacienteRepository.findByCpf(dto.cpf()).isPresent()) {
