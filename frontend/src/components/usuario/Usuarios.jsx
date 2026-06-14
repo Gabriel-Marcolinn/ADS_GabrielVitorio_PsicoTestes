@@ -21,6 +21,7 @@ import ModalDeletarUsuario from "./ModalDeletarUsuario";
 import ModalInativarUsuario from "./ModalInativarUsuario";
 import ModalCadastrarUsuario from "./ModalCadastrarUsuario";
 import ModalEditarUsuario from "./ModalEditarUsuario";
+import Toast from "../Toast";
 
 const TIPO_LABELS = {
   AD: { label: "Administrador", color: "primary" },
@@ -37,6 +38,11 @@ export default function Usuarios() {
   const [usuarioParaInativar, setUsuarioParaInativar] = useState(null);
   const [modalInativarAberta, setModalInativarAberta] = useState(false);
   const [modalCadastrarAberta, setModalCadastrarAberta] = useState(false);
+
+  const [toast, setToast] = useState({ aberto: false, mensagem: "", tipo: "success" });
+  const mostrarToast = (mensagem, tipo = "success") =>
+    setToast({ aberto: true, mensagem, tipo });
+  const fecharToast = () => setToast((t) => ({ ...t, aberto: false }));
 
   const usuarioLogado = getUsuarioLogado();
 
@@ -58,8 +64,9 @@ export default function Usuarios() {
       await deletarUsuario(usuarioParaDeletar.id);
       setUsuarios(usuarios.filter((u) => u.id !== usuarioParaDeletar.id));
       setModalDeletarAberta(false);
+      mostrarToast("Usuário deletado com sucesso!");
     } catch (error) {
-      alert(error.message);
+      mostrarToast(error.message, "error");
     }
   }
 
@@ -74,8 +81,9 @@ export default function Usuarios() {
       await inativarUsuario(usuarioParaInativar.id);
       setUsuarios(usuarios.filter((u) => u.id !== usuarioParaInativar.id));
       setModalInativarAberta(false);
+      mostrarToast("Usuário inativado com sucesso!");
     } catch (error) {
-      alert(error.message);
+      mostrarToast(error.message, "error");
     }
   }
 
@@ -97,8 +105,9 @@ export default function Usuarios() {
         ),
       );
       setModalEditarAberta(false);
+      mostrarToast("Usuário atualizado com sucesso!");
     } catch (error) {
-      alert(error.message);
+      mostrarToast(error.message, "error");
     }
   }
 
@@ -107,14 +116,16 @@ export default function Usuarios() {
     try {
       const novoUsuario = await cadastrarUsuario(data);
       setUsuarios([...usuarios, novoUsuario]);
-      alert("Usuário cadastrado com sucesso!");
+      mostrarToast("Usuário cadastrado com sucesso!");
       setModalCadastrarAberta(false);
     } catch (error) {
-      alert(error.message);
+      mostrarToast(error.message, "error");
     }
   }
 
   return (
+    <>
+    <Toast toast={toast} onFechar={fecharToast} />
     <Box
       sx={{
         display: "flex",
@@ -262,5 +273,6 @@ export default function Usuarios() {
           ))}
       </Box>
     </Box>
+    </>
   );
 }

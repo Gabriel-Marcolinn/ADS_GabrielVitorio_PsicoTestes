@@ -22,6 +22,7 @@ import ModalCadastrarEmpresa from "./ModalCadastrarEmpresa";
 import ModalEditarEmpresa from "./ModalEditarEmpresa";
 import ModalListarPsicologos from "./ModalListarPsicologos";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
+import Toast from "../Toast";
 
 export default function Empresas() {
   const [empresas, setEmpresas] = useState([]);
@@ -36,6 +37,15 @@ export default function Empresas() {
   const [empresaParaPsicologos, setEmpresaParaPsicologos] = useState(null);
 
   const navigate = useNavigate();
+
+  const [toast, setToast] = useState({
+    aberto: false,
+    mensagem: "",
+    tipo: "success",
+  });
+  const mostrarToast = (mensagem, tipo = "success") =>
+    setToast({ aberto: true, mensagem, tipo });
+  const fecharToast = () => setToast((t) => ({ ...t, aberto: false }));
 
   useEffect(() => {
     listarEmpresas().then(setEmpresas);
@@ -53,7 +63,7 @@ export default function Empresas() {
       setEmpresas(empresas.filter((e) => e.id !== empresaParaDeletar.id));
       setModalDeletarAberta(false);
     } catch (error) {
-      alert(error.message);
+      mostrarToast(error.message, "error");
     }
   }
 
@@ -69,7 +79,7 @@ export default function Empresas() {
       setEmpresas(empresas.filter((e) => e.id !== empresaParaInativar.id));
       setModalInativarAberta(false);
     } catch (error) {
-      alert(error.message);
+      mostrarToast(error.message, "error");
     }
   }
 
@@ -89,7 +99,7 @@ export default function Empresas() {
       );
       setModalEditarAberta(false);
     } catch (error) {
-      alert(error.message);
+      mostrarToast(error.message, "error");
     }
   }
 
@@ -102,182 +112,186 @@ export default function Empresas() {
     try {
       const novaEmpresa = await cadastrarEmpresa(data);
       setEmpresas([...empresas, novaEmpresa]);
-      alert("Empresa cadastrada com sucesso!");
+      mostrarToast("Empresa cadastrada com sucesso!");
       setModalCadastrarAberta(false);
     } catch (error) {
-      alert(error.message);
+      mostrarToast(error.message, "error");
     }
   }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        flexDirection: "column",
-        alignItems: "center",
-        pt: 3,
-      }}
-    >
-      {modalDeletarAberta && (
-        <ModalDeletarEmpresa
-          aberta={modalDeletarAberta}
-          onFechar={() => setModalDeletarAberta(false)}
-          empresa={empresaParaDeletar}
-          onDeletar={handleDeletar}
-        />
-      )}
+    <>
+      <Toast toast={toast} onFechar={fecharToast} />
 
-      {modalInativarAberta && (
-        <ModalInativarEmpresa
-          aberta={modalInativarAberta}
-          onFechar={() => setModalInativarAberta(false)}
-          empresa={empresaParaInativar}
-          onInativar={handleInativar}
-        />
-      )}
-
-      {modalCadastrarAberta && (
-        <ModalCadastrarEmpresa
-          aberta={modalCadastrarAberta}
-          onFechar={() => setModalCadastrarAberta(false)}
-          onCadastrar={handleCadastrar}
-        />
-      )}
-
-      {modalEditarAberta && (
-        <ModalEditarEmpresa
-          aberta={modalEditarAberta}
-          onFechar={() => setModalEditarAberta(false)}
-          empresa={empresaParaEditar}
-          onEditar={handleEditar}
-        />
-      )}
-
-      {modalPsicologosAberta && (
-        <ModalListarPsicologos
-          aberta={modalPsicologosAberta}
-          onFechar={() => setModalPsicologosAberta(false)}
-          empresa={empresaParaPsicologos}
-        />
-      )}
-
-      {/* TITULO E BOTAO PARA CADASTRAR EMPRESA */}
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          mb: 3,
-          width: "100%",
-          maxWidth: 900,
+          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
+          pt: 3,
         }}
       >
+        {modalDeletarAberta && (
+          <ModalDeletarEmpresa
+            aberta={modalDeletarAberta}
+            onFechar={() => setModalDeletarAberta(false)}
+            empresa={empresaParaDeletar}
+            onDeletar={handleDeletar}
+          />
+        )}
+
+        {modalInativarAberta && (
+          <ModalInativarEmpresa
+            aberta={modalInativarAberta}
+            onFechar={() => setModalInativarAberta(false)}
+            empresa={empresaParaInativar}
+            onInativar={handleInativar}
+          />
+        )}
+
+        {modalCadastrarAberta && (
+          <ModalCadastrarEmpresa
+            aberta={modalCadastrarAberta}
+            onFechar={() => setModalCadastrarAberta(false)}
+            onCadastrar={handleCadastrar}
+          />
+        )}
+
+        {modalEditarAberta && (
+          <ModalEditarEmpresa
+            aberta={modalEditarAberta}
+            onFechar={() => setModalEditarAberta(false)}
+            empresa={empresaParaEditar}
+            onEditar={handleEditar}
+          />
+        )}
+
+        {modalPsicologosAberta && (
+          <ModalListarPsicologos
+            aberta={modalPsicologosAberta}
+            onFechar={() => setModalPsicologosAberta(false)}
+            empresa={empresaParaPsicologos}
+          />
+        )}
+
+        {/* TITULO E BOTAO PARA CADASTRAR EMPRESA */}
         <Box
           sx={{
-            justifyContent: "space-between",
             display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            mb: 3,
+            width: "100%",
+            maxWidth: 900,
           }}
         >
-          <Box>
-            <Typography variant="h4">Gerenciar Empresas</Typography>
-            <Typography variant="body2" color="text.secondary">
-              Visualize e gerencie todas as empresas cadastradas no sistema
-            </Typography>
+          <Box
+            sx={{
+              justifyContent: "space-between",
+              display: "flex",
+            }}
+          >
+            <Box>
+              <Typography variant="h4">Gerenciar Empresas</Typography>
+              <Typography variant="body2" color="text.secondary">
+                Visualize e gerencie todas as empresas cadastradas no sistema
+              </Typography>
+            </Box>
           </Box>
+          <Button
+            variant="contained"
+            size="large"
+            onClick={() => abrirCadastrar(true)}
+            sx={{
+              background: "linear-gradient(135deg, #0097a7, #00bcd4)",
+              color: "#fafafa",
+              borderRadius: 3,
+              boxShadow: "0px 0px 30px rgba(0, 188, 212, 0.4)",
+              "&:hover": {
+                background: "linear-gradient(135deg, #00838f, #0097a7)",
+                boxShadow: "0px 0px 30px rgba(0, 188, 212, 0.6)",
+              },
+            }}
+          >
+            + Nova Empresa
+          </Button>
         </Box>
-        <Button
-          variant="contained"
-          size="large"
-          onClick={() => abrirCadastrar(true)}
+
+        {/* LISTAGEM DE EMPRESA */}
+        <Box
           sx={{
-            background: "linear-gradient(135deg, #0097a7, #00bcd4)",
-            color: "#fafafa",
-            borderRadius: 3,
-            boxShadow: "0px 0px 30px rgba(0, 188, 212, 0.4)",
-            "&:hover": {
-              background: "linear-gradient(135deg, #00838f, #0097a7)",
-              boxShadow: "0px 0px 30px rgba(0, 188, 212, 0.6)",
-            },
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 1.5,
+            maxWidth: 1200,
           }}
         >
-          + Nova Empresa
-        </Button>
-      </Box>
-
-      {/* LISTAGEM DE EMPRESA */}
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 1.5,
-          maxWidth: 1200,
-        }}
-      >
-        {empresas
-          .filter((empresa) => empresa.ativo)
-          .map((empresa) => (
-            <Paper
-              key={empresa.id}
-              elevation={2}
-              sx={{
-                p: 3,
-                width: 380,
-                borderRadius: 3,
-                height: "100%",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-            >
-              <Box
+          {empresas
+            .filter((empresa) => empresa.ativo)
+            .map((empresa) => (
+              <Paper
+                key={empresa.id}
+                elevation={2}
                 sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Box>
-                  <Typography fontWeight="bold" variant="h5">
-                    {empresa.razaoSocial}
-                  </Typography>
-                  <Typography variant="body2" color="primary">
-                    {mask(empresa.cnpj)}
-                  </Typography>
-                </Box>
-                <IconButton onClick={() => abrirEditar(empresa)}>
-                  <EditIcon />
-                </IconButton>
-              </Box>
-
-              <Box
-                sx={{
-                  mt: 2,
-                  display: "flex",
+                  p: 3,
+                  width: 380,
+                  borderRadius: 3,
+                  height: "100%",
+                  flexDirection: "column",
                   justifyContent: "space-between",
                 }}
               >
-                <IconButton onClick={() => confirmarDeletar(empresa)}>
-                  <DeleteIcon size="small" color="error" variant="outlined">
-                    Deletar
-                  </DeleteIcon>
-                </IconButton>
-                <IconButton
-                  onClick={() => {
-                    setEmpresaParaPsicologos(empresa);
-                    setModalPsicologosAberta(true);
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                   }}
                 >
-                  <PersonSearchIcon />
-                </IconButton>
-                <IconButton onClick={() => confirmarInativar(empresa)}>
-                  <BlockIcon size="small" color="warning" variant="outlined">
-                    Inativar
-                  </BlockIcon>
-                </IconButton>
-              </Box>
-            </Paper>
-          ))}
+                  <Box>
+                    <Typography fontWeight="bold" variant="h5">
+                      {empresa.razaoSocial}
+                    </Typography>
+                    <Typography variant="body2" color="primary">
+                      {mask(empresa.cnpj)}
+                    </Typography>
+                  </Box>
+                  <IconButton onClick={() => abrirEditar(empresa)}>
+                    <EditIcon />
+                  </IconButton>
+                </Box>
+
+                <Box
+                  sx={{
+                    mt: 2,
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <IconButton onClick={() => confirmarDeletar(empresa)}>
+                    <DeleteIcon size="small" color="error" variant="outlined">
+                      Deletar
+                    </DeleteIcon>
+                  </IconButton>
+                  <IconButton
+                    onClick={() => {
+                      setEmpresaParaPsicologos(empresa);
+                      setModalPsicologosAberta(true);
+                    }}
+                  >
+                    <PersonSearchIcon />
+                  </IconButton>
+                  <IconButton onClick={() => confirmarInativar(empresa)}>
+                    <BlockIcon size="small" color="warning" variant="outlined">
+                      Inativar
+                    </BlockIcon>
+                  </IconButton>
+                </Box>
+              </Paper>
+            ))}
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }
