@@ -39,7 +39,8 @@ export default function ModalCadastrarUsuario({
 
   const usuarioLogado = getUsuarioLogado();
   const isPA = usuarioLogado?.tipo === "PA";
-  const tiposUsuario = usuarioLogado?.tipo === "AD" ? TIPOS_USUARIO_AD : TIPOS_USUARIO_PA;
+  const tiposUsuario =
+    usuarioLogado?.tipo === "AD" ? TIPOS_USUARIO_AD : TIPOS_USUARIO_PA;
 
   const [showPassword, setShowPassword] = useState(false);
   const [empresas, setEmpresas] = useState([]);
@@ -93,13 +94,15 @@ export default function ModalCadastrarUsuario({
             helperText={errors.email?.message}
           />
           <TextField
-            {...register("senha", { required: "Senha é obrigatória" })}
+            {...register("senha", {
+              required: "Senha é obrigatória",
+              minLength: { value: 8, message: "Senha precisa ter 8 ou mais caracteres!"},
+            })}
             label="Senha"
             type={showPassword ? "text" : "password"}
             placeholder="Digite a senha"
             autoComplete="new-password"
             fullWidth
-            autoComplete="new-password"
             error={!!errors.senha}
             helperText={errors.senha?.message}
             slotProps={{

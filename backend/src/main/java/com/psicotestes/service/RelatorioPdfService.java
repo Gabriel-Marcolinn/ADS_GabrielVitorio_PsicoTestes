@@ -56,4 +56,31 @@ public class RelatorioPdfService {
             throw new RuntimeException("Falha crítica ao compilar o PDF Simplificado", e);
         }
     }
+
+    public byte[] gerarRelatorioCompleto(AplicacaoTeste aplicacaoTeste) {
+        Context context = new Context();
+        context.setVariable("pacienteNome", aplicacaoTeste.getPaciente().getNome());
+        context.setVariable("psicologoNome", aplicacaoTeste.getUsuario().getNome());
+        context.setVariable("testeNome", aplicacaoTeste.getTeste().getNome());
+        context.setVariable("pontuacao", Math.round(aplicacaoTeste.getPontuacaoTotal()));
+        context.setVariable("classificacao", aplicacaoTeste.getClassificacao());
+        context.setVariable("dataAplicacao", aplicacaoTeste.getDataAplicacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+
+        // Passa a lista completa de Respostas para o template HTML preencher a tabela
+        context.setVariable("respostas", aplicacaoTeste.getRespostas());
+
+        String htmlProcessado = templateEngine.process("relatorio-completo", context);
+
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            PdfRendererBuilder builder = new PdfRendererBuilder();
+            builder.useFastMode();
+            builder.withHtmlContent(htmlProcessado, null);
+            builder.toStream(outputStream);
+            builder.run();
+
+            return outputStream.toByteArray();
+        } catch (Exception e) {
+            throw new RuntimeException("Falha crítica ao compilar o PDF Completo", e);
+        }
+    }
 }

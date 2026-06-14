@@ -6,8 +6,17 @@ import DialogTitle from "@mui/material/DialogTitle";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { isCPF } from "validation-br";
+
+function maskCPF(value) {
+  return value
+    .replace(/\D/g, "")
+    .slice(0, 11)
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+}
 import { listarTodosUsuarios } from "../../../services/usuarioService";
 import { getUsuarioLogado } from "../../../services/authService";
 
@@ -35,6 +44,7 @@ export default function ModalCadastrarPaciente({
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
     reset,
     setValue,
@@ -83,17 +93,25 @@ export default function ModalCadastrarPaciente({
               ))}
             </TextField>
           )}
-          <TextField
-            {...register("cpf", {
-              required: "CPF e obrigatorio",
+          <Controller
+            name="cpf"
+            control={control}
+            rules={{
+              required: "CPF eh obrigatorio",
               validate: (value) => isCPF(value) || "CPF invalido",
-            })}
-            label="CPF"
-            placeholder="Digite o CPF do paciente"
-            fullWidth
-            sx={{ mb: 2 }}
-            error={!!errors.cpf}
-            helperText={errors.cpf?.message}
+            }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                onChange={(e) => field.onChange(maskCPF(e.target.value))}
+                label="CPF"
+                inputProps={{ maxLength: 14 }}
+                fullWidth
+                sx={{ mb: 2 }}
+                error={!!errors.cpf}
+                helperText={errors.cpf?.message}
+              />
+            )}
           />
 
           <TextField

@@ -58,6 +58,34 @@ public class RelatorioPdfController {
         }
     }
 
+    @GetMapping("/aplicacao/{id}/completo")
+    public ResponseEntity<byte[]> baixarRelatorioCompleto(@PathVariable Long id) {
+        try {
+            AplicacaoTeste aplicacaoTeste = aplicacaoTesteService.buscarAplicacaoCompleta(id);
+
+            // Executa a geração do documento completo em memória
+            byte[] pdfBytes = relatorioPdfService.gerarRelatorioCompleto(aplicacaoTeste);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", "laudo-completo-id" + id + ".pdf");
+            headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+            // Grava o arquivo na temp também para conferência
+            Path arquivoTemp = Files.createTempFile("relatorio_completo_temp", ".pdf");
+            Files.write(arquivoTemp,pdfBytes);
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(pdfBytes);
+
+        } catch (Exception e) {
+            System.err.println("Erro ao baixar arquivo pdf completo: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @PostMapping("/aplicacao/{id}/enviar-email")
     public ResponseEntity<String> enviarRelatorioPorEmail(
             @PathVariable Long id,
@@ -65,6 +93,21 @@ public class RelatorioPdfController {
 
         AplicacaoTeste aplicacaoTeste = aplicacaoTesteService.buscarAplicacaoCompleta(id);
         byte[] pdfBytes = relatorioPdfService.gerarRelatorioSimplificado(aplicacaoTeste);
+        if (emailDestinatario == null || emailDestinatario.isEmpty()) {
+            emailDestinatario = aplicacaoTeste.getPaciente().getEmail();
+        }
+
+        emailService.enviarRelatorioComAnexo(emailDestinatario, aplicacaoTeste.getPaciente().getNome(), pdfBytes);
+        return ResponseEntity.ok("E-mail enviado com sucesso para " + emailDestinatario);
+    }
+
+    @PostMapping("/aplicacao/{id}/enviar-email-completo")
+    public ResponseEntity<String> enviarRelatorioCompletoPorEmail(
+            @PathVariable Long id,
+            @RequestParam String emailDestinatario) {
+
+        AplicacaoTeste aplicacaoTeste = aplicacaoTesteService.buscarAplicacaoCompleta(id);
+        byte[] pdfBytes = relatorioPdfService.gerarRelatorioCompleto(aplicacaoTeste);
         if (emailDestinatario == null || emailDestinatario.isEmpty()) {
             emailDestinatario = aplicacaoTeste.getPaciente().getEmail();
         }
