@@ -71,6 +71,10 @@ public class RelatorioPdfController {
             headers.setContentDispositionFormData("attachment", "laudo-completo-id" + id + ".pdf");
             headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
 
+            // Grava o arquivo na temp também para conferência
+            Path arquivoTemp = Files.createTempFile("relatorio_completo_temp", ".pdf");
+            Files.write(arquivoTemp,pdfBytes);
+
             return ResponseEntity.ok()
                     .headers(headers)
                     .body(pdfBytes);
