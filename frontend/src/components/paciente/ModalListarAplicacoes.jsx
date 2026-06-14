@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import { getAuthHeaders } from "../../../services/authService";
 import ModalPdfAplicacao from "./ModalPdfAplicacao";
+import ModalListarAlternativas from "./ModalListarAlternativas";
 import { gerarPDF } from "../../../services/aplicacaoService";
 
 const TIPO_LABELS = {
@@ -53,6 +54,8 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
   const [modalPdfAplicacaoAberta, setModalPdfAplicacaoAberta] = useState(false);
   const [resultado, setResultado] = useState(null);
   const [aplicacaoSelecionadaId, setAplicacaoSelecionadaId] = useState(null);
+  const [modalAlternativasAberta, setModalAlternativasAberta] = useState(false);
+  const [aplicacaoDetalhesId, setAplicacaoDetalhesId] = useState(null);
 
   useEffect(() => {
     if (aberta && paciente) {
@@ -172,12 +175,28 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
                   >
                     Gerar PDF
                   </Button>
-                  <Button variant="outlined">Detalhes</Button>
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      setAplicacaoDetalhesId(a.id);
+                      setModalAlternativasAberta(true);
+                    }}
+                  >
+                    Detalhes
+                  </Button>
                 </Box>
               </Box>
             ))
           )}
         </Box>
+
+        {modalAlternativasAberta && (
+          <ModalListarAlternativas
+            aberta={modalAlternativasAberta}
+            onFechar={() => setModalAlternativasAberta(false)}
+            aplicacaoId={aplicacaoDetalhesId}
+          />
+        )}
 
         {modalPdfAplicacaoAberta && (
           <ModalPdfAplicacao
