@@ -26,6 +26,9 @@ public class AplicacaoTeste {
     @Column(nullable = false)
     private String classificacao;
 
+    @Column(name = "analise_ia",columnDefinition = "TEXT")
+    private String analiseIa;
+
     @Builder.Default
     @Column(nullable = false, updatable = false)
     private LocalDateTime dataAplicacao = LocalDateTime.now();

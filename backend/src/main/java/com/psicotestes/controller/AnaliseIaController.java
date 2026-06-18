@@ -25,7 +25,15 @@ public class AnaliseIaController {
     @GetMapping("/teste/{aplicacaoId}")
     public ResponseEntity<Map<String, String>> analisarTesteUnico(@PathVariable Long aplicacaoId) {
         AplicacaoTeste aplicacao = aplicacaoTesteService.buscarAplicacaoCompleta(aplicacaoId);
+
+        if (aplicacao.getAnaliseIa() != null && !aplicacao.getAnaliseIa().trim().isEmpty()) {
+            return ResponseEntity.ok(Map.of("analise", aplicacao.getAnaliseIa()));
+        }
+
         String analise = geminiService.gerarAnaliseTesteUnico(aplicacao);
+
+        aplicacao.setAnaliseIa(analise);
+        aplicacaoTesteService.salvarAnaliseIa(aplicacaoId, analise);
 
         return ResponseEntity.ok(Map.of("analise", analise));
     }
@@ -35,8 +43,15 @@ public class AnaliseIaController {
     public ResponseEntity<Map<String, String>> analisarHistoricoPaciente(@PathVariable Long pacienteId) {
         Paciente paciente = pacienteService.buscarPorId(pacienteId);
 
+        if (paciente.getAnaliseIa() != null && !paciente.getAnaliseIa().trim().isEmpty()) {
+            return ResponseEntity.ok(Map.of("analise", paciente.getAnaliseIa()));
+        }
+
         List<AplicacaoTeste> aplicacoes = aplicacaoTesteService.listarAplicacoesPorPacienteEntity(pacienteId);
         String analise = geminiService.gerarAnaliseHistoricoPaciente(paciente, aplicacoes);
+
+        paciente.setAnaliseIa(analise);
+        pacienteService.salvarAnaliseIa(pacienteId, analise);
 
         return ResponseEntity.ok(Map.of("analise", analise));
     }
