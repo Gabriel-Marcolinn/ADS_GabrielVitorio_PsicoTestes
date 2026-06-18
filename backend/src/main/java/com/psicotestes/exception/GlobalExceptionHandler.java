@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
 
-@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -34,13 +33,13 @@ public class GlobalExceptionHandler {
 
         ErroResponseDTO erro = new ErroResponseDTO(
                 LocalDateTime.now(),
-                HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                HttpStatus.UNPROCESSABLE_CONTENT.value(),
                 "Dados Inválidos",
                 ex.getMessage(),
                 request.getRequestURI()
         );
 
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(erro);
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(erro);
     }
 
     // Catch-all: Segura qualquer outro erro
@@ -54,7 +53,6 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
         );
 
-        log.error("Erro inesperado: " + ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(erro);
     }
 }
