@@ -100,4 +100,12 @@ public class PacienteService {
         }
         pacienteRepository.deleteById(id);
     }
+
+    @Transactional
+    public void salvarAnaliseIa(Long pacienteId, String analiseIa) {
+        Paciente paciente = pacienteRepository.findById(pacienteId)
+                .orElseThrow(() -> new RuntimeException("Paciente não encontrado."));
+        paciente.setAnaliseIa(analiseIa);
+        pacienteRepository.save(paciente);
+    }
 }

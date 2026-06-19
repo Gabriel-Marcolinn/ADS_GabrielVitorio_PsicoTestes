@@ -42,4 +42,7 @@ public class Paciente {
     @Column(name = "deletado", nullable = false)
     @Builder.Default
     private Boolean deletado = false;
+
+    @Column(name = "analise_ia",columnDefinition = "TEXT")
+    private String analiseIa;
 }

@@ -141,6 +141,13 @@ public class AplicacaoTesteService {
         );
     }
 
+    @Transactional public void salvarAnaliseIa(Long aplicacaoId, String analise) {
+        AplicacaoTeste aplicacao = aplicacaoTesteRepository.findById(aplicacaoId)
+                .orElseThrow(() -> new RuntimeException("Aplicação não encontrada."));
+        aplicacao.setAnaliseIa(analise);
+        aplicacaoTesteRepository.save(aplicacao);
+    }
+
     // Centraliza o mapeamento para evitar código repetido
     private AplicacaoResponseDTO mapearParaDTO(AplicacaoTeste aplicacao) {
         return new AplicacaoResponseDTO(
@@ -151,7 +158,8 @@ public class AplicacaoTesteService {
                 aplicacao.getTeste().getNome(),
                 aplicacao.getPontuacaoTotal(),
                 aplicacao.getClassificacao(),
-                aplicacao.getDataAplicacao()
+                aplicacao.getDataAplicacao(),
+                aplicacao.getAnaliseIa()
         );
     }
 }

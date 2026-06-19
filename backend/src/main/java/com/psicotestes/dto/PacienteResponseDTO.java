@@ -2,7 +2,7 @@ package com.psicotestes.dto;
 
 import com.psicotestes.model.Paciente;
 
-public record PacienteResponseDTO(Long id, String nome, String cpf, String email, Boolean ativo, Long psicologoId) {
+public record PacienteResponseDTO(Long id, String nome, String cpf, String email, Boolean ativo, Long psicologoId, String analiseIa) {
     public PacienteResponseDTO(Paciente paciente) {
         this(
                 paciente.getId(),
@@ -10,7 +10,8 @@ public record PacienteResponseDTO(Long id, String nome, String cpf, String email
                 paciente.getCpf(),
                 paciente.getEmail(),
                 paciente.getAtivo(),
-                paciente.getPsicologo().getId()
+                paciente.getPsicologo().getId(),
+                paciente.getAnaliseIa()
         );
     }
 }
