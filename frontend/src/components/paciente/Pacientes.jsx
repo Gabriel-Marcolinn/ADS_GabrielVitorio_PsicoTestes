@@ -20,6 +20,13 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Menu from "@mui/material/Menu";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 import BlockIcon from "@mui/icons-material/Block";
@@ -31,7 +38,10 @@ import ModalDeletarPaciente from "./ModalDeletarPaciente";
 import ModalInativarPaciente from "./ModalInativarPaciente";
 import FindInPageIcon from "@mui/icons-material/FindInPage";
 import ModalListarAplicacoes from "./ModalListarAplicacoes";
+import SmartToyIcon from "@mui/icons-material/SmartToy";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import Toast from "../Toast";
+import { isCPF } from 'validation-br';
 
 export default function Pacientes() {
   const [pacientes, setPacientes] = useState([]);
@@ -47,6 +57,8 @@ export default function Pacientes() {
   const [modalAplicacoesAberta, setModalAplicacoesAberta] = useState(false);
   const [pacienteParaAplicacoes, setPacienteParaAplicacoes] = useState(null);
   const [ativosTrue, setAtivosTrue] = useState(true);
+  const [menuAncora, setMenuAncora] = useState(null);
+  const [menuPaciente, setMenuPaciente] = useState(null);
 
   const usuarioLogado = getUsuarioLogado();
   const tipo = usuarioLogado?.tipo;
@@ -154,6 +166,11 @@ export default function Pacientes() {
     } catch (error) {
       mostrarToast(error.message, "error");
     }
+  }
+
+  async function handleAbrirAcoes(event, paciente) {
+    setMenuAncora(event);
+    setMenuPaciente(paciente);
   }
 
   return (
@@ -277,80 +294,97 @@ export default function Pacientes() {
         )}
 
         {/* LISTAGEM */}
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 1.5,
-            maxWidth: 1200,
-          }}
-        >
-          {pacientes.map((paciente) => (
-            <Paper
-              key={paciente.id}
-              elevation={2}
-              sx={{
-                p: 3,
-                width: 380,
-                borderRadius: 3,
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Box>
-                  <Typography fontWeight="bold" variant="h5">
-                    {paciente.nome}
-                  </Typography>
-                  <Typography variant="body2" color="primary">
-                    {mask(paciente.cpf)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {paciente.email}
-                  </Typography>
-                </Box>
-                <IconButton onClick={() => abrirEditar(paciente)}>
-                  <EditIcon />
-                </IconButton>
-              </Box>
+        <TableContainer sx={{ p: 4 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell><strong>Nome</strong></TableCell>
+                <TableCell><strong>CPF</strong></TableCell>
+                <TableCell><strong>E-mail</strong></TableCell>
+                <TableCell><strong>Acoes</strong></TableCell>
+              </TableRow>
+            </TableHead>
 
-              <Box
-                sx={{
-                  mt: 2,
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Box>
-                  <IconButton onClick={() => confirmarDeletar(paciente)}>
-                    <DeleteIcon color="error" />
-                  </IconButton>
-                  <IconButton onClick={() => confirmarInativar(paciente)}>
-                    {paciente.ativo ? (
-                      <BlockIcon color="warning" />
-                    ) : (
-                      <CheckCircleOutlinedIcon color="success" />
-                    )}
-                  </IconButton>
-                </Box>
-                <IconButton
-                  onClick={() => {
-                    setPacienteParaAplicacoes(paciente);
-                    setModalAplicacoesAberta(true);
-                  }}
-                >
-                  <FindInPageIcon />
-                </IconButton>
-              </Box>
-            </Paper>
-          ))}
-        </Box>
+            <TableBody>
+              {pacientes.map((paciente) => (
+                <TableRow key={paciente.id}>
+                  <TableCell>{paciente.nome}</TableCell>
+                  <TableCell>{mask(paciente.cpf)}</TableCell>
+                  <TableCell>{paciente.email}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      onClick={(e) =>
+                        handleAbrirAcoes(e.currentTarget, paciente)
+                      }
+                      sx={{ p: 1, background: "#dddcdc", borderRadius: 2 }}
+                    >
+                      <FormatListBulletedIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <Menu
+          anchorEl={menuAncora}
+          open={Boolean(menuAncora)}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          transformOrigin={{ vertical: "top", horizontal: "left" }}
+          onClose={() => setMenuAncora(null)}
+        >
+          <MenuItem
+            onClick={() => {
+              abrirEditar(menuPaciente);
+              setMenuAncora(null);
+            }}
+          >
+            <EditIcon fontSize="small" sx={{ mr: 1 }} /> Editar
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              confirmarDeletar(menuPaciente);
+              setMenuAncora(null);
+            }}
+          >
+            <DeleteIcon fontSize="small" color="error" sx={{ mr: 1 }} /> Deletar
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              confirmarInativar(menuPaciente);
+              setMenuAncora(null);
+            }}
+          >
+            {menuPaciente?.ativo ? (
+              <>
+                <BlockIcon fontSize="small" color="warning" sx={{ mr: 1 }} />{" "}
+                Inativar
+              </>
+            ) : (
+              <>
+                <CheckCircleOutlinedIcon
+                  fontSize="small"
+                  color="success"
+                  sx={{ mr: 1 }}
+                />{" "}
+                Ativar
+              </>
+            )}
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              setPacienteParaAplicacoes(menuPaciente);
+              setModalAplicacoesAberta(true);
+              setMenuAncora(null);
+            }}
+          >
+            <FindInPageIcon fontSize="small" sx={{ mr: 1 }} /> Ver aplicações
+          </MenuItem>
+          <MenuItem>
+            <SmartToyIcon fontSize="small" sx={{ mr: 1 }} /> IA
+          </MenuItem>
+        </Menu>
       </Box>
     </>
   );

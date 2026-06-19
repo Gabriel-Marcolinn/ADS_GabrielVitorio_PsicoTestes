@@ -9,6 +9,7 @@ import TextField from "@mui/material/TextField";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { isCPF } from "validation-br";
+import { getUsuarioLogado } from "../../../services/authService";
 import { listarTodosUsuarios } from "../../../services/usuarioService";
 
 function maskCPF(value) {
@@ -22,12 +23,18 @@ function maskCPF(value) {
 
 export default function ModalEditarPaciente({ aberta, onFechar, paciente, onEditar }) {
   const [usuarios, setUsuarios] = useState([]);
+  const usuario = getUsuarioLogado();
+  const isPsicologo = usuario?.tipo === "PS";
 
   useEffect(() => {
     if (aberta) {
       listarTodosUsuarios()
         .then((lista) => setUsuarios(lista.filter((u) => u.tipo === "PS")))
         .catch(console.error);
+
+      if (isPsicologo) {
+        setValue("usuarioId", usuario.id);
+      }
     }
   }, [aberta]);
 
@@ -37,6 +44,7 @@ export default function ModalEditarPaciente({ aberta, onFechar, paciente, onEdit
     control,
     formState: { errors },
     reset,
+    setValue,
   } = useForm();
 
   function handleFechar() {
@@ -55,21 +63,23 @@ export default function ModalEditarPaciente({ aberta, onFechar, paciente, onEdit
           component="form"
           onSubmit={handleSubmit(onEditar)}
         >
-          <TextField
-            {...register("usuarioId", { required: "Psicólogo é obrigatório" })}
-            label="Psicólogo"
-            select
-            fullWidth
-            defaultValue={paciente?.psicologoId ?? ""}
-            error={!!errors.usuarioId}
-            helperText={errors.usuarioId?.message}
-          >
-            {usuarios.map((u) => (
-              <MenuItem key={u.id} value={u.id}>
-                {u.nome}
-              </MenuItem>
-            ))}
-          </TextField>
+          {!isPsicologo && (
+            <TextField
+              {...register("usuarioId", { required: "Psicólogo é obrigatório" })}
+              label="Psicólogo"
+              select
+              fullWidth
+              defaultValue={paciente?.psicologoId ?? ""}
+              error={!!errors.usuarioId}
+              helperText={errors.usuarioId?.message}
+            >
+              {usuarios.map((u) => (
+                <MenuItem key={u.id} value={u.id}>
+                  {u.nome}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
           <TextField
             {...register("nome", { required: "Nome é obrigatório" })}
             label="Nome"
