@@ -85,6 +85,9 @@ public class AplicacaoTesteService {
         // Persiste tudo no banco (Cascade salva o cabeçalho e os itens de uma vez)
         AplicacaoTeste aplicacaoSalva = aplicacaoTesteRepository.save(aplicacao);
 
+        // Limpa a análise de IA do cadastro do paciente quando é feito um novo teste, assim, ao chamar o método de gerar a análise de IA, o sistema vai saber que precisa consultar a API do Gemini e não só retornar o que está no banco
+        paciente.setAnaliseIa(null);
+
         // Retorna o Recibo para o Front-end
         return mapearParaDTO(aplicacaoSalva);
     }
