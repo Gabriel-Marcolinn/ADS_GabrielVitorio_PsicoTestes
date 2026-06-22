@@ -11,7 +11,8 @@ async function handleResponse(response) {
   let mensagem = "Erro desconhecido";
   try {
     const erro = await response.json();
-    mensagem = erro.message || erro.error || JSON.stringify(erro);
+    mensagem =
+      erro.mensagem || erro.message || erro.error || JSON.stringify(erro);
   } catch {
     mensagem = await response.text();
   }
