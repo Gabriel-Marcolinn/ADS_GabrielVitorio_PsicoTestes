@@ -13,10 +13,19 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Chip from "@mui/material/Chip";
-import EditIcon from "@mui/icons-material/Edit";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
 import BlockIcon from "@mui/icons-material/Block";
 import DeleteIcon from "@mui/icons-material/Delete";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import ModalDeletarUsuario from "./ModalDeletarUsuario";
 import ModalInativarUsuario from "./ModalInativarUsuario";
 import ModalCadastrarUsuario from "./ModalCadastrarUsuario";
@@ -38,8 +47,14 @@ export default function Usuarios() {
   const [usuarioParaInativar, setUsuarioParaInativar] = useState(null);
   const [modalInativarAberta, setModalInativarAberta] = useState(false);
   const [modalCadastrarAberta, setModalCadastrarAberta] = useState(false);
+  const [menuAncora, setMenuAncora] = useState(null);
+  const [menuUsuario, setMenuUsuario] = useState(null);
 
-  const [toast, setToast] = useState({ aberto: false, mensagem: "", tipo: "success" });
+  const [toast, setToast] = useState({
+    aberto: false,
+    mensagem: "",
+    tipo: "success",
+  });
   const mostrarToast = (mensagem, tipo = "success") =>
     setToast({ aberto: true, mensagem, tipo });
   const fecharToast = () => setToast((t) => ({ ...t, aberto: false }));
@@ -47,13 +62,13 @@ export default function Usuarios() {
   const usuarioLogado = getUsuarioLogado();
 
   useEffect(() => {
-    const busca = usuarioLogado.tipo === "AD"
-      ? listarTodosUsuarios()
-      : listarUsuarios(usuarioLogado.empresaId);
+    const busca =
+      usuarioLogado.tipo === "AD"
+        ? listarTodosUsuarios()
+        : listarUsuarios(usuarioLogado.empresaId);
     busca.then((data) => setUsuarios(data ?? [])).catch(() => setUsuarios([]));
   }, []);
 
-  // DELETAR
   function confirmarDeletar(usuario) {
     setUsuarioParaDeletar(usuario);
     setModalDeletarAberta(true);
@@ -70,7 +85,6 @@ export default function Usuarios() {
     }
   }
 
-  // INATIVAR
   function confirmarInativar(usuario) {
     setUsuarioParaInativar(usuario);
     setModalInativarAberta(true);
@@ -87,7 +101,6 @@ export default function Usuarios() {
     }
   }
 
-  // EDITAR
   function abrirEditar(usuario) {
     setUsuarioParaEditar(usuario);
     setModalEditarAberta(true);
@@ -111,7 +124,6 @@ export default function Usuarios() {
     }
   }
 
-  // CADASTRAR
   async function handleCadastrar(data) {
     try {
       const novoUsuario = await cadastrarUsuario(data);
@@ -125,154 +137,175 @@ export default function Usuarios() {
 
   return (
     <>
-    <Toast toast={toast} onFechar={fecharToast} />
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        flexDirection: "column",
-        alignItems: "center",
-        pt: 3,
-      }}
-    >
-      {modalDeletarAberta && (
-        <ModalDeletarUsuario
-          aberta={modalDeletarAberta}
-          onFechar={() => setModalDeletarAberta(false)}
-          usuario={usuarioParaDeletar}
-          onDeletar={handleDeletar}
-        />
-      )}
-
-      {modalInativarAberta && (
-        <ModalInativarUsuario
-          aberta={modalInativarAberta}
-          onFechar={() => setModalInativarAberta(false)}
-          usuario={usuarioParaInativar}
-          onInativar={handleInativar}
-        />
-      )}
-
-      {modalCadastrarAberta && (
-        <ModalCadastrarUsuario
-          aberta={modalCadastrarAberta}
-          onFechar={() => setModalCadastrarAberta(false)}
-          onCadastrar={handleCadastrar}
-        />
-      )}
-
-      {modalEditarAberta && (
-        <ModalEditarUsuario
-          aberta={modalEditarAberta}
-          onFechar={() => setModalEditarAberta(false)}
-          usuario={usuarioParaEditar}
-          onEditar={handleEditar}
-        />
-      )}
-
-      {/* TITULO E BOTAO */}
+      <Toast toast={toast} onFechar={fecharToast} />
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          mb: 3,
-          width: "100%",
-          maxWidth: 900,
+          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
+          pt: 3,
         }}
       >
-        <Box>
-          <Typography variant="h4">Gerenciar Usuários</Typography>
-          <Typography variant="body2" color="text.secondary">
-            Visualize e gerencie todos os usuários cadastrados no sistema
-          </Typography>
-        </Box>
-        <Button
-          variant="contained"
-          size="large"
-          onClick={() => setModalCadastrarAberta(true)}
+        {modalDeletarAberta && (
+          <ModalDeletarUsuario
+            aberta={modalDeletarAberta}
+            onFechar={() => setModalDeletarAberta(false)}
+            usuario={usuarioParaDeletar}
+            onDeletar={handleDeletar}
+          />
+        )}
+
+        {modalInativarAberta && (
+          <ModalInativarUsuario
+            aberta={modalInativarAberta}
+            onFechar={() => setModalInativarAberta(false)}
+            usuario={usuarioParaInativar}
+            onInativar={handleInativar}
+          />
+        )}
+
+        {modalCadastrarAberta && (
+          <ModalCadastrarUsuario
+            aberta={modalCadastrarAberta}
+            onFechar={() => setModalCadastrarAberta(false)}
+            onCadastrar={handleCadastrar}
+          />
+        )}
+
+        {modalEditarAberta && (
+          <ModalEditarUsuario
+            aberta={modalEditarAberta}
+            onFechar={() => setModalEditarAberta(false)}
+            usuario={usuarioParaEditar}
+            onEditar={handleEditar}
+          />
+        )}
+
+        {/* TITULO E BOTAO */}
+        <Box
           sx={{
-            background: "linear-gradient(135deg, #0097a7, #00bcd4)",
-            color: "#fafafa",
-            borderRadius: 3,
-            boxShadow: "0px 0px 30px rgba(0, 188, 212, 0.4)",
-            "&:hover": {
-              background: "linear-gradient(135deg, #00838f, #0097a7)",
-              boxShadow: "0px 0px 30px rgba(0, 188, 212, 0.6)",
-            },
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            mb: 3,
+            width: "100%",
+            maxWidth: 900,
           }}
         >
-          + Novo Usuário
-        </Button>
-      </Box>
+          <Box>
+            <Typography variant="h4">Gerenciar Usuários</Typography>
+            <Typography variant="body2" color="text.secondary">
+              Visualize e gerencie todos os usuários cadastrados no sistema
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            size="large"
+            onClick={() => setModalCadastrarAberta(true)}
+            sx={{
+              background: "linear-gradient(135deg, #0097a7, #00bcd4)",
+              color: "#fafafa",
+              borderRadius: 3,
+              boxShadow: "0px 0px 30px rgba(0, 188, 212, 0.4)",
+              "&:hover": {
+                background: "linear-gradient(135deg, #00838f, #0097a7)",
+                boxShadow: "0px 0px 30px rgba(0, 188, 212, 0.6)",
+              },
+            }}
+          >
+            + Novo Usuário
+          </Button>
+        </Box>
 
-      {/* LISTAGEM */}
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 1.5,
-          maxWidth: 1200,
-        }}
-      >
-        {usuarios
-          .filter((usuario) => usuario.ativo)
-          .map((usuario) => (
-            <Paper
-              key={usuario.id}
-              elevation={2}
-              sx={{
-                p: 3,
-                width: 380,
-                borderRadius: 3,
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Box>
-                  <Typography fontWeight="bold" variant="h5">
-                    {usuario.nome}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {usuario.email}
-                  </Typography>
-                  <Chip
-                    label={TIPO_LABELS[usuario.tipo]?.label ?? usuario.tipo}
-                    color={TIPO_LABELS[usuario.tipo]?.color ?? "default"}
-                    size="small"
-                    sx={{ mt: 1 }}
-                  />
-                </Box>
-                <IconButton onClick={() => abrirEditar(usuario)}>
-                  <EditIcon />
-                </IconButton>
-              </Box>
+        {/* LISTAGEM */}
+        <TableContainer
+          component={Paper}
+          sx={{ width: "100%", maxWidth: "75%" }}
+        >
+          <Table>
+            <TableHead sx={{ backgroundColor: "#dddcdc" }}>
+              <TableRow>
+                <TableCell>
+                  <strong>Nome</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>E-mail</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Tipo</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Ações</strong>
+                </TableCell>
+              </TableRow>
+            </TableHead>
 
-              <Box
-                sx={{
-                  mt: 2,
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <IconButton onClick={() => confirmarDeletar(usuario)}>
-                  <DeleteIcon color="error" />
-                </IconButton>
-                <IconButton onClick={() => confirmarInativar(usuario)}>
-                  <BlockIcon color="warning" />
-                </IconButton>
-              </Box>
-            </Paper>
-          ))}
+            <TableBody>
+              {usuarios
+                .filter((usuario) => usuario.ativo)
+                .map((usuario) => (
+                  <TableRow key={usuario.id}>
+                    <TableCell>{usuario.nome}</TableCell>
+                    <TableCell>{usuario.email}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={TIPO_LABELS[usuario.tipo]?.label ?? usuario.tipo}
+                        color={TIPO_LABELS[usuario.tipo]?.color ?? "default"}
+                        size="small"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        onClick={(e) => {
+                          setMenuAncora(e.currentTarget);
+                          setMenuUsuario(usuario);
+                        }}
+                        sx={{ p: 1, background: "#dddcdc", borderRadius: 2 }}
+                      >
+                        <FormatListBulletedIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <Menu
+          anchorEl={menuAncora}
+          open={Boolean(menuAncora)}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          transformOrigin={{ vertical: "top", horizontal: "left" }}
+          onClose={() => setMenuAncora(null)}
+        >
+          <MenuItem
+            onClick={() => {
+              abrirEditar(menuUsuario);
+              setMenuAncora(null);
+            }}
+          >
+            <EditIcon fontSize="small" sx={{ mr: 1 }} /> Editar
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              confirmarDeletar(menuUsuario);
+              setMenuAncora(null);
+            }}
+          >
+            <DeleteIcon fontSize="small" color="error" sx={{ mr: 1 }} /> Deletar
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              confirmarInativar(menuUsuario);
+              setMenuAncora(null);
+            }}
+          >
+            <BlockIcon fontSize="small" color="warning" sx={{ mr: 1 }} />{" "}
+            Inativar
+          </MenuItem>
+        </Menu>
       </Box>
-    </Box>
     </>
   );
 }

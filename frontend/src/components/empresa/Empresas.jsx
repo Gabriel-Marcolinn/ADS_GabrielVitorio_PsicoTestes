@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { mask, normalize } from "validation-br/dist/cnpj";
+import { mask } from "validation-br/dist/cnpj";
 import {
   deletarEmpresa,
   listarEmpresas,
@@ -12,16 +11,25 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
-import EditIcon from "@mui/icons-material/Edit";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
 import BlockIcon from "@mui/icons-material/Block";
 import DeleteIcon from "@mui/icons-material/Delete";
+import PersonSearchIcon from "@mui/icons-material/PersonSearch";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import ModalDeletarEmpresa from "./ModalDeletarEmpresa";
 import ModalInativarEmpresa from "./ModalInativarEmpresa";
 import ModalCadastrarEmpresa from "./ModalCadastrarEmpresa";
 import ModalEditarEmpresa from "./ModalEditarEmpresa";
 import ModalListarPsicologos from "./ModalListarPsicologos";
-import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import Toast from "../Toast";
 
 export default function Empresas() {
@@ -35,8 +43,8 @@ export default function Empresas() {
   const [modalCadastrarAberta, setModalCadastrarAberta] = useState(false);
   const [modalPsicologosAberta, setModalPsicologosAberta] = useState(false);
   const [empresaParaPsicologos, setEmpresaParaPsicologos] = useState(null);
-
-  const navigate = useNavigate();
+  const [menuAncora, setMenuAncora] = useState(null);
+  const [menuEmpresa, setMenuEmpresa] = useState(null);
 
   const [toast, setToast] = useState({
     aberto: false,
@@ -51,7 +59,6 @@ export default function Empresas() {
     listarEmpresas().then(setEmpresas);
   }, []);
 
-  // DELETAR EMPRESA
   function confirmarDeletar(empresa) {
     setEmpresaParaDeletar(empresa);
     setModalDeletarAberta(true);
@@ -67,7 +74,6 @@ export default function Empresas() {
     }
   }
 
-  // INATIVAR EMPRESA
   function confirmarInativar(empresa) {
     setEmpresaParaInativar(empresa);
     setModalInativarAberta(true);
@@ -83,7 +89,6 @@ export default function Empresas() {
     }
   }
 
-  // EDITAR EMPRESA
   function abrirEditar(empresa) {
     setEmpresaParaEditar(empresa);
     setModalEditarAberta(true);
@@ -101,11 +106,6 @@ export default function Empresas() {
     } catch (error) {
       mostrarToast(error.message, "error");
     }
-  }
-
-  // CADASTRAR EMPRESA
-  function abrirCadastrar() {
-    setModalCadastrarAberta(true);
   }
 
   async function handleCadastrar(data) {
@@ -175,7 +175,7 @@ export default function Empresas() {
           />
         )}
 
-        {/* TITULO E BOTAO PARA CADASTRAR EMPRESA */}
+        {/* TITULO E BOTAO */}
         <Box
           sx={{
             display: "flex",
@@ -186,23 +186,16 @@ export default function Empresas() {
             maxWidth: 900,
           }}
         >
-          <Box
-            sx={{
-              justifyContent: "space-between",
-              display: "flex",
-            }}
-          >
-            <Box>
-              <Typography variant="h4">Gerenciar Empresas</Typography>
-              <Typography variant="body2" color="text.secondary">
-                Visualize e gerencie todas as empresas cadastradas no sistema
-              </Typography>
-            </Box>
+          <Box>
+            <Typography variant="h4">Gerenciar Empresas</Typography>
+            <Typography variant="body2" color="text.secondary">
+              Visualize e gerencie todas as empresas cadastradas no sistema
+            </Typography>
           </Box>
           <Button
             variant="contained"
             size="large"
-            onClick={() => abrirCadastrar(true)}
+            onClick={() => setModalCadastrarAberta(true)}
             sx={{
               background: "linear-gradient(135deg, #0097a7, #00bcd4)",
               color: "#fafafa",
@@ -218,79 +211,92 @@ export default function Empresas() {
           </Button>
         </Box>
 
-        {/* LISTAGEM DE EMPRESA */}
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 1.5,
-            maxWidth: 1200,
-          }}
+        {/* LISTAGEM */}
+        <TableContainer
+          component={Paper}
+          sx={{ width: "100%", maxWidth: "75%" }}
         >
-          {empresas
-            .filter((empresa) => empresa.ativo)
-            .map((empresa) => (
-              <Paper
-                key={empresa.id}
-                elevation={2}
-                sx={{
-                  p: 3,
-                  width: 380,
-                  borderRadius: 3,
-                  height: "100%",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box>
-                    <Typography fontWeight="bold" variant="h5">
-                      {empresa.razaoSocial}
-                    </Typography>
-                    <Typography variant="body2" color="primary">
-                      {mask(empresa.cnpj)}
-                    </Typography>
-                  </Box>
-                  <IconButton onClick={() => abrirEditar(empresa)}>
-                    <EditIcon />
-                  </IconButton>
-                </Box>
+          <Table>
+            <TableHead sx={{ backgroundColor: "#dddcdc" }}>
+              <TableRow>
+                <TableCell>
+                  <strong>Razão Social</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>CNPJ</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Ações</strong>
+                </TableCell>
+              </TableRow>
+            </TableHead>
 
-                <Box
-                  sx={{
-                    mt: 2,
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <IconButton onClick={() => confirmarDeletar(empresa)}>
-                    <DeleteIcon size="small" color="error" variant="outlined">
-                      Deletar
-                    </DeleteIcon>
-                  </IconButton>
-                  <IconButton
-                    onClick={() => {
-                      setEmpresaParaPsicologos(empresa);
-                      setModalPsicologosAberta(true);
-                    }}
-                  >
-                    <PersonSearchIcon />
-                  </IconButton>
-                  <IconButton onClick={() => confirmarInativar(empresa)}>
-                    <BlockIcon size="small" color="warning" variant="outlined">
-                      Inativar
-                    </BlockIcon>
-                  </IconButton>
-                </Box>
-              </Paper>
-            ))}
-        </Box>
+            <TableBody>
+              {empresas
+                .filter((empresa) => empresa.ativo)
+                .map((empresa) => (
+                  <TableRow key={empresa.id}>
+                    <TableCell>{empresa.razaoSocial}</TableCell>
+                    <TableCell>{mask(empresa.cnpj)}</TableCell>
+                    <TableCell>
+                      <IconButton
+                        onClick={(e) => {
+                          setMenuAncora(e.currentTarget);
+                          setMenuEmpresa(empresa);
+                        }}
+                        sx={{ p: 1, background: "#dddcdc", borderRadius: 2 }}
+                      >
+                        <FormatListBulletedIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <Menu
+          anchorEl={menuAncora}
+          open={Boolean(menuAncora)}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          transformOrigin={{ vertical: "top", horizontal: "left" }}
+          onClose={() => setMenuAncora(null)}
+        >
+          <MenuItem
+            onClick={() => {
+              abrirEditar(menuEmpresa);
+              setMenuAncora(null);
+            }}
+          >
+            <EditIcon fontSize="small" sx={{ mr: 1 }} /> Editar
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              confirmarDeletar(menuEmpresa);
+              setMenuAncora(null);
+            }}
+          >
+            <DeleteIcon fontSize="small" color="error" sx={{ mr: 1 }} /> Deletar
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              confirmarInativar(menuEmpresa);
+              setMenuAncora(null);
+            }}
+          >
+            <BlockIcon fontSize="small" color="warning" sx={{ mr: 1 }} />{" "}
+            Inativar
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              setEmpresaParaPsicologos(menuEmpresa);
+              setModalPsicologosAberta(true);
+              setMenuAncora(null);
+            }}
+          >
+            <PersonSearchIcon fontSize="small" sx={{ mr: 1 }} /> Ver psicólogos
+          </MenuItem>
+        </Menu>
       </Box>
     </>
   );
