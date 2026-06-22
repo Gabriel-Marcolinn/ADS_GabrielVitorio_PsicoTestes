@@ -19,9 +19,12 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import BlockIcon from "@mui/icons-material/Block";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
@@ -45,6 +48,8 @@ export default function Empresas() {
   const [empresaParaPsicologos, setEmpresaParaPsicologos] = useState(null);
   const [menuAncora, setMenuAncora] = useState(null);
   const [menuEmpresa, setMenuEmpresa] = useState(null);
+  const [buscaNome, setBuscaNome] = useState("");
+  const [ativosTrue, setAtivosTrue] = useState(true);
 
   const [toast, setToast] = useState({
     aberto: false,
@@ -82,7 +87,7 @@ export default function Empresas() {
   async function handleInativar() {
     try {
       await inativarEmpresa(empresaParaInativar.id);
-      setEmpresas(empresas.filter((e) => e.id !== empresaParaInativar.id));
+      setEmpresas(empresas.map((e) => e.id === empresaParaInativar.id ? { ...e, ativo: !e.ativo } : e));
       setModalInativarAberta(false);
     } catch (error) {
       mostrarToast(error.message, "error");
@@ -211,6 +216,34 @@ export default function Empresas() {
           </Button>
         </Box>
 
+        {/* FILTRO */}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            width: "100%",
+            maxWidth: "75%",
+            mb: 2,
+          }}
+        >
+          <TextField
+            size="small"
+            placeholder="Buscar por nome..."
+            value={buscaNome}
+            onChange={(e) => setBuscaNome(e.target.value)}
+            sx={{ flex: 1 }}
+          />
+          <Select
+            value={ativosTrue}
+            onChange={(e) => setAtivosTrue(e.target.value)}
+            size="small"
+            sx={{ minWidth: 120 }}
+          >
+            <MenuItem value={true}>Ativos</MenuItem>
+            <MenuItem value={false}>Inativos</MenuItem>
+          </Select>
+        </Box>
+
         {/* LISTAGEM */}
         <TableContainer
           component={Paper}
@@ -233,7 +266,10 @@ export default function Empresas() {
 
             <TableBody>
               {empresas
-                .filter((empresa) => empresa.ativo)
+                .filter((empresa) => empresa.ativo === ativosTrue)
+                .filter((e) =>
+                  e.razaoSocial.toLowerCase().includes(buscaNome.toLowerCase()),
+                )
                 .map((empresa) => (
                   <TableRow key={empresa.id}>
                     <TableCell>{empresa.razaoSocial}</TableCell>
@@ -284,8 +320,15 @@ export default function Empresas() {
               setMenuAncora(null);
             }}
           >
-            <BlockIcon fontSize="small" color="warning" sx={{ mr: 1 }} />{" "}
-            Inativar
+            {menuEmpresa?.ativo ? (
+              <>
+                <BlockIcon fontSize="small" color="warning" sx={{ mr: 1 }} /> Inativar
+              </>
+            ) : (
+              <>
+                <CheckCircleOutlinedIcon fontSize="small" color="success" sx={{ mr: 1 }} /> Ativar
+              </>
+            )}
           </MenuItem>
           <MenuItem
             onClick={() => {

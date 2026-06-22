@@ -30,7 +30,7 @@ export async function cadastrarPaciente(data) {
 }
 
 // LISTAGEM
-export async function listarPacientes(psicologoId, ativo = true) {
+export async function listarPacientes(psicologoId, ativo) {
   const response = await fetch(
     `${BASE_URL}?psicologoId=${psicologoId}&ativo=${ativo}`,
     { headers: getAuthHeaders() },

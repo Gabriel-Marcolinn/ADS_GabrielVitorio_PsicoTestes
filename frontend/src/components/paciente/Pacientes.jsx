@@ -18,6 +18,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -57,6 +58,7 @@ export default function Pacientes() {
   const [modalAplicacoesAberta, setModalAplicacoesAberta] = useState(false);
   const [pacienteParaAplicacoes, setPacienteParaAplicacoes] = useState(null);
   const [ativosTrue, setAtivosTrue] = useState(true);
+  const [buscaNome, setBuscaNome] = useState("");
   const [menuAncora, setMenuAncora] = useState(null);
   const [menuPaciente, setMenuPaciente] = useState(null);
 
@@ -185,15 +187,6 @@ export default function Pacientes() {
           pt: 3,
         }}
       >
-        <Select defaultValue={true}>
-          <MenuItem value={true} onClick={() => setAtivosTrue(true)}>
-            Ativos
-          </MenuItem>
-          <MenuItem value={false} onClick={() => setAtivosTrue(false)}>
-            Inativos
-          </MenuItem>
-        </Select>
-
         {modalCadastrarAberta && (
           <ModalCadastrarPaciente
             aberta={modalCadastrarAberta}
@@ -273,14 +266,39 @@ export default function Pacientes() {
           </Button>
         </Box>
 
-        {/* FILTRO POR PSICOLOGO */}
-        {!isPS && (
-          <Box sx={{ width: "100%", maxWidth: 900, mb: 3 }}>
-            <FormControl fullWidth>
-              <InputLabel>Filtrar por psicólogo</InputLabel>
+        {/* FILTROS */}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            width: "100%",
+            maxWidth: "75%",
+            mb: 2,
+          }}
+        >
+          <TextField
+            size="small"
+            placeholder="Buscar por nome..."
+            value={buscaNome}
+            onChange={(e) => setBuscaNome(e.target.value)}
+            sx={{ flex: 1 }}
+          />
+          <Select
+            value={ativosTrue}
+            onChange={(e) => setAtivosTrue(e.target.value)}
+            size="small"
+            sx={{ minWidth: 120 }}
+          >
+            <MenuItem value={true}>Ativos</MenuItem>
+            <MenuItem value={false}>Inativos</MenuItem>
+          </Select>
+
+          {!isPS && (
+            <FormControl size="small" sx={{ minWidth: 200 }}>
+              <InputLabel>Psicólogo</InputLabel>
               <Select
                 value={psicologoFiltro}
-                label="Filtrar por psicólogo"
+                label="Psicólogo"
                 onChange={(e) => setPsicologoFiltro(e.target.value)}
               >
                 {psicologos.map((u) => (
@@ -290,8 +308,8 @@ export default function Pacientes() {
                 ))}
               </Select>
             </FormControl>
-          </Box>
-        )}
+          )}
+        </Box>
 
         {/* LISTAGEM */}
         <TableContainer
@@ -317,23 +335,31 @@ export default function Pacientes() {
             </TableHead>
 
             <TableBody>
-              {pacientes.map((paciente) => (
-                <TableRow key={paciente.id}>
-                  <TableCell>{paciente.nome}</TableCell>
-                  <TableCell>{mask(paciente.cpf)}</TableCell>
-                  <TableCell>{paciente.email}</TableCell>
-                  <TableCell>
-                    <IconButton
-                      onClick={(e) =>
-                        handleAbrirAcoes(e.currentTarget, paciente)
-                      }
-                      sx={{ p: 1, background: "#dddcdc", borderRadius: 2 }}
-                    >
-                      <FormatListBulletedIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {pacientes
+                .filter((p) =>
+                  p.nome.toLowerCase().includes(buscaNome.toLowerCase()),
+                )
+                .map((paciente) => (
+                  <TableRow key={paciente.id}>
+                    <TableCell sx={{ width: "25%" }}>{paciente.nome}</TableCell>
+                    <TableCell sx={{ width: "20%" }}>
+                      {mask(paciente.cpf)}
+                    </TableCell>
+                    <TableCell sx={{ width: "45%" }}>
+                      {paciente.email}
+                    </TableCell>
+                    <TableCell sx={{ width: "10%" }}>
+                      <IconButton
+                        onClick={(e) =>
+                          handleAbrirAcoes(e.currentTarget, paciente)
+                        }
+                        sx={{ p: 1, background: "#dddcdc", borderRadius: 2 }}
+                      >
+                        <FormatListBulletedIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>

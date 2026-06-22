@@ -30,7 +30,7 @@ export async function cadastrarUsuario(data) {
 }
 
 // LISTAGEM
-export async function listarUsuarios(empresaId, ativo = true) {
+export async function listarUsuarios(empresaId, ativo) {
   const response = await fetch(
     `${BASE_URL}?empresaId=${empresaId}&ativo=${ativo}`,
     { headers: getAuthHeaders() },

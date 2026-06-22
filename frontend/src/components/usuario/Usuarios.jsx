@@ -21,9 +21,11 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import BlockIcon from "@mui/icons-material/Block";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import ModalDeletarUsuario from "./ModalDeletarUsuario";
@@ -31,6 +33,7 @@ import ModalInativarUsuario from "./ModalInativarUsuario";
 import ModalCadastrarUsuario from "./ModalCadastrarUsuario";
 import ModalEditarUsuario from "./ModalEditarUsuario";
 import Toast from "../Toast";
+import Select from "@mui/material/Select";
 
 const TIPO_LABELS = {
   AD: { label: "Administrador", color: "primary" },
@@ -48,7 +51,9 @@ export default function Usuarios() {
   const [modalInativarAberta, setModalInativarAberta] = useState(false);
   const [modalCadastrarAberta, setModalCadastrarAberta] = useState(false);
   const [menuAncora, setMenuAncora] = useState(null);
+  const [ativosTrue, setAtivosTrue] = useState(true);
   const [menuUsuario, setMenuUsuario] = useState(null);
+  const [buscaNome, setBuscaNome] = useState("");
 
   const [toast, setToast] = useState({
     aberto: false,
@@ -93,7 +98,7 @@ export default function Usuarios() {
   async function handleInativar() {
     try {
       await inativarUsuario(usuarioParaInativar.id);
-      setUsuarios(usuarios.filter((u) => u.id !== usuarioParaInativar.id));
+      setUsuarios(usuarios.map((u) => u.id === usuarioParaInativar.id ? { ...u, ativo: !u.ativo } : u));
       setModalInativarAberta(false);
       mostrarToast("Usuário inativado com sucesso!");
     } catch (error) {
@@ -218,6 +223,34 @@ export default function Usuarios() {
           </Button>
         </Box>
 
+        {/* FILTRO */}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            width: "100%",
+            maxWidth: "75%",
+            mb: 2,
+          }}
+        >
+          <TextField
+            size="small"
+            placeholder="Buscar por nome..."
+            value={buscaNome}
+            onChange={(e) => setBuscaNome(e.target.value)}
+            sx={{ flex: 1 }}
+          />
+          <Select
+            value={ativosTrue}
+            onChange={(e) => setAtivosTrue(e.target.value)}
+            size="small"
+            sx={{ minWidth: 120 }}
+          >
+            <MenuItem value={true}>Ativos</MenuItem>
+            <MenuItem value={false}>Inativos</MenuItem>
+          </Select>
+        </Box>
+
         {/* LISTAGEM */}
         <TableContainer
           component={Paper}
@@ -243,7 +276,8 @@ export default function Usuarios() {
 
             <TableBody>
               {usuarios
-                .filter((usuario) => usuario.ativo)
+                .filter((u) => u.ativo === ativosTrue)
+                .filter((u) => u.nome.toLowerCase().includes(buscaNome.toLowerCase()))
                 .map((usuario) => (
                   <TableRow key={usuario.id}>
                     <TableCell>{usuario.nome}</TableCell>
@@ -301,8 +335,15 @@ export default function Usuarios() {
               setMenuAncora(null);
             }}
           >
-            <BlockIcon fontSize="small" color="warning" sx={{ mr: 1 }} />{" "}
-            Inativar
+            {menuUsuario?.ativo ? (
+              <>
+                <BlockIcon fontSize="small" color="warning" sx={{ mr: 1 }} /> Inativar
+              </>
+            ) : (
+              <>
+                <CheckCircleOutlinedIcon fontSize="small" color="success" sx={{ mr: 1 }} /> Ativar
+              </>
+            )}
           </MenuItem>
         </Menu>
       </Box>
