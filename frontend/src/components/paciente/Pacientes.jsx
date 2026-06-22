@@ -41,7 +41,7 @@ import ModalListarAplicacoes from "./ModalListarAplicacoes";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import Toast from "../Toast";
-import { isCPF } from 'validation-br';
+import { isCPF } from "validation-br";
 
 export default function Pacientes() {
   const [pacientes, setPacientes] = useState([]);
@@ -294,14 +294,25 @@ export default function Pacientes() {
         )}
 
         {/* LISTAGEM */}
-        <TableContainer sx={{ p: 4 }}>
+        <TableContainer
+          component={Paper}
+          sx={{ maxWidth: "75%", borderRadius: 3 }}
+        >
           <Table>
-            <TableHead>
+            <TableHead sx={{ backgroundColor: "#dddcdc" }}>
               <TableRow>
-                <TableCell><strong>Nome</strong></TableCell>
-                <TableCell><strong>CPF</strong></TableCell>
-                <TableCell><strong>E-mail</strong></TableCell>
-                <TableCell><strong>Acoes</strong></TableCell>
+                <TableCell>
+                  <strong>Nome</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>CPF</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>E-mail</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Acoes</strong>
+                </TableCell>
               </TableRow>
             </TableHead>
 
