@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import { getAuthHeaders } from "../../../services/authService";
 import ModalPdfAplicacao from "./ModalPdfAplicacao";
 import ModalListarAlternativas from "./ModalListarAlternativas";
-import { gerarPDF } from "../../../services/aplicacaoService";
 import { analisarTesteUnico } from "../../../services/analiseIaService";
 import IconButton from "@mui/material/IconButton";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
@@ -58,7 +57,6 @@ const TIPO_LABELS = {
 
 export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
   const [aplicacoes, setAplicacoes] = useState([]);
-  const [pdfUrl, setPdfUrl] = useState(null);
   const [modalPdfAplicacaoAberta, setModalPdfAplicacaoAberta] = useState(false);
   const [resultado, setResultado] = useState(null);
   const [aplicacaoSelecionadaId, setAplicacaoSelecionadaId] = useState(null);
@@ -81,12 +79,10 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
     }
   }, [aberta, paciente]);
 
-  async function handleGerarPdf(id) {
-    const blob = await gerarPDF(id);
-    const url = URL.createObjectURL(blob);
-    setPdfUrl(url);
-    setModalPdfAplicacaoAberta(true);
+  function handleGerarPdf(id) {
     setAplicacaoSelecionadaId(id);
+    setMenuAncora(null);
+    setModalPdfAplicacaoAberta(true);
   }
 
   async function gerarAnaliseIaAplicacao(id) {
@@ -227,7 +223,6 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
             <ModalPdfAplicacao
               aberta={modalPdfAplicacaoAberta}
               onFechar={() => setModalPdfAplicacaoAberta(false)}
-              pdfUrl={pdfUrl}
               idAplicacao={aplicacaoSelecionadaId}
             />
           )}
