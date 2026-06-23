@@ -4,6 +4,7 @@ import com.psicotestes.dto.PacienteRequestDTO;
 import com.psicotestes.dto.PacienteResponseDTO;
 import com.psicotestes.model.Paciente;
 import com.psicotestes.model.Usuario;
+import com.psicotestes.repository.AplicacaoTesteRepository;
 import com.psicotestes.repository.PacienteRepository;
 import com.psicotestes.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class PacienteService {
 
     private final PacienteRepository pacienteRepository;
     private final UsuarioRepository usuarioRepository;
+    private final AplicacaoTesteRepository aplicacaoTesteRepository;
 
     // Usado na integração por IA, retorna uma entidade mas não é manipulado pelo frontend
     @Transactional
@@ -100,6 +102,10 @@ public class PacienteService {
         if (!pacienteRepository.existsById(id)) {
             throw new RuntimeException("Paciente não encontrado.");
         }
+        if (!aplicacaoTesteRepository.findByPacienteIdOrderByDataAplicacaoDesc(id).isEmpty()) {
+            throw new RuntimeException("Existem aplicações de testes feitas para esse paciente, não será permitido remover o mesmo.");
+        }
+
         pacienteRepository.deleteById(id);
     }
 
