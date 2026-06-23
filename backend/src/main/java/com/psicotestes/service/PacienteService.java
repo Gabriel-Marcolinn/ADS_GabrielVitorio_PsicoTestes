@@ -38,9 +38,11 @@ public class PacienteService {
         Usuario psicologo = usuarioRepository.findById(dto.psicologoId())
                 .orElseThrow(() -> new RuntimeException("Psicólogo não encontrado."));
 
+        String cpfFormatado = dto.cpf().trim().replace("-", "").replace(".","");
+
         Paciente paciente = Paciente.builder()
                 .nome(dto.nome())
-                .cpf(dto.cpf())
+                .cpf(cpfFormatado)
                 .email(dto.email())
                 .psicologo(psicologo)
                 .ativo(true)

@@ -25,7 +25,8 @@ public class EmpresaService {
             throw new RuntimeException("Já existe uma empresa cadastrada com este CNPJ.");
         }
 
-        Empresa empresa = new Empresa(dto.razaoSocial(), dto.cnpj());
+        String cnpjFormatado = dto.cnpj().trim().replace("-", "").replace(".","").replace("/","");
+        Empresa empresa = new Empresa(dto.razaoSocial(), cnpjFormatado);
         return new EmpresaResponseDTO(empresaRepository.save(empresa));
     }
 
