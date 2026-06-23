@@ -81,7 +81,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
       return;
     }
     setValue("pacienteId", "");
-    listarPacientes(usuarioIdSelecionado)
+    listarPacientes(usuarioIdSelecionado, "True")
       .then(setPacientes)
       .catch(console.error);
   }, [usuarioIdSelecionado]);
