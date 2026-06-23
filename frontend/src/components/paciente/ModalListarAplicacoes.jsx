@@ -11,6 +11,12 @@ import { getAuthHeaders } from "../../../services/authService";
 import ModalPdfAplicacao from "./ModalPdfAplicacao";
 import ModalListarAlternativas from "./ModalListarAlternativas";
 import { gerarPDF } from "../../../services/aplicacaoService";
+import IconButton from "@mui/material/IconButton";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ArticleIcon from "@mui/icons-material/Article";
+import ContentPasteSearchIcon from "@mui/icons-material/ContentPasteSearch";
 
 const TIPO_LABELS = {
   //BDI-DOIS
@@ -56,6 +62,8 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
   const [aplicacaoSelecionadaId, setAplicacaoSelecionadaId] = useState(null);
   const [modalAlternativasAberta, setModalAlternativasAberta] = useState(false);
   const [aplicacaoDetalhesId, setAplicacaoDetalhesId] = useState(null);
+  const [menuAncora, setMenuAncora] = useState(null);
+  const [menuAplicacao, setMenuAplicacao] = useState(null);
 
   useEffect(() => {
     if (aberta && paciente) {
@@ -76,142 +84,164 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
     setAplicacaoSelecionadaId(id);
   }
 
+  async function handleAbrirAcoes(event, aplicacao) {
+    setMenuAncora(event);
+    setMenuAplicacao(aplicacao);
+  }
+
   return (
-    <Dialog open={aberta} onClose={onFechar} maxWidth="xl">
-      <DialogTitle>
-        Aplicacoes de <strong>{paciente?.nome}</strong>
-      </DialogTitle>
-      <DialogContent>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            pt: 1,
-            minWidth: 600,
-          }}
-        >
-          {aplicacoes.length === 0 ? (
-            <Typography color="text.secondary">
-              Nenhuma aplicacao encontrada
-            </Typography>
-          ) : (
-            aplicacoes.map((a) => (
-              <Box
-                key={a.id}
-                sx={{
-                  border: "1px solid #ddd",
-                  borderRadius: 2,
-                  p: 2,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 2,
-                }}
-              >
-                <Box sx={{ flex: 1 }}>
-                  <Typography sx={{ fontWeight: "bold" }} gutterBottom>
-                    {a.nomeTeste}
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: 4,
-                      alignItems: "center",
-                    }}
-                  >
-                    <Box>
-                      <Typography
-                        sx={{ fontWeight: "bold" }}
-                        variant="caption"
-                        color="text.secondary"
-                      >
-                        Data
-                      </Typography>
-                      <Typography variant="body2">
-                        {new Date(a.dataAplicacao).toLocaleDateString("pt-BR")}
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography
-                        sx={{ fontWeight: "bold" }}
-                        variant="caption"
-                        color="text.secondary"
-                      >
-                        Pontuação
-                      </Typography>
-                      <Typography variant="body2" fontWeight="bold">
-                        {a.pontuacaoTotal}
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography
-                        sx={{ fontWeight: "bold" }}
-                        variant="caption"
-                        color="text.secondary"
-                      >
-                        Resultado
-                      </Typography>
+    <>
+      <Dialog open={aberta} onClose={onFechar} maxWidth="xl">
+        <DialogTitle>
+          Aplicacoes de <strong>{paciente?.nome}</strong>
+        </DialogTitle>
+        <DialogContent>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              pt: 1,
+              minWidth: 600,
+            }}
+          >
+            {aplicacoes.length === 0 ? (
+              <Typography color="text.secondary">
+                Nenhuma aplicacao encontrada
+              </Typography>
+            ) : (
+              aplicacoes.map((a) => (
+                <Box
+                  key={a.id}
+                  sx={{
+                    border: "1px solid #ddd",
+                    borderRadius: 2,
+                    p: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 2,
+                  }}
+                >
+                  <Box sx={{ flex: 1 }}>
+                    <Typography sx={{ fontWeight: "bold" }} gutterBottom>
+                      {a.nomeTeste}
+                    </Typography>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: 4,
+                        alignItems: "center",
+                      }}
+                    >
                       <Box>
-                        <Chip
-                          label={
-                            TIPO_LABELS[a.classificacao]?.label ??
-                            a.classificacao
-                          }
-                          color={
-                            TIPO_LABELS[a.classificacao]?.color ?? "default"
-                          }
-                          size="small"
-                        />
+                        <Typography
+                          sx={{ fontWeight: "bold" }}
+                          variant="caption"
+                          color="text.secondary"
+                        >
+                          Data
+                        </Typography>
+                        <Typography variant="body2">
+                          {new Date(a.dataAplicacao).toLocaleDateString(
+                            "pt-BR",
+                          )}
+                        </Typography>
+                      </Box>
+                      <Box>
+                        <Typography
+                          sx={{ fontWeight: "bold" }}
+                          variant="caption"
+                          color="text.secondary"
+                        >
+                          Pontuação
+                        </Typography>
+                        <Typography variant="body2" fontWeight="bold">
+                          {a.pontuacaoTotal}
+                        </Typography>
+                      </Box>
+                      <Box>
+                        <Typography
+                          sx={{ fontWeight: "bold" }}
+                          variant="caption"
+                          color="text.secondary"
+                        >
+                          Resultado
+                        </Typography>
+                        <Box>
+                          <Chip
+                            label={
+                              TIPO_LABELS[a.classificacao]?.label ??
+                              a.classificacao
+                            }
+                            color={
+                              TIPO_LABELS[a.classificacao]?.color ?? "default"
+                            }
+                            size="small"
+                          />
+                        </Box>
                       </Box>
                     </Box>
                   </Box>
-                </Box>
-                <Box sx={{ pl: 3, display: "flex", flexDirection: "column" }}>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleGerarPdf(a.id)}
-                    sx={{ mb: 1 }}
+
+                  <IconButton
+                    onClick={(e) => handleAbrirAcoes(e.currentTarget, a)}
+                    sx={{ p: 1, background: "#dddcdc", borderRadius: 2 }}
                   >
-                    Gerar PDF
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    onClick={() => {
-                      setAplicacaoDetalhesId(a.id);
-                      setModalAlternativasAberta(true);
-                    }}
-                  >
-                    Detalhes
-                  </Button>
+                    <FormatListBulletedIcon />
+                  </IconButton>
                 </Box>
-              </Box>
-            ))
+              ))
+            )}
+          </Box>
+
+          {modalAlternativasAberta && (
+            <ModalListarAlternativas
+              aberta={modalAlternativasAberta}
+              onFechar={() => setModalAlternativasAberta(false)}
+              aplicacaoId={aplicacaoDetalhesId}
+            />
           )}
-        </Box>
 
-        {modalAlternativasAberta && (
-          <ModalListarAlternativas
-            aberta={modalAlternativasAberta}
-            onFechar={() => setModalAlternativasAberta(false)}
-            aplicacaoId={aplicacaoDetalhesId}
-          />
-        )}
+          {modalPdfAplicacaoAberta && (
+            <ModalPdfAplicacao
+              aberta={modalPdfAplicacaoAberta}
+              onFechar={() => setModalPdfAplicacaoAberta(false)}
+              pdfUrl={pdfUrl}
+              idAplicacao={aplicacaoSelecionadaId}
+            />
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={onFechar}>
+            Fechar
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-        {modalPdfAplicacaoAberta && (
-          <ModalPdfAplicacao
-            aberta={modalPdfAplicacaoAberta}
-            onFechar={() => setModalPdfAplicacaoAberta(false)}
-            pdfUrl={pdfUrl}
-            idAplicacao={aplicacaoSelecionadaId}
-          />
-        )}
-      </DialogContent>
-      <DialogActions>
-        <Button variant="outlined" onClick={onFechar}>
-          Fechar
-        </Button>
-      </DialogActions>
-    </Dialog>
+      <Menu
+        anchorEl={menuAncora}
+        open={Boolean(menuAncora)}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "left" }}
+        onClose={() => setMenuAncora(null)}
+      >
+        <MenuItem
+          onClick={() => {
+            handleGerarPdf(menuAplicacao?.id);
+          }}
+        >
+          <ArticleIcon fontSize="small" sx={{ mr: 1 }} /> Gerar PDF
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            setAplicacaoDetalhesId(menuAplicacao?.id);
+            setModalAlternativasAberta(true);
+          }}
+        >
+          <ContentPasteSearchIcon fontSize="small" sx={{ mr: 1 }} /> Detalhes
+        </MenuItem>
+      </Menu>
+    </>
   );
 }
