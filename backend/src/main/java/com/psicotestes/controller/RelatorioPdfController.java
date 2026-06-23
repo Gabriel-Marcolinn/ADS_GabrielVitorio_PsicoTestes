@@ -37,7 +37,7 @@ public class RelatorioPdfController {
             // Prepara os Headers HTTP informando ao navegador/React que o payload é um anexo binário de PDF
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDispositionFormData("attachment", "laudo-simplificado-id" + id + ".pdf");
+            headers.setContentDispositionFormData("attachment", "resultado-simplificado-id" + id + ".pdf");
             headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
 
             // Grava o arquivo na temp também para conferência
@@ -68,7 +68,7 @@ public class RelatorioPdfController {
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDispositionFormData("attachment", "laudo-completo-id" + id + ".pdf");
+            headers.setContentDispositionFormData("attachment", "resultado-completo-id" + id + ".pdf");
             headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
 
             // Grava o arquivo na temp também para conferência
