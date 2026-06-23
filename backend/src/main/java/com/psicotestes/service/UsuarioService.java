@@ -96,6 +96,10 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
 
+        if (usuario.getTipo().equals("AD")){
+            throw new RuntimeException("Não é possível excluir o usuário, pois ele é administrador do sistema. Inative o mesmo.");
+        }
+
         // Trava de segurança: impede de deletar um psicólogo que já tem histórico de pacientes
         if (!usuario.getPacientes().isEmpty()) {
             throw new RuntimeException("Não é possível excluir o usuário, pois existem pacientes vinculados a ele.");
