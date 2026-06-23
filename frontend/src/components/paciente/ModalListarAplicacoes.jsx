@@ -11,7 +11,9 @@ import { getAuthHeaders } from "../../../services/authService";
 import ModalPdfAplicacao from "./ModalPdfAplicacao";
 import ModalListarAlternativas from "./ModalListarAlternativas";
 import { gerarPDF } from "../../../services/aplicacaoService";
+import { analisarTesteUnico } from "../../../services/analiseIaService";
 import IconButton from "@mui/material/IconButton";
+import SmartToyIcon from "@mui/icons-material/SmartToy";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -64,6 +66,9 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
   const [aplicacaoDetalhesId, setAplicacaoDetalhesId] = useState(null);
   const [menuAncora, setMenuAncora] = useState(null);
   const [menuAplicacao, setMenuAplicacao] = useState(null);
+  const [analiseIa, setAnaliseIa] = useState(null);
+  const [analiseIaAberta, setAnaliseIaAberta] = useState(false);
+  const [loadingAnalise, setLoadingAnalise] = useState(false);
 
   useEffect(() => {
     if (aberta && paciente) {
@@ -82,6 +87,21 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
     setPdfUrl(url);
     setModalPdfAplicacaoAberta(true);
     setAplicacaoSelecionadaId(id);
+  }
+
+  async function gerarAnaliseIaAplicacao(id) {
+    setMenuAncora(null);
+    setLoadingAnalise(true);
+    setAnaliseIaAberta(true);
+    setAnaliseIa(null);
+    try {
+      const data = await analisarTesteUnico(id);
+      setAnaliseIa(data.analise);
+    } catch (e) {
+      setAnaliseIa("Erro ao gerar análise: " + e.message);
+    } finally {
+      setLoadingAnalise(false);
+    }
   }
 
   async function handleAbrirAcoes(event, aplicacao) {
@@ -219,6 +239,22 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
         </DialogActions>
       </Dialog>
 
+      <Dialog open={analiseIaAberta} onClose={() => setAnaliseIaAberta(false)} maxWidth="md" fullWidth>
+        <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <SmartToyIcon /> Análise IA
+        </DialogTitle>
+        <DialogContent>
+          {loadingAnalise ? (
+            <Typography color="text.secondary">Gerando análise...</Typography>
+          ) : (
+            <Typography sx={{ whiteSpace: "pre-wrap" }}>{analiseIa}</Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={() => setAnaliseIaAberta(false)}>Fechar</Button>
+        </DialogActions>
+      </Dialog>
+
       <Menu
         anchorEl={menuAncora}
         open={Boolean(menuAncora)}
@@ -240,6 +276,9 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
           }}
         >
           <ContentPasteSearchIcon fontSize="small" sx={{ mr: 1 }} /> Detalhes
+        </MenuItem>
+        <MenuItem onClick={() => gerarAnaliseIaAplicacao(menuAplicacao?.id)}>
+          <SmartToyIcon fontSize="small" sx={{ mr: 1 }} /> Analise IA
         </MenuItem>
       </Menu>
     </>
