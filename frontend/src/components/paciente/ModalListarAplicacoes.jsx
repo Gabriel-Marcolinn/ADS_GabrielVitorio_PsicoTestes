@@ -239,19 +239,27 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={analiseIaAberta} onClose={() => setAnaliseIaAberta(false)} maxWidth="md" fullWidth>
+      <Dialog
+        open={analiseIaAberta}
+        onClose={() => setAnaliseIaAberta(false)}
+        maxWidth="md"
+        fullWidth
+      >
         <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <SmartToyIcon /> Análise IA
         </DialogTitle>
-        <DialogContent>
+        <DialogContent             sx={{ border: "solid gray 2px", mr: 1, ml: 1, borderRadius: 3 }}
+>
           {loadingAnalise ? (
-            <Typography color="text.secondary">Gerando análise...</Typography>
+            <Typography color="text.secondary" sx={{ m: 1 }}>Gerando análise...</Typography>
           ) : (
-            <Typography sx={{ whiteSpace: "pre-wrap" }}>{analiseIa}</Typography>
+            <Typography sx={{ whiteSpace: "pre-wrap", m: 1 }}>{analiseIa}</Typography>
           )}
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={() => setAnaliseIaAberta(false)}>Fechar</Button>
+          <Button variant="outlined" onClick={() => setAnaliseIaAberta(false)}>
+            Fechar
+          </Button>
         </DialogActions>
       </Dialog>
 
