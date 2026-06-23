@@ -24,8 +24,7 @@ export async function analisarTesteUnico(aplicacaoId) {
   const response = await fetch(`${BASE_URL}/teste/${aplicacaoId}`, {
     headers: getAuthHeaders(),
   });
-  if (!response.ok) throw new Error("Erro ao gerar analise do teste");
-  return response.blob();
+  return handleResponse(response);
 }
 
 // ANALISE PACIENTE
@@ -33,6 +32,5 @@ export async function analisarPaciente(pacienteId) {
   const response = await fetch(`${BASE_URL}/paciente/${pacienteId}`, {
     headers: getAuthHeaders(),
   });
-  if (!response.ok) throw new Error("Erro ao gerar analise do paciente");
-  return response.blob();
+  return handleResponse(response);
 }
