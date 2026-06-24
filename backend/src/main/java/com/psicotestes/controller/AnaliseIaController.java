@@ -32,8 +32,10 @@ public class AnaliseIaController {
 
         String analise = geminiService.gerarAnaliseTesteUnico(aplicacao);
 
-        aplicacao.setAnaliseIa(analise);
-        aplicacaoTesteService.salvarAnaliseIa(aplicacaoId, analise);
+        if (!analise.startsWith("Serviço de Inteligência Artificial temporariamente indisponível")) {
+            aplicacao.setAnaliseIa(analise);
+            aplicacaoTesteService.salvarAnaliseIa(aplicacaoId, analise);
+        }
 
         return ResponseEntity.ok(Map.of("analise", analise));
     }
@@ -50,8 +52,10 @@ public class AnaliseIaController {
         List<AplicacaoTeste> aplicacoes = aplicacaoTesteService.listarAplicacoesPorPacienteEntity(pacienteId);
         String analise = geminiService.gerarAnaliseHistoricoPaciente(paciente, aplicacoes);
 
-        paciente.setAnaliseIa(analise);
-        pacienteService.salvarAnaliseIa(pacienteId, analise);
+        if (!analise.startsWith("Serviço de Inteligência Artificial temporariamente indisponível")) {
+            paciente.setAnaliseIa(analise);
+            pacienteService.salvarAnaliseIa(pacienteId, analise);
+        }
 
         return ResponseEntity.ok(Map.of("analise", analise));
     }

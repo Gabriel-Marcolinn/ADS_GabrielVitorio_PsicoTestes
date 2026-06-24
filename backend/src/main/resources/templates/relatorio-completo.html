@@ -168,7 +168,6 @@
 <table class="qa-table">
     <thead>
     <tr>
-        <th style="width: 5%; text-align: center;">#</th>
         <th style="width: 55%;">Pergunta</th>
         <th style="width: 30%;">Resposta Marcada</th>
         <th style="width: 10%; text-align: center;">Pontos</th>
@@ -177,7 +176,6 @@
     <tbody>
     <!-- O Thymeleaf vai repetir a tag <tr> para cada Resposta do Paciente -->
     <tr th:each="resposta, iterStat : ${respostas}">
-        <td style="text-align: center;" th:text="${iterStat.count}">1</td>
         <td th:text="${resposta.alternativa.pergunta.pergunta}">Texto da Pergunta</td>
         <td th:text="${resposta.alternativa.alternativa}">Texto da Alternativa Marcada</td>
         <td style="text-align: center; font-weight: bold;" th:text="${resposta.alternativa.pontuacao}">0</td>
