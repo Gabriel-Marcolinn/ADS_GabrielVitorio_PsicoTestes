@@ -107,6 +107,15 @@ public class AplicacaoTesteService {
                 .toList();
     }
 
+    // Visualizar Aplicações de um psicólogo, usado pelo FrontEnd
+    @Transactional(readOnly = true)
+    public List<AplicacaoResponseDTO> listarAplicacoesPorPsicologo(Long psicologoId) {
+        return aplicacaoTesteRepository.findByUsuarioIdOrderByDataAplicacaoDesc(psicologoId)
+                .stream()
+                .map(this::mapearParaDTO)
+                .toList();
+    }
+
     // Buscar aplicação completa, usado para geração dos relatórios em PDF, retorna a entidade mas não é usado pelo FrontEnd
     @Transactional(readOnly = true)
     public AplicacaoTeste buscarAplicacaoCompleta(Long aplicacaoId) {
