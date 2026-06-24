@@ -5,9 +5,19 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
-import { useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { isCNPJ } from "validation-br";
-import validate, { normalize } from "validation-br/dist/cnpj";
+
+function maskCNPJ(value) {
+  return value
+    .replace(/\D/g, "")
+    .slice(0, 14)
+    .replace(/(\d{2})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1/$2")
+    .replace(/(\d{4})(\d{1,2})$/, "$1-$2");
+}
 
 export default function ModalEditarEmpresa({
   aberta,
@@ -18,9 +28,19 @@ export default function ModalEditarEmpresa({
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
     reset,
   } = useForm();
+
+  useEffect(() => {
+    if (aberta && empresa) {
+      reset({
+        cnpj: maskCNPJ(empresa.cnpj ?? ""),
+        razaoSocial: empresa.razaoSocial ?? "",
+      });
+    }
+  }, [aberta, empresa]);
 
   function handleFechar() {
     reset();
@@ -38,18 +58,25 @@ export default function ModalEditarEmpresa({
           component="form"
           onSubmit={handleSubmit(onEditar)}
         >
-          <TextField
-            {...register("cnpj", {
+          <Controller
+            name="cnpj"
+            control={control}
+            rules={{
               required: "CNPJ é obrigatório",
               validate: (value) => isCNPJ(value) || "CNPJ inválido",
-            })}
-            label="CNPJ"
-            placeholder="Digite o CNPJ"
-            fullWidth
-            sx={{ mb: 2 }}
-            defaultValue={normalize(empresa?.cnpj)}
-            error={!!errors.cnpj}
-            helperText={errors.cnpj?.message}
+            }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                onChange={(e) => field.onChange(maskCNPJ(e.target.value))}
+                label="CNPJ"
+                inputProps={{ maxLength: 18 }}
+                fullWidth
+                sx={{ mb: 2 }}
+                error={!!errors.cnpj}
+                helperText={errors.cnpj?.message}
+              />
+            )}
           />
           <TextField
             {...register("razaoSocial", {
@@ -59,7 +86,6 @@ export default function ModalEditarEmpresa({
             placeholder="Digite a Razão Social"
             fullWidth
             sx={{ mb: 2 }}
-            defaultValue={empresa?.razaoSocial}
             error={!!errors.razaoSocial}
             helperText={errors.razaoSocial?.message}
           />
