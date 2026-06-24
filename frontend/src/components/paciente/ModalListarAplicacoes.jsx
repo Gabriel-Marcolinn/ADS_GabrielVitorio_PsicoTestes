@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import { getAuthHeaders } from "../../../services/authService";
 import ModalPdfAplicacao from "./ModalPdfAplicacao";
 import ModalListarAlternativas from "./ModalListarAlternativas";
-import { gerarPDF } from "../../../services/aplicacaoService";
 import { analisarTesteUnico } from "../../../services/analiseIaService";
 import IconButton from "@mui/material/IconButton";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
@@ -58,7 +57,6 @@ const TIPO_LABELS = {
 
 export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
   const [aplicacoes, setAplicacoes] = useState([]);
-  const [pdfUrl, setPdfUrl] = useState(null);
   const [modalPdfAplicacaoAberta, setModalPdfAplicacaoAberta] = useState(false);
   const [resultado, setResultado] = useState(null);
   const [aplicacaoSelecionadaId, setAplicacaoSelecionadaId] = useState(null);
@@ -81,12 +79,10 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
     }
   }, [aberta, paciente]);
 
-  async function handleGerarPdf(id) {
-    const blob = await gerarPDF(id);
-    const url = URL.createObjectURL(blob);
-    setPdfUrl(url);
-    setModalPdfAplicacaoAberta(true);
+  function handleGerarPdf(id) {
     setAplicacaoSelecionadaId(id);
+    setMenuAncora(null);
+    setModalPdfAplicacaoAberta(true);
   }
 
   async function gerarAnaliseIaAplicacao(id) {
@@ -113,7 +109,7 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
     <>
       <Dialog open={aberta} onClose={onFechar} maxWidth="xl">
         <DialogTitle>
-          Aplicacoes de <strong>{paciente?.nome}</strong>
+          Aplicações de <strong>{paciente?.nome}</strong>
         </DialogTitle>
         <DialogContent>
           <Box
@@ -127,7 +123,7 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
           >
             {aplicacoes.length === 0 ? (
               <Typography color="text.secondary">
-                Nenhuma aplicacao encontrada
+                Nenhuma aplicação encontrada
               </Typography>
             ) : (
               aplicacoes.map((a) => (
@@ -227,7 +223,6 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
             <ModalPdfAplicacao
               aberta={modalPdfAplicacaoAberta}
               onFechar={() => setModalPdfAplicacaoAberta(false)}
-              pdfUrl={pdfUrl}
               idAplicacao={aplicacaoSelecionadaId}
             />
           )}
@@ -239,19 +234,27 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={analiseIaAberta} onClose={() => setAnaliseIaAberta(false)} maxWidth="md" fullWidth>
+      <Dialog
+        open={analiseIaAberta}
+        onClose={() => setAnaliseIaAberta(false)}
+        maxWidth="md"
+        fullWidth
+      >
         <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <SmartToyIcon /> Análise IA
         </DialogTitle>
-        <DialogContent>
+        <DialogContent             sx={{ border: "solid gray 2px", mr: 1, ml: 1, borderRadius: 3 }}
+>
           {loadingAnalise ? (
-            <Typography color="text.secondary">Gerando análise...</Typography>
+            <Typography color="text.secondary" sx={{ m: 1 }}>Gerando análise...</Typography>
           ) : (
-            <Typography sx={{ whiteSpace: "pre-wrap" }}>{analiseIa}</Typography>
+            <Typography sx={{ whiteSpace: "pre-wrap", m: 1 }}>{analiseIa}</Typography>
           )}
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={() => setAnaliseIaAberta(false)}>Fechar</Button>
+          <Button variant="outlined" onClick={() => setAnaliseIaAberta(false)}>
+            Fechar
+          </Button>
         </DialogActions>
       </Dialog>
 
@@ -278,7 +281,7 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
           <ContentPasteSearchIcon fontSize="small" sx={{ mr: 1 }} /> Detalhes
         </MenuItem>
         <MenuItem onClick={() => gerarAnaliseIaAplicacao(menuAplicacao?.id)}>
-          <SmartToyIcon fontSize="small" sx={{ mr: 1 }} /> Analise IA
+          <SmartToyIcon fontSize="small" sx={{ mr: 1 }} /> Análise IA
         </MenuItem>
       </Menu>
     </>

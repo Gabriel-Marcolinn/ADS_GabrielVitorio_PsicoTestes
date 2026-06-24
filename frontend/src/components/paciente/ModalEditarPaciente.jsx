@@ -94,8 +94,8 @@ export default function ModalEditarPaciente({ aberta, onFechar, paciente, onEdit
             control={control}
             defaultValue={paciente?.cpf ? maskCPF(paciente.cpf) : ""}
             rules={{
-              required: "CPF eh obrigatorio",
-              validate: (value) => isCPF(value) || "CPF invalido",
+              required: "CPF é obrigatório",
+              validate: (value) => isCPF(value) || "CPF inválido",
             }}
             render={({ field }) => (
               <TextField

@@ -76,7 +76,7 @@ export default function ModalCadastrarPaciente({
           {!isPsicologo && (
             <TextField
               {...register("usuarioId", {
-                required: "Usuario e obrigatorio",
+                required: "Usuário é obrigatório",
               })}
               label="Psicólogo"
               select
@@ -97,8 +97,8 @@ export default function ModalCadastrarPaciente({
             name="cpf"
             control={control}
             rules={{
-              required: "CPF eh obrigatorio",
-              validate: (value) => isCPF(value) || "CPF invalido",
+              required: "CPF é obrigatório",
+              validate: (value) => isCPF(value) || "CPF inválido",
             }}
             render={({ field }) => (
               <TextField
@@ -116,7 +116,7 @@ export default function ModalCadastrarPaciente({
 
           <TextField
             {...register("nome", {
-              required: "Nome e obrigatorio",
+              required: "Nome é obrigatório",
             })}
             label="Nome"
             placeholder="Digite o nome do paciente"
@@ -128,7 +128,7 @@ export default function ModalCadastrarPaciente({
 
           <TextField
             {...register("email", {
-              required: "E-mail e obrigatorio",
+              required: "E-mail é obrigatório",
             })}
             label="E-mail"
             placeholder="Digite o e-mail do paciente"

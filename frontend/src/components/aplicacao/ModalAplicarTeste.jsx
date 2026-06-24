@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
-import { gerarPDF } from "../../../services/aplicacaoService";
-import ModalEnviarEmail from "../paciente/ModalEnviarEmail";
+import ModalPdfAplicacao from "../paciente/ModalPdfAplicacao";
 import {
   listarUsuarios,
   listarTodosUsuarios,
@@ -49,8 +48,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
   const [testeCompleto, setTesteCompleto] = useState(null);
   const [respostas, setRespostas] = useState({});
   const [resultado, setResultado] = useState(null);
-  const [pdfUrl, setPdfUrl] = useState(null);
-  const [modalEmailAberta, setModalEmailAberta] = useState(false);
+  const [modalPdfAberta, setModalPdfAberta] = useState(false);
   const [modalConfirmacaoAberta, setModalConfirmacaoAberta] = useState(false);
 
   const usuarioIdSelecionado = watch("usuarioId");
@@ -91,11 +89,8 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
     onFechar();
   }
 
-  async function handleGerarPdf() {
-    const blob = await gerarPDF(resultado.id);
-    const url = URL.createObjectURL(blob);
-    setPdfUrl(url);
-    setEtapa(4);
+  function handleGerarPdf() {
+    setModalPdfAberta(true);
   }
 
   async function handleProximo(data) {
@@ -134,7 +129,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
           variant="h5"
           fontWeight="bold"
         >
-          Cadastrar aplicacao
+          Cadastrar aplicação
         </DialogTitle>
 
         <DialogContent>
@@ -147,7 +142,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
               {!isPS && (
                 <TextField
                   {...register("usuarioId", {
-                    required: "Usuario e obrigatorio",
+                    required: "Usuário é obrigatório",
                   })}
                   label="Usuarios"
                   select
@@ -165,7 +160,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
               )}
               <TextField
                 {...register("pacienteId", {
-                  required: "Paciente e obrigatorio",
+                  required: "Paciente é obrigatório",
                 })}
                 label="Pacientes"
                 select
@@ -182,7 +177,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
               </TextField>
 
               <TextField
-                {...register("testeId", { required: "Teste e obrigatorio" })}
+                {...register("testeId", { required: "Teste é obrigatório" })}
                 label="Testes"
                 select
                 fullWidth
@@ -202,7 +197,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
                   Cancelar
                 </Button>
                 <Button type="submit" variant="contained">
-                  Proximo
+                  Próximo
                 </Button>
               </DialogActions>
             </Box>
@@ -264,10 +259,10 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
                 <strong>Paciente:</strong> {resultado.nomePaciente}
               </p>
               <p>
-                <strong>Pontuacao:</strong> {resultado.pontuacaoTotal}
+                <strong>Pontuação:</strong> {resultado.pontuacaoTotal}
               </p>
               <p>
-                <strong>Classificacao:</strong> {resultado.classificacao}
+                <strong>Classificação:</strong> {resultado.classificacao}
               </p>
               <Button variant="contained" onClick={handleGerarPdf}>
                 Gerar PDF
@@ -278,37 +273,11 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
             </Box>
           )}
 
-          {etapa === 4 && pdfUrl && (
-            <Box
-              sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}
-            >
-              <iframe
-                src={pdfUrl}
-                width="100%"
-                height="800px"
-                style={{ border: "none" }}
-              />
-              <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
-                <Button
-                  variant="contained"
-                  onClick={() => setModalEmailAberta(true)}
-                >
-                  Enviar e-mail
-                </Button>
-                <Button variant="outlined" onClick={handleFechar}>
-                  Fechar
-                </Button>
-              </Box>
-            </Box>
-          )}
-
-          {modalEmailAberta && (
-            <ModalEnviarEmail
-              aberta={modalEmailAberta}
-              onFechar={() => setModalEmailAberta(false)}
-              idAplicacao={resultado?.id}
-            />
-          )}
+          <ModalPdfAplicacao
+            aberta={modalPdfAberta}
+            onFechar={() => setModalPdfAberta(false)}
+            idAplicacao={resultado?.id}
+          />
         </DialogContent>
       </Dialog>
 

@@ -50,7 +50,7 @@ export default function Login() {
           fontWeight="bold"
           mb={3}
         >
-          Seja bem vindo ao Psicotestes!
+          Seja bem-vindo ao Psicotestes!
         </Typography>
 
         {erro && (

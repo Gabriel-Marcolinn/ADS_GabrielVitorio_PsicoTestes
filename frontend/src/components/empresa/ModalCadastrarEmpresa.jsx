@@ -5,8 +5,18 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { isCNPJ } from "validation-br";
+
+function maskCNPJ(value) {
+  return value
+    .replace(/\D/g, "")
+    .slice(0, 14)
+    .replace(/(\d{2})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1/$2")
+    .replace(/(\d{4})(\d{1,2})$/, "$1-$2");
+}
 
 export default function ModalCadastrarEmpresa({
   aberta,
@@ -16,6 +26,7 @@ export default function ModalCadastrarEmpresa({
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
     reset,
   } = useForm();
@@ -43,21 +54,29 @@ export default function ModalCadastrarEmpresa({
             component="form"
             onSubmit={handleSubmit(onCadastrar)}
           >
-            <TextField
-              {...register("cnpj", {
-                required: "CNPJ e obrigatorio",
-                validate: (value) => isCNPJ(value) || "CNPJ invalido",
-              })}
-              label="CNPJ"
-              placeholder="Digite o CNPJ"
-              fullWidth
-              sx={{ mb: 2 }}
-              error={!!errors.cnpj}
-              helperText={errors.cnpj?.message}
+            <Controller
+              name="cnpj"
+              control={control}
+              rules={{
+                required: "CNPJ é obrigatório",
+                validate: (value) => isCNPJ(value) || "CNPJ inválido",
+              }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  onChange={(e) => field.onChange(maskCNPJ(e.target.value))}
+                  label="CNPJ"
+                  inputProps={{ maxLength: 18 }}
+                  fullWidth
+                  sx={{ mb: 2 }}
+                  error={!!errors.cnpj}
+                  helperText={errors.cnpj?.message}
+                />
+              )}
             />
             <TextField
               {...register("razaoSocial", {
-                required: "Razao Social e obrigatoria",
+                required: "Razão Social é obrigatória",
               })}
               label="Razão Social"
               placeholder="Digite a Razão Social"

@@ -7,9 +7,9 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
 import { useState } from "react";
-import { enviarEmailPdf } from "../../../services/aplicacaoService";
+import { enviarEmailPdf, enviarEmailPdfCompleto } from "../../../services/aplicacaoService";
 
-export default function ModalEnviarEmail({ aberta, onFechar, idAplicacao }) {
+export default function ModalEnviarEmail({ aberta, onFechar, idAplicacao, tipoRelatorio }) {
   const [email, setEmail] = useState("");
   const [enviando, setEnviando] = useState(false);
   const [feedback, setFeedback] = useState(null); // { tipo: "success"|"error", mensagem: string }
@@ -18,7 +18,8 @@ export default function ModalEnviarEmail({ aberta, onFechar, idAplicacao }) {
     setEnviando(true);
     setFeedback(null);
     try {
-      await enviarEmailPdf(idAplicacao, email);
+      const enviar = tipoRelatorio === "completo" ? enviarEmailPdfCompleto : enviarEmailPdf;
+      await enviar(idAplicacao, email);
       setFeedback({ tipo: "success", mensagem: "E-mail enviado com sucesso!" });
     } catch (e) {
       setFeedback({ tipo: "error", mensagem: "Erro ao enviar e-mail." });

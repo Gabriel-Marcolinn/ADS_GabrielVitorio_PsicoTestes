@@ -43,6 +43,11 @@ import SmartToyIcon from "@mui/icons-material/SmartToy";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import Toast from "../Toast";
 import { isCPF } from "validation-br";
+import { analisarPaciente } from "../../../services/analiseIaService";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
 
 export default function Pacientes() {
   const [pacientes, setPacientes] = useState([]);
@@ -61,6 +66,9 @@ export default function Pacientes() {
   const [buscaNome, setBuscaNome] = useState("");
   const [menuAncora, setMenuAncora] = useState(null);
   const [menuPaciente, setMenuPaciente] = useState(null);
+  const [analiseIaAberta, setAnaliseIaAberta] = useState(false);
+  const [loadingAnalise, setLoadingAnalise] = useState(false);
+  const [analiseIa, setAnaliseIa] = useState(null);
 
   const usuarioLogado = getUsuarioLogado();
   const tipo = usuarioLogado?.tipo;
@@ -99,6 +107,22 @@ export default function Pacientes() {
       .then(setPacientes)
       .catch(console.error);
   }, [psicologoFiltro, ativosTrue]);
+
+  // ANALISE IA PACIENTE
+  async function gerarAnaliseIaPaciente(id) {
+    setMenuAncora(null);
+    setLoadingAnalise(true);
+    setAnaliseIaAberta(true);
+    setAnaliseIa(null);
+    try {
+      const data = await analisarPaciente(id);
+      setAnaliseIa(data.analise);
+    } catch (e) {
+      setAnaliseIa("Erro ao gerar análise: " + e.message);
+    } finally {
+      setLoadingAnalise(false);
+    }
+  }
 
   // CADASTRAR
   async function handleCadastrar(data) {
@@ -329,7 +353,7 @@ export default function Pacientes() {
                   <strong>E-mail</strong>
                 </TableCell>
                 <TableCell>
-                  <strong>Acoes</strong>
+                  <strong>Ações</strong>
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -363,6 +387,39 @@ export default function Pacientes() {
             </TableBody>
           </Table>
         </TableContainer>
+
+        <Dialog
+          open={analiseIaAberta}
+          onClose={() => setAnaliseIaAberta(false)}
+          maxWidth="md"
+          fullWidth
+        >
+          <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <SmartToyIcon /> Análise IA
+          </DialogTitle>
+
+          <DialogContent
+            sx={{ border: "solid gray 2px", mr: 1, ml: 1, borderRadius: 3 }}
+          >
+            {loadingAnalise ? (
+              <Typography color="text.secondary" sx={{ m: 1 }}>
+                Gerando análise...
+              </Typography>
+            ) : (
+              <Typography sx={{ whiteSpace: "pre-wrap", m: 1 }}>
+                {analiseIa}
+              </Typography>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="outlined"
+              onClick={() => setAnaliseIaAberta(false)}
+            >
+              Fechar
+            </Button>
+          </DialogActions>
+        </Dialog>
 
         <Menu
           anchorEl={menuAncora}
@@ -418,7 +475,7 @@ export default function Pacientes() {
           >
             <FindInPageIcon fontSize="small" sx={{ mr: 1 }} /> Ver aplicações
           </MenuItem>
-          <MenuItem>
+          <MenuItem onClick={() => gerarAnaliseIaPaciente(menuPaciente?.id)}>
             <SmartToyIcon fontSize="small" sx={{ mr: 1 }} /> IA
           </MenuItem>
         </Menu>

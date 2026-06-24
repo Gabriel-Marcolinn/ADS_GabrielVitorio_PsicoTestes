@@ -59,9 +59,9 @@ export default function Aplicacoes() {
           }}
         >
           <Box>
-            <Typography variant="h4">Gerenciar Aplicacoes</Typography>
+            <Typography variant="h4">Gerenciar Aplicações</Typography>
             <Typography variant="body2" color="text.secondary">
-              Visualize e gerencie todas as aplicacoes cadastradas no sistema
+              Visualize e gerencie todas as aplicações cadastradas no sistema
             </Typography>
           </Box>
           <Button
@@ -79,7 +79,7 @@ export default function Aplicacoes() {
               },
             }}
           >
-            + Nova Aplicacao
+            + Nova Aplicação
           </Button>{" "}
         </Box>
       </Box>
