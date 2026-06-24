@@ -9,8 +9,8 @@ import java.util.Optional;
 public interface PacienteRepository extends JpaRepository<Paciente, Long> {
 
     // Para validação de unicidade na hora de cadastrar/editar
-    Optional<Paciente> findByCpf(String cpf);
-    Optional<Paciente> findByEmail(String email);
+    Optional<Paciente> findByCpfAndPsicologoId(String cpf, Long psicologoId);
+    Optional<Paciente> findByEmailAndPsicologoId(String email, Long psicologoId);
 
     // Essencial para o psicólogo ver apenas a sua listagem de pacientes
     List<Paciente> findByPsicologoId(Long psicologoId);
