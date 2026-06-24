@@ -129,7 +129,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
           variant="h5"
           fontWeight="bold"
         >
-          Cadastrar aplicacao
+          Cadastrar aplicação
         </DialogTitle>
 
         <DialogContent>
@@ -142,7 +142,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
               {!isPS && (
                 <TextField
                   {...register("usuarioId", {
-                    required: "Usuario e obrigatorio",
+                    required: "Usuário é obrigatório",
                   })}
                   label="Usuarios"
                   select
@@ -160,7 +160,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
               )}
               <TextField
                 {...register("pacienteId", {
-                  required: "Paciente e obrigatorio",
+                  required: "Paciente é obrigatório",
                 })}
                 label="Pacientes"
                 select
@@ -177,7 +177,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
               </TextField>
 
               <TextField
-                {...register("testeId", { required: "Teste e obrigatorio" })}
+                {...register("testeId", { required: "Teste é obrigatório" })}
                 label="Testes"
                 select
                 fullWidth
@@ -197,7 +197,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
                   Cancelar
                 </Button>
                 <Button type="submit" variant="contained">
-                  Proximo
+                  Próximo
                 </Button>
               </DialogActions>
             </Box>
@@ -259,10 +259,10 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
                 <strong>Paciente:</strong> {resultado.nomePaciente}
               </p>
               <p>
-                <strong>Pontuacao:</strong> {resultado.pontuacaoTotal}
+                <strong>Pontuação:</strong> {resultado.pontuacaoTotal}
               </p>
               <p>
-                <strong>Classificacao:</strong> {resultado.classificacao}
+                <strong>Classificação:</strong> {resultado.classificacao}
               </p>
               <Button variant="contained" onClick={handleGerarPdf}>
                 Gerar PDF

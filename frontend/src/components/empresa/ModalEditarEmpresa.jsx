@@ -40,8 +40,8 @@ export default function ModalEditarEmpresa({
         >
           <TextField
             {...register("cnpj", {
-              required: "CNPJ e obrigatorio",
-              validate: (value) => isCNPJ(value) || "CNPJ invalido",
+              required: "CNPJ é obrigatório",
+              validate: (value) => isCNPJ(value) || "CNPJ inválido",
             })}
             label="CNPJ"
             placeholder="Digite o CNPJ"
@@ -53,7 +53,7 @@ export default function ModalEditarEmpresa({
           />
           <TextField
             {...register("razaoSocial", {
-              required: "Razao Social e obrigatoria",
+              required: "Razão Social é obrigatória",
             })}
             label="Razão Social"
             placeholder="Digite a Razão Social"

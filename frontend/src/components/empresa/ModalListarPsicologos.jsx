@@ -45,7 +45,7 @@ export default function ModalListarPsicologos({ aberta, onFechar, empresa }) {
       )}
       <Dialog open={aberta} onClose={onFechar}>
         <DialogTitle>
-          Psicologos - <strong>{empresa.razaoSocial}</strong>
+          Psicólogos - <strong>{empresa.razaoSocial}</strong>
         </DialogTitle>
         <Typography variant="caption" color="text.secondary" sx={{ px: 3 }}>
           {psicologos.length} psicólogos cadastrados
@@ -62,7 +62,7 @@ export default function ModalListarPsicologos({ aberta, onFechar, empresa }) {
           >
             {psicologos.length === 0 ? (
               <Typography color="text.secondary">
-                Nenhum psicologo cadastrado
+                Nenhum psicólogo cadastrado
               </Typography>
             ) : (
               psicologos.map((p) => (

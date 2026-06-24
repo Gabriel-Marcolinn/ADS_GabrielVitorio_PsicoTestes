@@ -118,7 +118,7 @@ export default function Pacientes() {
       const data = await analisarPaciente(id);
       setAnaliseIa(data.analise);
     } catch (e) {
-      setAnaliseIa("Erro ao gerar analise: " + e.message);
+      setAnaliseIa("Erro ao gerar análise: " + e.message);
     } finally {
       setLoadingAnalise(false);
     }
@@ -353,7 +353,7 @@ export default function Pacientes() {
                   <strong>E-mail</strong>
                 </TableCell>
                 <TableCell>
-                  <strong>Acoes</strong>
+                  <strong>Ações</strong>
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -395,7 +395,7 @@ export default function Pacientes() {
           fullWidth
         >
           <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <SmartToyIcon /> Analise IA
+            <SmartToyIcon /> Análise IA
           </DialogTitle>
 
           <DialogContent
@@ -403,7 +403,7 @@ export default function Pacientes() {
           >
             {loadingAnalise ? (
               <Typography color="text.secondary" sx={{ m: 1 }}>
-                Gerando analise...
+                Gerando análise...
               </Typography>
             ) : (
               <Typography sx={{ whiteSpace: "pre-wrap", m: 1 }}>

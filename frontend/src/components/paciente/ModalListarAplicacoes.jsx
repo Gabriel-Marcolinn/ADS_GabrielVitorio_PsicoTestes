@@ -109,7 +109,7 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
     <>
       <Dialog open={aberta} onClose={onFechar} maxWidth="xl">
         <DialogTitle>
-          Aplicacoes de <strong>{paciente?.nome}</strong>
+          Aplicações de <strong>{paciente?.nome}</strong>
         </DialogTitle>
         <DialogContent>
           <Box
@@ -123,7 +123,7 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
           >
             {aplicacoes.length === 0 ? (
               <Typography color="text.secondary">
-                Nenhuma aplicacao encontrada
+                Nenhuma aplicação encontrada
               </Typography>
             ) : (
               aplicacoes.map((a) => (
@@ -281,7 +281,7 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
           <ContentPasteSearchIcon fontSize="small" sx={{ mr: 1 }} /> Detalhes
         </MenuItem>
         <MenuItem onClick={() => gerarAnaliseIaAplicacao(menuAplicacao?.id)}>
-          <SmartToyIcon fontSize="small" sx={{ mr: 1 }} /> Analise IA
+          <SmartToyIcon fontSize="small" sx={{ mr: 1 }} /> Análise IA
         </MenuItem>
       </Menu>
     </>

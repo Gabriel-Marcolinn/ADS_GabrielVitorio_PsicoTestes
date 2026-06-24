@@ -12,9 +12,9 @@ export default function ModalConfirmacaoAplicacao({
 }) {
   return (
     <Dialog open={aberta} onClose={onFechar}>
-      <DialogTitle>Confirmar aplicacao</DialogTitle>
+      <DialogTitle>Confirmar aplicação</DialogTitle>
       <DialogContent>
-        <Typography>Tem certeza que deseja salvar a aplicacao?</Typography>
+        <Typography>Tem certeza que deseja salvar a aplicação?</Typography>
       </DialogContent>
       <DialogActions>
         <Button variant="outlined" onClick={onFechar}>Cancelar</Button>

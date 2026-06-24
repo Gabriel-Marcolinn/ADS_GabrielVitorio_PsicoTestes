@@ -87,7 +87,7 @@ export default function ModalPdfAplicacao({ aberta, onFechar, idAplicacao }) {
                   variant="contained"
                   onClick={() => setModalEmailAberta(true)}
                 >
-                  Enviar email
+                  Enviar e-mail
                 </Button>
               </>
             )}
