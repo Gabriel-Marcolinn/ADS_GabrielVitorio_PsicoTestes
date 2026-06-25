@@ -88,15 +88,17 @@ export default function Pacientes() {
     if (isPS) {
       setPsicologoFiltro(usuarioLogado?.id);
     } else if (isPA) {
-      listarUsuarios(usuarioLogado?.empresaId, ativosTrue)
+      listarUsuarios(usuarioLogado?.empresaId, true)
         .then((lista) => setPsicologos(lista.filter((u) => u.tipo === "PS")))
         .catch(console.error);
     } else {
       listarTodosUsuarios()
-        .then((lista) => setPsicologos(lista.filter((u) => u.tipo === "PS")))
+        .then((lista) =>
+          setPsicologos(lista.filter((u) => u.tipo === "PS" && u.ativo)),
+        )
         .catch(console.error);
     }
-  }, [ativosTrue]);
+  }, []);
 
   useEffect(() => {
     if (!psicologoFiltro) {
