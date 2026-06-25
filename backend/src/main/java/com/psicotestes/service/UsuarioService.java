@@ -46,7 +46,7 @@ public class UsuarioService {
 
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarPorEmpresa(Long empresaId, Boolean ativo) {
-        return usuarioRepository.findByEmpresaIdAndAtivo(empresaId, ativo)
+        return usuarioRepository.findByEmpresaIdAndAtivoOrderByIdAsc(empresaId, ativo)
                 .stream()
                 .map(UsuarioResponseDTO::new)
                 .toList();

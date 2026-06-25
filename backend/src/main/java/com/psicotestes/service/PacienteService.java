@@ -55,7 +55,7 @@ public class PacienteService {
 
     @Transactional(readOnly = true)
     public List<PacienteResponseDTO> listarPorPsicologo(Long psicologoId, Boolean ativo) {
-        return pacienteRepository.findByPsicologoIdAndAtivo(psicologoId, ativo)
+        return pacienteRepository.findByPsicologoIdAndAtivoOrderByIdAsc(psicologoId, ativo)
                 .stream()
                 .map(paciente -> new PacienteResponseDTO(paciente))
                 .toList();
