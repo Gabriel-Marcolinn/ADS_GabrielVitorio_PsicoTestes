@@ -96,7 +96,10 @@ export default function ModalCadastrarUsuario({
           <TextField
             {...register("senha", {
               required: "Senha é obrigatória",
-              minLength: { value: 8, message: "Senha precisa ter 8 ou mais caracteres!"},
+              minLength: {
+                value: 8,
+                message: "Senha precisa ter 8 ou mais caracteres!",
+              },
             })}
             label="Senha"
             type={showPassword ? "text" : "password"}
@@ -142,11 +145,13 @@ export default function ModalCadastrarUsuario({
               error={!!errors.empresaId}
               helperText={errors.empresaId?.message}
             >
-              {empresas.map((e) => (
-                <MenuItem key={e.id} value={e.id}>
-                  {e.razaoSocial}
-                </MenuItem>
-              ))}
+              {empresas
+                .filter((empresa) => empresa.ativo === true)
+                .map((e) => (
+                  <MenuItem key={e.id} value={e.id}>
+                    {e.razaoSocial}
+                  </MenuItem>
+                ))}
             </TextField>
           )}
           <DialogActions>
