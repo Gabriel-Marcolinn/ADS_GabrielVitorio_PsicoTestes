@@ -58,7 +58,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
       if (isPS) {
         setValue("usuarioId", usuarioLogado.id);
       } else if (isPA) {
-        listarUsuarios(usuarioLogado?.empresaId)
+        listarUsuarios(usuarioLogado?.empresaId, true)
           .then((lista) => setUsuarios(lista.filter((u) => u.tipo === "PS")))
           .catch(console.error);
       } else {
@@ -151,7 +151,9 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
                   error={!!errors.usuarioId}
                   helperText={errors.usuarioId?.message}
                 >
-                  {usuarios.map((u) => (
+                  {usuarios
+                  .filter(u => u.ativo === true)
+                  .map((u) => (
                     <MenuItem key={u.id} value={u.id}>
                       {u.nome}
                     </MenuItem>

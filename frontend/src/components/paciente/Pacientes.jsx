@@ -88,7 +88,7 @@ export default function Pacientes() {
     if (isPS) {
       setPsicologoFiltro(usuarioLogado?.id);
     } else if (isPA) {
-      listarUsuarios(usuarioLogado?.empresaId)
+      listarUsuarios(usuarioLogado?.empresaId, ativosTrue)
         .then((lista) => setPsicologos(lista.filter((u) => u.tipo === "PS")))
         .catch(console.error);
     } else {
@@ -96,7 +96,7 @@ export default function Pacientes() {
         .then((lista) => setPsicologos(lista.filter((u) => u.tipo === "PS")))
         .catch(console.error);
     }
-  }, []);
+  }, [ativosTrue]);
 
   useEffect(() => {
     if (!psicologoFiltro) {

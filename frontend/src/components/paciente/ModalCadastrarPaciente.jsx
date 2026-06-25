@@ -86,7 +86,9 @@ export default function ModalCadastrarPaciente({
               error={!!errors.usuarioId}
               helperText={errors.usuarioId?.message}
             >
-              {usuarios.map((u) => (
+              {usuarios
+              .filter(u => u.ativo === true)
+              .map((u) => (
                 <MenuItem key={u.id} value={u.id}>
                   {u.nome}
                 </MenuItem>

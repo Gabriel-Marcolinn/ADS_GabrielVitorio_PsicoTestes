@@ -70,9 +70,9 @@ export default function Usuarios() {
     const busca =
       usuarioLogado.tipo === "AD"
         ? listarTodosUsuarios()
-        : listarUsuarios(usuarioLogado.empresaId);
+        : listarUsuarios(usuarioLogado.empresaId, ativosTrue);
     busca.then((data) => setUsuarios(data ?? [])).catch(() => setUsuarios([]));
-  }, []);
+  }, [ativosTrue]);
 
   function confirmarDeletar(usuario) {
     setUsuarioParaDeletar(usuario);
