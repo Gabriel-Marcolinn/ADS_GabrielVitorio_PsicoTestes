@@ -100,7 +100,7 @@ export default function Usuarios() {
       await inativarUsuario(usuarioParaInativar.id);
       setUsuarios(usuarios.map((u) => u.id === usuarioParaInativar.id ? { ...u, ativo: !u.ativo } : u));
       setModalInativarAberta(false);
-      mostrarToast("Usuário inativado com sucesso!");
+      mostrarToast(usuarioParaInativar.ativo ? "Usuario inativado com sucesso!" : "Usuario ativado com sucesso!")
     } catch (error) {
       mostrarToast(error.message, "error");
     }

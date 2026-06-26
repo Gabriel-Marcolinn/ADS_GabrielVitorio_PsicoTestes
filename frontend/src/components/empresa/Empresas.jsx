@@ -74,6 +74,7 @@ export default function Empresas() {
       await deletarEmpresa(empresaParaDeletar.id);
       setEmpresas(empresas.filter((e) => e.id !== empresaParaDeletar.id));
       setModalDeletarAberta(false);
+      mostrarToast("Usuario deletado com sucesso!")
     } catch (error) {
       mostrarToast(error.message, "error");
     }
@@ -89,6 +90,8 @@ export default function Empresas() {
       await inativarEmpresa(empresaParaInativar.id);
       setEmpresas(empresas.map((e) => e.id === empresaParaInativar.id ? { ...e, ativo: !e.ativo } : e));
       setModalInativarAberta(false);
+            mostrarToast(empresaParaInativar.ativo ? "Empresa inativado com sucesso!" : "Empresa ativado com sucesso!")
+
     } catch (error) {
       mostrarToast(error.message, "error");
     }
@@ -108,6 +111,7 @@ export default function Empresas() {
         ),
       );
       setModalEditarAberta(false);
+      mostrarToast("Empresa editada com sucesso!")
     } catch (error) {
       mostrarToast(error.message, "error");
     }
