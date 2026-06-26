@@ -4,7 +4,12 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 
-export default function ModalInativarPaciente({ aberta, onFechar, paciente, onInativar }) {
+export default function ModalInativarPaciente({
+  aberta,
+  onFechar,
+  paciente,
+  onInativar,
+}) {
   const acao = paciente?.ativo ? "Inativar" : "Ativar";
   const cor = paciente?.ativo ? "warning" : "success";
 
