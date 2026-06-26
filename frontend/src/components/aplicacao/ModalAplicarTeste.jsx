@@ -25,6 +25,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 import Paper from "@mui/material/Paper";
 import ModalConfirmacaoAplicacao from "./ModalConfirmacaoAplicacao";
+import Toast from "../Toast";
 
 export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
   const usuarioLogado = getUsuarioLogado();
@@ -52,6 +53,10 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
   const [modalConfirmacaoAberta, setModalConfirmacaoAberta] = useState(false);
 
   const usuarioIdSelecionado = watch("usuarioId");
+
+  const mostrarToast = (mensagem, tipo = "success") =>
+    setToast({ aberto: true, mensagem, tipo });
+  const fecharToast = () => setToast((t) => ({ ...t, aberto: false }));
 
   useEffect(() => {
     if (aberta) {
@@ -119,6 +124,7 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
     setResultado(resultado);
     setEtapa(3);
     setModalConfirmacaoAberta(false);
+    mostrarToast("Teste aplicado com sucesso!")
   }
 
   return (
