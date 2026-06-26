@@ -3,6 +3,7 @@ package com.psicotestes.controller;
 import com.psicotestes.dto.AplicacaoCompletaResponseDTO;
 import com.psicotestes.dto.AplicacaoRequestDTO;
 import com.psicotestes.dto.AplicacaoResponseDTO;
+import com.psicotestes.dto.LaudoRequestDTO;
 import com.psicotestes.service.AplicacaoTesteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,5 +48,11 @@ public class AplicacaoTesteController {
     @GetMapping("/{AplicacaoId}")
     public ResponseEntity<AplicacaoCompletaResponseDTO> buscarAplicacaoCompleta(@PathVariable Long AplicacaoId) {
         return ResponseEntity.ok(aplicacaoTesteService.buscarAplicacaoCompletaDTO(AplicacaoId));
+    }
+
+    @PatchMapping("/{id}/laudo")
+    public ResponseEntity<Void> adicionarLaudo(@PathVariable Long id, @RequestBody @Valid LaudoRequestDTO dto) {
+        aplicacaoTesteService.salvarLaudo(id, dto.laudo());
+        return ResponseEntity.noContent().build();
     }
 }

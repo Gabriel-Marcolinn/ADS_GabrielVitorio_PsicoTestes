@@ -29,18 +29,17 @@ public class PacienteService {
 
     @Transactional
     public PacienteResponseDTO salvar(PacienteRequestDTO dto) {
-        if (pacienteRepository.findByCpf(dto.cpf()).isPresent()) {
-            throw new RuntimeException("Já existe um paciente cadastrado com este CPF.");
+        String cpfFormatado = dto.cpf().trim().replace("-", "").replace(".","");
+        if (pacienteRepository.findByCpfAndPsicologoId(cpfFormatado, dto.psicologoId()).isPresent()) {
+            throw new RuntimeException("Já existe um paciente cadastrado com este CPF para este psicólogo.");
         }
 
-        if (pacienteRepository.findByEmail(dto.email()).isPresent()) {
-            throw new RuntimeException("Já existe um paciente cadastrado com este email.");
+        if (pacienteRepository.findByEmailAndPsicologoId(dto.email(), dto.psicologoId()).isPresent()) {
+            throw new RuntimeException("Já existe um paciente cadastrado com este email para este psicólogo.");
         }
 
         Usuario psicologo = usuarioRepository.findById(dto.psicologoId())
                 .orElseThrow(() -> new RuntimeException("Psicólogo não encontrado."));
-
-        String cpfFormatado = dto.cpf().trim().replace("-", "").replace(".","");
 
         Paciente paciente = Paciente.builder()
                 .nome(dto.nome())
@@ -56,7 +55,7 @@ public class PacienteService {
 
     @Transactional(readOnly = true)
     public List<PacienteResponseDTO> listarPorPsicologo(Long psicologoId, Boolean ativo) {
-        return pacienteRepository.findByPsicologoIdAndAtivo(psicologoId, ativo)
+        return pacienteRepository.findByPsicologoIdAndAtivoOrderByIdAsc(psicologoId, ativo)
                 .stream()
                 .map(paciente -> new PacienteResponseDTO(paciente))
                 .toList();
@@ -67,13 +66,15 @@ public class PacienteService {
         Paciente paciente = pacienteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Paciente não encontrado."));
 
-        // Só lança erro se o CPF mudou E o novo CPF já existe no banco
-        if (!paciente.getCpf().equals(dto.cpf()) && pacienteRepository.findByCpf(dto.cpf()).isPresent()) {
+        String cpfFormatado = dto.cpf().trim().replace("-", "").replace(".","");
+
+        // Só lança erro se o CPF mudou E o novo CPF já existe no banco para o mesmo psicólogo
+        if (!paciente.getCpf().equals(cpfFormatado) && pacienteRepository.findByCpfAndPsicologoId(cpfFormatado,dto.psicologoId()).isPresent()) {
             throw new RuntimeException("Este CPF já está em uso por outro paciente.");
         }
 
-        // Só lança erro se o email mudou E o novo email já existe no banco
-        if (!paciente.getEmail().equals(dto.email()) && pacienteRepository.findByEmail(dto.email()).isPresent()) {
+        // Só lança erro se o email mudou E o novo email já existe no banco para o mesmo psicólogo
+        if (!paciente.getEmail().equals(dto.email()) && pacienteRepository.findByEmailAndPsicologoId(dto.email(), dto.psicologoId()).isPresent()) {
             throw new RuntimeException("Este email já está em uso por outro paciente.");
         }
 
@@ -81,7 +82,7 @@ public class PacienteService {
                 .orElseThrow(() -> new RuntimeException("Psicólogo não encontrado."));
 
         paciente.setNome(dto.nome());
-        paciente.setCpf(dto.cpf());
+        paciente.setCpf(cpfFormatado);
         paciente.setEmail(dto.email());
         paciente.setPsicologo(psicologo);
 

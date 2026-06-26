@@ -160,6 +160,13 @@ public class AplicacaoTesteService {
         aplicacaoTesteRepository.save(aplicacao);
     }
 
+    @Transactional public void salvarLaudo(Long aplicacaoId, String laudo) {
+        AplicacaoTeste aplicacaoTeste = aplicacaoTesteRepository.findById(aplicacaoId)
+                .orElseThrow(() -> new RuntimeException("Aplicação não encontrada."));
+        aplicacaoTeste.setLaudo(laudo);
+        aplicacaoTesteRepository.save(aplicacaoTeste);
+    }
+
     // Centraliza o mapeamento para evitar código repetido
     private AplicacaoResponseDTO mapearParaDTO(AplicacaoTeste aplicacao) {
         return new AplicacaoResponseDTO(

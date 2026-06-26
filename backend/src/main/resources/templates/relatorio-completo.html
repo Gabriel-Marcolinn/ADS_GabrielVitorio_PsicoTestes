@@ -89,7 +89,23 @@
             margin-top: 5px;
         }
 
-        /* NOVO: Estilos para a Tabela de Respostas e Assinatura */
+        .analise-container {
+            margin: 0 auto 30px auto;
+            width: 95%;
+            padding: 15px;
+            background-color: #f4f6f7;
+            border-left: 4px solid #2980b9;
+            font-size: 13.5px;
+            text-align: justify;
+            white-space: pre-wrap;
+            border-radius: 4px;
+        }
+        .text-muted {
+            color: #7f8c8d;
+            font-style: italic;
+            text-align: center;
+        }
+
         .qa-table {
             width: 100%;
             border-collapse: collapse;
@@ -106,7 +122,7 @@
             font-weight: bold;
         }
         .qa-table tr {
-            page-break-inside: avoid; /* Evita que uma linha seja cortada no meio da página */
+            page-break-inside: avoid;
         }
         .signature-box {
             margin-top: 40px;
@@ -119,7 +135,6 @@
             margin: 0 auto;
             margin-bottom: 5px;
         }
-
         .footer {
             position: running(rodape-pdf);
             text-align: center;
@@ -163,7 +178,15 @@
     <div class="classification-value" th:text="${classificacao}">Classificação Clínica</div>
 </div>
 
-<!-- NOVO: Tabela iterando sobre as respostas -->
+<div class="section-title">Parecer Analítico (Inteligência Artificial)</div>
+<div class="analise-container">
+    <span th:if="${not #strings.isEmpty(analiseIa)}" th:text="${analiseIa}">Texto gerado pela IA.</span>
+
+    <div th:if="${#strings.isEmpty(analiseIa)}" class="text-muted">
+        Nenhuma análise de Inteligência Artificial foi gerada para esta aplicação até o momento.
+    </div>
+</div>
+
 <div class="section-title">Detalhamento das Respostas</div>
 <table class="qa-table">
     <thead>
@@ -174,7 +197,6 @@
     </tr>
     </thead>
     <tbody>
-    <!-- O Thymeleaf vai repetir a tag <tr> para cada Resposta do Paciente -->
     <tr th:each="resposta, iterStat : ${respostas}">
         <td th:text="${resposta.alternativa.pergunta.pergunta}">Texto da Pergunta</td>
         <td th:text="${resposta.alternativa.alternativa}">Texto da Alternativa Marcada</td>
@@ -183,7 +205,6 @@
     </tbody>
 </table>
 
-<!-- NOVO: Local para Assinatura do Psicólogo -->
 <div class="signature-box">
     <div class="signature-line"></div>
     <div style="font-weight: bold;" th:text="${psicologoNome}">Nome do Psicólogo</div>
