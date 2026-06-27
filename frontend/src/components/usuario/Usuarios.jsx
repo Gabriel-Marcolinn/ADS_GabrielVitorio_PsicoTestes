@@ -286,7 +286,8 @@ export default function Usuarios() {
               {usuarios.filter(
                 (u) =>
                   u.ativo === ativosTrue &&
-                  u.nome.toLowerCase().includes(buscaNome.toLowerCase()),
+                  u.nome.toLowerCase().includes(buscaNome.toLowerCase()) &&
+                  !(usuarioLogado.tipo === "PA" && u.tipo === "AD"),
               ).length === 0 ? (
                 ativosTrue ? (
                   <TableRow>
@@ -335,6 +336,9 @@ export default function Usuarios() {
                   .filter((u) => u.ativo === ativosTrue)
                   .filter((u) =>
                     u.nome.toLowerCase().includes(buscaNome.toLowerCase()),
+                  )
+                  .filter(
+                    (u) => !(usuarioLogado.tipo === "PA" && u.tipo === "AD"),
                   )
                   .map((usuario) => (
                     <TableRow key={usuario.id}>
