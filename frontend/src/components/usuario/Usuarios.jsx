@@ -8,6 +8,7 @@ import {
   cadastrarUsuario,
 } from "../../../services/usuarioService";
 import { getUsuarioLogado } from "../../../services/authService";
+import { listarEmpresas } from "../../../services/empresaService";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -54,6 +55,7 @@ export default function Usuarios() {
   const [ativosTrue, setAtivosTrue] = useState(true);
   const [menuUsuario, setMenuUsuario] = useState(null);
   const [buscaNome, setBuscaNome] = useState("");
+  const [empresaMap, setEmpresaMap] = useState({});
 
   const [toast, setToast] = useState({
     aberto: false,
@@ -72,6 +74,16 @@ export default function Usuarios() {
         ? listarTodosUsuarios()
         : listarUsuarios(usuarioLogado.empresaId, ativosTrue);
     busca.then((data) => setUsuarios(data ?? [])).catch(() => setUsuarios([]));
+
+    if (usuarioLogado.tipo === "AD") {
+      listarEmpresas()
+        .then((data) => {
+          const mapa = {};
+          (data ?? []).forEach((e) => { mapa[e.id] = e.razaoSocial; });
+          setEmpresaMap(mapa);
+        })
+        .catch(() => {});
+    }
   }, [ativosTrue]);
 
   function confirmarDeletar(usuario) {
@@ -276,6 +288,11 @@ export default function Usuarios() {
                 <TableCell>
                   <strong>Tipo</strong>
                 </TableCell>
+                {usuarioLogado.tipo === "AD" && (
+                  <TableCell>
+                    <strong>Empresa</strong>
+                  </TableCell>
+                )}
                 <TableCell>
                   <strong>Ações</strong>
                 </TableCell>
@@ -291,7 +308,7 @@ export default function Usuarios() {
               ).length === 0 ? (
                 ativosTrue ? (
                   <TableRow>
-                    <TableCell colSpan={4} align="center" sx={{ p: 8 }}>
+                    <TableCell colSpan={usuarioLogado.tipo === "AD" ? 5 : 4} align="center" sx={{ p: 8 }}>
                       <Box sx={{ m: 2 }}>
                         <Typography variant="h4">
                           Nenhum usuario encontrado!
@@ -312,7 +329,7 @@ export default function Usuarios() {
                   </TableRow>
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={4} align="center" sx={{ p: 8 }}>
+                    <TableCell colSpan={usuarioLogado.tipo === "AD" ? 5 : 4} align="center" sx={{ p: 8 }}>
                       <Box sx={{ m: 2 }}>
                         <Typography variant="h4">
                           Nenhum usuario encontrado!
@@ -353,6 +370,11 @@ export default function Usuarios() {
                           size="small"
                         />
                       </TableCell>
+                      {usuarioLogado.tipo === "AD" && (
+                        <TableCell>
+                          {empresaMap[usuario.empresaId] ?? "—"}
+                        </TableCell>
+                      )}
                       <TableCell>
                         <IconButton
                           onClick={(e) => {
