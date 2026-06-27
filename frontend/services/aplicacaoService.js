@@ -15,9 +15,12 @@ export async function aplicarTeste(data, usuarioId) {
 
 // LISTAGEM DE UM PACIENTE
 export async function listarAplicacoesPorPaciente(pacienteId) {
-  const response = await fetchAutenticado(`${BASE_URL}/paciente/${pacienteId}`, {
-    headers: getAuthHeaders(),
-  });
+  const response = await fetchAutenticado(
+    `${BASE_URL}/paciente/${pacienteId}`,
+    {
+      headers: getAuthHeaders(),
+    },
+  );
   return handleResponse(response);
 }
 
@@ -63,4 +66,14 @@ export async function enviarEmailPdfCompleto(id, email) {
   );
   if (!response.ok) throw new Error("Erro ao enviar e-mail");
   return response.text();
+}
+
+// ADICIONAR LAUDO
+export async function adicionarLaudo(id, laudo) {
+  const response = await fetchAutenticado(`${BASE_URL}/${id}/laudo`, {
+    method: "PATCH",
+    headers: { ...getAuthHeaders(), "Content-Type": "application/json" },
+    body: JSON.stringify({ laudo }),
+  });
+  if (!response.ok) throw new Error("Erro ao adicionar laudo");
 }

@@ -18,6 +18,8 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ArticleIcon from "@mui/icons-material/Article";
 import ContentPasteSearchIcon from "@mui/icons-material/ContentPasteSearch";
+import EditDocumentIcon from "@mui/icons-material/EditDocument";
+import ModalLaudo from "./ModalLaudo";
 
 const TIPO_LABELS = {
   //BDI-DOIS
@@ -58,7 +60,6 @@ const TIPO_LABELS = {
 export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
   const [aplicacoes, setAplicacoes] = useState([]);
   const [modalPdfAplicacaoAberta, setModalPdfAplicacaoAberta] = useState(false);
-  const [resultado, setResultado] = useState(null);
   const [aplicacaoSelecionadaId, setAplicacaoSelecionadaId] = useState(null);
   const [modalAlternativasAberta, setModalAlternativasAberta] = useState(false);
   const [aplicacaoDetalhesId, setAplicacaoDetalhesId] = useState(null);
@@ -67,6 +68,8 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
   const [analiseIa, setAnaliseIa] = useState(null);
   const [analiseIaAberta, setAnaliseIaAberta] = useState(false);
   const [loadingAnalise, setLoadingAnalise] = useState(false);
+  const [laudoDialogAberta, setLaudoDialogAberta] = useState(false);
+  const [laudoAplicacaoId, setLaudoAplicacaoId] = useState(null);
 
   useEffect(() => {
     if (aberta && paciente) {
@@ -98,6 +101,18 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
     } finally {
       setLoadingAnalise(false);
     }
+  }
+
+  function handleAbrirLaudo(id) {
+    setMenuAncora(null);
+    setLaudoAplicacaoId(id);
+    setLaudoDialogAberta(true);
+  }
+
+  function handleLaudoSalvo(id, texto) {
+    setAplicacoes((prev) =>
+      prev.map((a) => (a.id === id ? { ...a, laudo: texto } : a)),
+    );
   }
 
   async function handleAbrirAcoes(event, aplicacao) {
@@ -243,12 +258,17 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
         <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <SmartToyIcon /> Análise IA
         </DialogTitle>
-        <DialogContent             sx={{ border: "solid gray 2px", mr: 1, ml: 1, borderRadius: 3 }}
->
+        <DialogContent
+          sx={{ border: "solid gray 2px", mr: 1, ml: 1, borderRadius: 3 }}
+        >
           {loadingAnalise ? (
-            <Typography color="text.secondary" sx={{ m: 1 }}>Gerando análise...</Typography>
+            <Typography color="text.secondary" sx={{ m: 1 }}>
+              Gerando análise...
+            </Typography>
           ) : (
-            <Typography sx={{ whiteSpace: "pre-wrap", m: 1 }}>{analiseIa}</Typography>
+            <Typography sx={{ whiteSpace: "pre-wrap", m: 1 }}>
+              {analiseIa}
+            </Typography>
           )}
         </DialogContent>
         <DialogActions>
@@ -257,6 +277,16 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {laudoDialogAberta && (
+        <ModalLaudo
+          aberta={laudoDialogAberta}
+          onFechar={() => setLaudoDialogAberta(false)}
+          aplicacaoId={laudoAplicacaoId}
+          laudoInicial={menuAplicacao?.laudo}
+          onSalvar={handleLaudoSalvo}
+        />
+      )}
 
       <Menu
         anchorEl={menuAncora}
@@ -282,6 +312,9 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
         </MenuItem>
         <MenuItem onClick={() => gerarAnaliseIaAplicacao(menuAplicacao?.id)}>
           <SmartToyIcon fontSize="small" sx={{ mr: 1 }} /> Análise IA
+        </MenuItem>
+        <MenuItem onClick={() => handleAbrirLaudo(menuAplicacao?.id)}>
+          <EditDocumentIcon fontSize="small" sx={{ mr: 1 }} /> Adicionar laudo
         </MenuItem>
       </Menu>
     </>
