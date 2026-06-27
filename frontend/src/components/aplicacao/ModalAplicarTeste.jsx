@@ -51,6 +51,12 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
   const [resultado, setResultado] = useState(null);
   const [modalPdfAberta, setModalPdfAberta] = useState(false);
   const [modalConfirmacaoAberta, setModalConfirmacaoAberta] = useState(false);
+  const [toast, setToast] = useState({
+    aberto: false,
+    mensagem: "",
+    tipo: "success",
+  });
+  const [perguntasNaoRespondidas, setPerguntasNaoRespondidas] = useState([]);
 
   const usuarioIdSelecionado = watch("usuarioId");
 
@@ -107,24 +113,51 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
     setEtapa(2);
   }
 
+  function handleClickFinalizar() {
+    const naoRespondidas = testeCompleto.perguntas
+      .map((p, index) => ({ id: p.id, numero: index + 1 }))
+      .filter(({ id }) => respostas[id] === undefined);
+
+    if (naoRespondidas.length > 0) {
+      setPerguntasNaoRespondidas(naoRespondidas.map(({ id }) => id));
+      const numeros = naoRespondidas.map(({ numero }) => numero).join(", ");
+      mostrarToast(`Responda as perguntas: ${numeros}`, "error");
+      return;
+    }
+
+    setPerguntasNaoRespondidas([]);
+    setModalConfirmacaoAberta(true);
+  }
+
   async function handleFinalizar() {
     const { usuarioId, pacienteId, testeId } = getValues();
     const alternativasIds = Object.values(respostas);
 
-    const resposta = await fetch("http://localhost:8080/api/aplicacoes", {
-      method: "POST",
-      headers: {
-        ...getAuthHeaders(),
-        "Usuario-Id": usuarioId,
-      },
-      body: JSON.stringify({ pacienteId, testeId, alternativasIds }),
-    });
+    try {
+      const resposta = await fetch("http://localhost:8080/api/aplicacoes", {
+        method: "POST",
+        headers: {
+          ...getAuthHeaders(),
+          "Usuario-Id": usuarioId,
+        },
+        body: JSON.stringify({ pacienteId, testeId, alternativasIds }),
+      });
 
-    const resultado = await resposta.json();
-    setResultado(resultado);
-    setEtapa(3);
-    setModalConfirmacaoAberta(false);
-    mostrarToast("Teste aplicado com sucesso!")
+      if (!resposta.ok) {
+        const erro = await resposta.json();
+        mostrarToast(erro.mensagem, "error");
+        setModalConfirmacaoAberta(false);
+        return;
+      }
+
+      const resultado = await resposta.json();
+      setResultado(resultado);
+      setEtapa(3);
+      setModalConfirmacaoAberta(false);
+      mostrarToast("Teste aplicado com sucesso!");
+    } catch (error) {
+      mostrarToast("Erro ao aplicar o teste.", "error");
+    }
   }
 
   return (
@@ -158,12 +191,12 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
                   helperText={errors.usuarioId?.message}
                 >
                   {usuarios
-                  .filter(u => u.ativo === true)
-                  .map((u) => (
-                    <MenuItem key={u.id} value={u.id}>
-                      {u.nome}
-                    </MenuItem>
-                  ))}
+                    .filter((u) => u.ativo === true)
+                    .map((u) => (
+                      <MenuItem key={u.id} value={u.id}>
+                        {u.nome}
+                      </MenuItem>
+                    ))}
                 </TextField>
               )}
               <TextField
@@ -215,33 +248,43 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
             <Box
               sx={{ display: "flex", flexDirection: "column", gap: 3, pt: 1 }}
             >
-              {testeCompleto.perguntas.map((p, index) => (
-                <Paper sx={{ p: 1 }} key={p.id}>
-                  <p>{p.pergunta}</p>
-                  <RadioGroup
-                    value={respostas[p.id] ?? ""}
-                    onChange={(e) =>
-                      setRespostas((previ) => ({
-                        ...previ,
-                        [p.id]: Number(e.target.value),
-                      }))
-                    }
+              {testeCompleto.perguntas.map((p, index) => {
+                const naoRespondida = perguntasNaoRespondidas.includes(p.id);
+                return (
+                  <Paper
+                    sx={{
+                      p: 1,
+                      border: naoRespondida ? "2px solid" : "none",
+                      borderColor: naoRespondida ? "error.main" : "transparent",
+                    }}
+                    key={p.id}
                   >
-                    {p.alternativas.map((alt) => (
-                      <FormControlLabel
-                        key={alt.id}
-                        value={alt.id}
-                        control={<Radio />}
-                        label={alt.alternativa}
-                      />
-                    ))}
-                  </RadioGroup>
-                </Paper>
-              ))}
-              <Button
-                variant="contained"
-                onClick={() => setModalConfirmacaoAberta(true)}
-              >
+                    <p>{p.pergunta}</p>
+                    <RadioGroup
+                      value={respostas[p.id] ?? ""}
+                      onChange={(e) => {
+                        setPerguntasNaoRespondidas((prev) =>
+                          prev.filter((id) => id !== p.id),
+                        );
+                        setRespostas((previ) => ({
+                          ...previ,
+                          [p.id]: Number(e.target.value),
+                        }));
+                      }}
+                    >
+                      {p.alternativas.map((alt) => (
+                        <FormControlLabel
+                          key={alt.id}
+                          value={alt.id}
+                          control={<Radio />}
+                          label={alt.alternativa}
+                        />
+                      ))}
+                    </RadioGroup>
+                  </Paper>
+                );
+              })}
+              <Button variant="contained" onClick={handleClickFinalizar}>
                 Finalizar
               </Button>
               <Button variant="outlined" onClick={handleFechar}>
@@ -294,6 +337,8 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
         onFechar={() => setModalConfirmacaoAberta(false)}
         onConfirmar={handleFinalizar}
       />
+
+      <Toast toast={toast} onFechar={fecharToast} />
     </>
   );
 }
