@@ -1,27 +1,11 @@
 import { getAuthHeaders } from "./authService.js";
+import { fetchAutenticado, handleResponse } from "./apiClient.js";
 
 const BASE_URL = "http://localhost:8080/api/usuarios";
 
-async function handleResponse(response) {
-  if (response.ok) {
-    if (response.status === 204) return null;
-    return response.json();
-  }
-
-  let mensagem = "Erro desconhecido";
-  try {
-    const erro = await response.json();
-    mensagem =
-      erro.mensagem || erro.message || erro.error || JSON.stringify(erro);
-  } catch {
-    mensagem = await response.text();
-  }
-  throw new Error(mensagem);
-}
-
 // CADASTRO
 export async function cadastrarUsuario(data) {
-  const response = await fetch(BASE_URL, {
+  const response = await fetchAutenticado(BASE_URL, {
     method: "POST",
     headers: getAuthHeaders(),
     body: JSON.stringify(data),
@@ -31,7 +15,7 @@ export async function cadastrarUsuario(data) {
 
 // LISTAGEM
 export async function listarUsuarios(empresaId, ativo) {
-  const response = await fetch(
+  const response = await fetchAutenticado(
     `${BASE_URL}?empresaId=${empresaId}&ativo=${ativo}`,
     { headers: getAuthHeaders() },
   );
@@ -39,7 +23,7 @@ export async function listarUsuarios(empresaId, ativo) {
 }
 
 export async function listarTodosUsuarios() {
-  const response = await fetch(BASE_URL, {
+  const response = await fetchAutenticado(BASE_URL, {
     headers: getAuthHeaders(),
   });
   return handleResponse(response);
@@ -47,7 +31,7 @@ export async function listarTodosUsuarios() {
 
 // ATUALIZAR
 export async function atualizarUsuario(id, data) {
-  const response = await fetch(`${BASE_URL}/${id}`, {
+  const response = await fetchAutenticado(`${BASE_URL}/${id}`, {
     method: "PUT",
     headers: getAuthHeaders(),
     body: JSON.stringify(data),
@@ -57,7 +41,7 @@ export async function atualizarUsuario(id, data) {
 
 // INATIVAR
 export async function inativarUsuario(id) {
-  const response = await fetch(`${BASE_URL}/${id}/status`, {
+  const response = await fetchAutenticado(`${BASE_URL}/${id}/status`, {
     method: "PATCH",
     headers: getAuthHeaders(),
   });
@@ -66,7 +50,7 @@ export async function inativarUsuario(id) {
 
 // DELETAR
 export async function deletarUsuario(id) {
-  const response = await fetch(`${BASE_URL}/${id}`, {
+  const response = await fetchAutenticado(`${BASE_URL}/${id}`, {
     method: "DELETE",
     headers: getAuthHeaders(),
   });

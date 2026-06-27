@@ -1,27 +1,11 @@
 import { getAuthHeaders } from "./authService.js";
+import { fetchAutenticado, handleResponse } from "./apiClient.js";
 
 const BASE_URL = "http://localhost:8080/api/pacientes";
 
-async function handleResponse(response) {
-  if (response.ok) {
-    if (response.status === 204) return null;
-    return response.json();
-  }
-
-  let mensagem = "Erro desconhecido";
-  try {
-    const erro = await response.json();
-    mensagem =
-      erro.mensagem || erro.message || erro.error || JSON.stringify(erro);
-  } catch {
-    mensagem = await response.text();
-  }
-  throw new Error(mensagem);
-}
-
 // CADASTRO
 export async function cadastrarPaciente(data) {
-  const response = await fetch(BASE_URL, {
+  const response = await fetchAutenticado(BASE_URL, {
     method: "POST",
     headers: getAuthHeaders(),
     body: JSON.stringify(data),
@@ -31,7 +15,7 @@ export async function cadastrarPaciente(data) {
 
 // LISTAGEM
 export async function listarPacientes(psicologoId, ativo) {
-  const response = await fetch(
+  const response = await fetchAutenticado(
     `${BASE_URL}?psicologoId=${psicologoId}&ativo=${ativo}`,
     { headers: getAuthHeaders() },
   );
@@ -40,7 +24,7 @@ export async function listarPacientes(psicologoId, ativo) {
 
 // ATUALIZAR
 export async function atualizarPaciente(id, data) {
-  const response = await fetch(`${BASE_URL}/${id}`, {
+  const response = await fetchAutenticado(`${BASE_URL}/${id}`, {
     method: "PUT",
     headers: getAuthHeaders(),
     body: JSON.stringify(data),
@@ -50,7 +34,7 @@ export async function atualizarPaciente(id, data) {
 
 // INATIVAR
 export async function inativarPaciente(id) {
-  const response = await fetch(`${BASE_URL}/${id}/status`, {
+  const response = await fetchAutenticado(`${BASE_URL}/${id}/status`, {
     method: "PATCH",
     headers: getAuthHeaders(),
   });
@@ -59,7 +43,7 @@ export async function inativarPaciente(id) {
 
 // DELETAR
 export async function deletarPaciente(id) {
-  const response = await fetch(`${BASE_URL}/${id}`, {
+  const response = await fetchAutenticado(`${BASE_URL}/${id}`, {
     method: "DELETE",
     headers: getAuthHeaders(),
   });

@@ -1,27 +1,11 @@
 import { getAuthHeaders } from "./authService.js";
+import { fetchAutenticado, handleResponse } from "./apiClient.js";
 
 const BASE_URL = "http://localhost:8080/api/aplicacoes";
 
-async function handleResponse(response) {
-  if (response.ok) {
-    if (response.status === 204) return null;
-    return response.json();
-  }
-
-  let mensagem = "Erro desconhecido";
-  try {
-    const erro = await response.json();
-    mensagem =
-      erro.mensagem || erro.message || erro.error || JSON.stringify(erro);
-  } catch {
-    mensagem = await response.text();
-  }
-  throw new Error(mensagem);
-}
-
 // APLICAR TESTE
 export async function aplicarTeste(data, usuarioId) {
-  const response = await fetch(BASE_URL, {
+  const response = await fetchAutenticado(BASE_URL, {
     method: "POST",
     headers: { ...getAuthHeaders(), "Usuario-Id": usuarioId },
     body: JSON.stringify(data),
@@ -31,7 +15,7 @@ export async function aplicarTeste(data, usuarioId) {
 
 // LISTAGEM DE UM PACIENTE
 export async function listarAplicacoesPorPaciente(pacienteId) {
-  const response = await fetch(`${BASE_URL}/paciente/${pacienteId}`, {
+  const response = await fetchAutenticado(`${BASE_URL}/paciente/${pacienteId}`, {
     headers: getAuthHeaders(),
   });
   return handleResponse(response);
@@ -39,22 +23,18 @@ export async function listarAplicacoesPorPaciente(pacienteId) {
 
 // GERAR PDF
 export async function gerarPDF(id) {
-  const response = await fetch(
+  const response = await fetchAutenticado(
     `http://localhost:8080/api/relatorios/aplicacao/${id}/simplificado`,
-    {
-      headers: getAuthHeaders(),
-    },
+    { headers: getAuthHeaders() },
   );
   if (!response.ok) throw new Error("Erro ao gerar PDF");
   return response.blob();
 }
 
 export async function gerarPDFCompleto(id) {
-  const response = await fetch(
+  const response = await fetchAutenticado(
     `http://localhost:8080/api/relatorios/aplicacao/${id}/completo`,
-    {
-      headers: getAuthHeaders(),
-    },
+    { headers: getAuthHeaders() },
   );
   if (!response.ok) throw new Error("Erro ao gerar PDF completo");
   return response.blob();
@@ -62,7 +42,7 @@ export async function gerarPDFCompleto(id) {
 
 // ENVIAR EMAIL
 export async function enviarEmailPdf(id, email) {
-  const response = await fetch(
+  const response = await fetchAutenticado(
     `http://localhost:8080/api/relatorios/aplicacao/${id}/enviar-email?emailDestinatario=${encodeURIComponent(email)}`,
     {
       method: "POST",
@@ -74,7 +54,7 @@ export async function enviarEmailPdf(id, email) {
 }
 
 export async function enviarEmailPdfCompleto(id, email) {
-  const response = await fetch(
+  const response = await fetchAutenticado(
     `http://localhost:8080/api/relatorios/aplicacao/${id}/enviar-email-completo?emailDestinatario=${encodeURIComponent(email)}`,
     {
       method: "POST",
