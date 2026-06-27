@@ -14,6 +14,12 @@ const btnSx = {
   "&:hover": { background: "#00838f" },
 };
 
+const TIPO_LABELS = {
+  AD: { label: "Administrador" },
+  PS: { label: "Psicólogo" },
+  PA: { label: "Psicólogo Administrador" },
+};
+
 export default function Header() {
   const navigate = useNavigate();
   const usuario = getUsuarioLogado();
@@ -43,10 +49,18 @@ export default function Header() {
             }}
           >
             <PsychologyIcon sx={{ color: "#fafafa", fontSize: 32 }} />
+            <Typography>
+              <strong>Psicotestes</strong>
+            </Typography>
           </Box>
-          <Typography variant="h6" sx={{ color: "black", ml: "20px" }}>
-            {usuario?.nome}
-          </Typography>
+          <Box>
+            <Typography variant="h6" sx={{ color: "black", ml: "20px" }}>
+              {usuario?.nome}
+            </Typography>
+            <Typography variant="h8" sx={{ color: "gray", ml: "20px" }}>
+              {TIPO_LABELS[usuario?.tipo]?.label ?? "default"}
+            </Typography>
+          </Box>
         </Box>
         <Box sx={{ display: "flex", gap: 1 }}>
           {tipo === "AD" && (
