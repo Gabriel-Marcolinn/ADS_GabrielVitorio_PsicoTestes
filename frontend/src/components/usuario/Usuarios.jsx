@@ -98,9 +98,17 @@ export default function Usuarios() {
   async function handleInativar() {
     try {
       await inativarUsuario(usuarioParaInativar.id);
-      setUsuarios(usuarios.map((u) => u.id === usuarioParaInativar.id ? { ...u, ativo: !u.ativo } : u));
+      setUsuarios(
+        usuarios.map((u) =>
+          u.id === usuarioParaInativar.id ? { ...u, ativo: !u.ativo } : u,
+        ),
+      );
       setModalInativarAberta(false);
-      mostrarToast(usuarioParaInativar.ativo ? "Usuario inativado com sucesso!" : "Usuario ativado com sucesso!")
+      mostrarToast(
+        usuarioParaInativar.ativo
+          ? "Usuario inativado com sucesso!"
+          : "Usuario ativado com sucesso!",
+      );
     } catch (error) {
       mostrarToast(error.message, "error");
     }
@@ -275,33 +283,86 @@ export default function Usuarios() {
             </TableHead>
 
             <TableBody>
-              {usuarios
-                .filter((u) => u.ativo === ativosTrue)
-                .filter((u) => u.nome.toLowerCase().includes(buscaNome.toLowerCase()))
-                .map((usuario) => (
-                  <TableRow key={usuario.id}>
-                    <TableCell>{usuario.nome}</TableCell>
-                    <TableCell>{usuario.email}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={TIPO_LABELS[usuario.tipo]?.label ?? usuario.tipo}
-                        color={TIPO_LABELS[usuario.tipo]?.color ?? "default"}
-                        size="small"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        onClick={(e) => {
-                          setMenuAncora(e.currentTarget);
-                          setMenuUsuario(usuario);
-                        }}
-                        sx={{ p: 1, background: "#dddcdc", borderRadius: 2 }}
+              {usuarios.filter(
+                (u) =>
+                  u.ativo === ativosTrue &&
+                  u.nome.toLowerCase().includes(buscaNome.toLowerCase()),
+              ).length === 0 ? (
+                ativosTrue ? (
+                  <TableRow>
+                    <TableCell colSpan={4} align="center" sx={{ p: 8 }}>
+                      <Box sx={{ m: 2 }}>
+                        <Typography variant="h4">
+                          Nenhum usuario encontrado!
+                        </Typography>
+                        <Typography variant="h6">
+                          Vamos cadastrar um usuario?
+                        </Typography>
+                      </Box>
+
+                      <Button
+                        variant="contained"
+                        onClick={() => setModalCadastrarAberta(true)}
+                        sx={{ m: 2 }}
                       >
-                        <FormatListBulletedIcon />
-                      </IconButton>
+                        Novo usuario
+                      </Button>
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4} align="center" sx={{ p: 8 }}>
+                      <Box sx={{ m: 2 }}>
+                        <Typography variant="h4">
+                          Nenhum usuario encontrado!
+                        </Typography>
+                        <Typography variant="h6">
+                          Tente filtrar pelos ativos
+                        </Typography>
+                      </Box>
+                      <Button
+                        variant="contained"
+                        onClick={() => setAtivosTrue(true)}
+                        sx={{ m: 2 }}
+                      >
+                        Filtrar por ativos
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                )
+              ) : (
+                usuarios
+                  .filter((u) => u.ativo === ativosTrue)
+                  .filter((u) =>
+                    u.nome.toLowerCase().includes(buscaNome.toLowerCase()),
+                  )
+                  .map((usuario) => (
+                    <TableRow key={usuario.id}>
+                      <TableCell>{usuario.nome}</TableCell>
+                      <TableCell>{usuario.email}</TableCell>
+                      <TableCell>
+                        <Chip
+                          label={
+                            TIPO_LABELS[usuario.tipo]?.label ?? usuario.tipo
+                          }
+                          color={TIPO_LABELS[usuario.tipo]?.color ?? "default"}
+                          size="small"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          onClick={(e) => {
+                            setMenuAncora(e.currentTarget);
+                            setMenuUsuario(usuario);
+                          }}
+                          sx={{ p: 1, background: "#dddcdc", borderRadius: 2 }}
+                        >
+                          <FormatListBulletedIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -337,11 +398,17 @@ export default function Usuarios() {
           >
             {menuUsuario?.ativo ? (
               <>
-                <BlockIcon fontSize="small" color="warning" sx={{ mr: 1 }} /> Inativar
+                <BlockIcon fontSize="small" color="warning" sx={{ mr: 1 }} />{" "}
+                Inativar
               </>
             ) : (
               <>
-                <CheckCircleOutlinedIcon fontSize="small" color="success" sx={{ mr: 1 }} /> Ativar
+                <CheckCircleOutlinedIcon
+                  fontSize="small"
+                  color="success"
+                  sx={{ mr: 1 }}
+                />{" "}
+                Ativar
               </>
             )}
           </MenuItem>

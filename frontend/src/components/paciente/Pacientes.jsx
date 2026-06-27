@@ -17,7 +17,7 @@ import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
+import Select, { isEmpty } from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
@@ -159,7 +159,7 @@ export default function Pacientes() {
         ),
       );
       setModalEditarAberta(false);
-      mostrarToast("Paciente editado com sucesso!")
+      mostrarToast("Paciente editado com sucesso!");
     } catch (error) {
       mostrarToast(error.message, "error");
     }
@@ -176,7 +176,7 @@ export default function Pacientes() {
       await deletarPaciente(pacienteParaDeletar.id);
       setPacientes(pacientes.filter((p) => p.id !== pacienteParaDeletar.id));
       setModalDeletarAberta(false);
-      mostrarToast("Paciente deletado com sucesso!")
+      mostrarToast("Paciente deletado com sucesso!");
     } catch (error) {
       mostrarToast(error.message, "error");
     }
@@ -193,7 +193,11 @@ export default function Pacientes() {
       await inativarPaciente(pacienteParaInativar.id);
       setPacientes(pacientes.filter((p) => p.id !== pacienteParaInativar.id));
       setModalInativarAberta(false);
-      mostrarToast(pacienteParaInativar.ativo ? "Paciente inativado com sucesso!" : "Paciente ativado com sucesso!")
+      mostrarToast(
+        pacienteParaInativar.ativo
+          ? "Paciente inativado com sucesso!"
+          : "Paciente ativado com sucesso!",
+      );
     } catch (error) {
       mostrarToast(error.message, "error");
     }
@@ -364,31 +368,80 @@ export default function Pacientes() {
             </TableHead>
 
             <TableBody>
-              {pacientes
-                .filter((p) =>
-                  p.nome.toLowerCase().includes(buscaNome.toLowerCase()),
-                )
-                .map((paciente) => (
-                  <TableRow key={paciente.id}>
-                    <TableCell sx={{ width: "25%" }}>{paciente.nome}</TableCell>
-                    <TableCell sx={{ width: "20%" }}>
-                      {mask(paciente.cpf)}
-                    </TableCell>
-                    <TableCell sx={{ width: "45%" }}>
-                      {paciente.email}
-                    </TableCell>
-                    <TableCell sx={{ width: "10%" }}>
-                      <IconButton
-                        onClick={(e) =>
-                          handleAbrirAcoes(e.currentTarget, paciente)
-                        }
-                        sx={{ p: 1, background: "#dddcdc", borderRadius: 2 }}
+              {pacientes.filter((p) =>
+                p.nome.toLowerCase().includes(buscaNome.toLowerCase()),
+              ).length === 0 ? (
+                ativosTrue ? (
+                  <TableRow>
+                    <TableCell colSpan={4} align="center" sx={{ p: 8 }}>
+                      <Box sx={{ m: 2 }}>
+                        <Typography variant="h4">
+                          Nenhum paciente encontrado!
+                        </Typography>
+                        <Typography variant="h6">
+                          Vamos cadastrar o seu primeiro paciente?
+                        </Typography>
+                      </Box>
+
+                      <Button
+                        variant="contained"
+                        onClick={() => setModalCadastrarAberta(true)}
+                        sx={{ m: 2 }}
                       >
-                        <FormatListBulletedIcon />
-                      </IconButton>
+                        Novo Paciente
+                      </Button>
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4} align="center" sx={{ p: 8 }}>
+                      <Box sx={{ m: 2 }}>
+                        <Typography variant="h4">
+                          Nenhum paciente encontrado!
+                        </Typography>
+                        <Typography variant="h6">
+                          Tente filtrar pelos ativos
+                        </Typography>
+                      </Box>
+                      <Button
+                        variant="contained"
+                        onClick={() => setAtivosTrue(true)}
+                        sx={{ m: 2 }}
+                      >
+                        Filtrar por ativos
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                )
+              ) : (
+                pacientes
+                  .filter((p) =>
+                    p.nome.toLowerCase().includes(buscaNome.toLowerCase()),
+                  )
+                  .map((paciente) => (
+                    <TableRow key={paciente.id}>
+                      <TableCell sx={{ width: "25%" }}>
+                        {paciente.nome}
+                      </TableCell>
+                      <TableCell sx={{ width: "20%" }}>
+                        {mask(paciente.cpf)}
+                      </TableCell>
+                      <TableCell sx={{ width: "45%" }}>
+                        {paciente.email}
+                      </TableCell>
+                      <TableCell sx={{ width: "10%" }}>
+                        <IconButton
+                          onClick={(e) =>
+                            handleAbrirAcoes(e.currentTarget, paciente)
+                          }
+                          sx={{ p: 1, background: "#dddcdc", borderRadius: 2 }}
+                        >
+                          <FormatListBulletedIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>

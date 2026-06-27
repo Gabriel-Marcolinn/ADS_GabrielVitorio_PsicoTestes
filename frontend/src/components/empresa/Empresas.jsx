@@ -74,7 +74,7 @@ export default function Empresas() {
       await deletarEmpresa(empresaParaDeletar.id);
       setEmpresas(empresas.filter((e) => e.id !== empresaParaDeletar.id));
       setModalDeletarAberta(false);
-      mostrarToast("Usuario deletado com sucesso!")
+      mostrarToast("Usuario deletado com sucesso!");
     } catch (error) {
       mostrarToast(error.message, "error");
     }
@@ -88,10 +88,17 @@ export default function Empresas() {
   async function handleInativar() {
     try {
       await inativarEmpresa(empresaParaInativar.id);
-      setEmpresas(empresas.map((e) => e.id === empresaParaInativar.id ? { ...e, ativo: !e.ativo } : e));
+      setEmpresas(
+        empresas.map((e) =>
+          e.id === empresaParaInativar.id ? { ...e, ativo: !e.ativo } : e,
+        ),
+      );
       setModalInativarAberta(false);
-            mostrarToast(empresaParaInativar.ativo ? "Empresa inativado com sucesso!" : "Empresa ativado com sucesso!")
-
+      mostrarToast(
+        empresaParaInativar.ativo
+          ? "Empresa inativado com sucesso!"
+          : "Empresa ativado com sucesso!",
+      );
     } catch (error) {
       mostrarToast(error.message, "error");
     }
@@ -111,7 +118,7 @@ export default function Empresas() {
         ),
       );
       setModalEditarAberta(false);
-      mostrarToast("Empresa editada com sucesso!")
+      mostrarToast("Empresa editada com sucesso!");
     } catch (error) {
       mostrarToast(error.message, "error");
     }
@@ -269,28 +276,79 @@ export default function Empresas() {
             </TableHead>
 
             <TableBody>
-              {empresas
-                .filter((empresa) => empresa.ativo === ativosTrue)
-                .filter((e) =>
+              {empresas.filter(
+                (e) =>
+                  e.ativo == ativosTrue &&
                   e.razaoSocial.toLowerCase().includes(buscaNome.toLowerCase()),
-                )
-                .map((empresa) => (
-                  <TableRow key={empresa.id}>
-                    <TableCell>{empresa.razaoSocial}</TableCell>
-                    <TableCell>{mask(empresa.cnpj)}</TableCell>
-                    <TableCell>
-                      <IconButton
-                        onClick={(e) => {
-                          setMenuAncora(e.currentTarget);
-                          setMenuEmpresa(empresa);
-                        }}
-                        sx={{ p: 1, background: "#dddcdc", borderRadius: 2 }}
+              ).length === 0 ? (
+                ativosTrue ? (
+                  <TableRow>
+                    <TableCell colSpan={4} align="center" sx={{ p: 8 }}>
+                      <Box sx={{ m: 2 }}>
+                        <Typography variant="h4">
+                          Nenhuma empresa encontrada!
+                        </Typography>
+                        <Typography variant="h6">
+                          Vamos cadastrar uma empresa?
+                        </Typography>
+                      </Box>
+
+                      <Button
+                        variant="contained"
+                        onClick={() => setModalCadastrarAberta(true)}
+                        sx={{ m: 2 }}
                       >
-                        <FormatListBulletedIcon />
-                      </IconButton>
+                        Nova empresa
+                      </Button>
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4} align="center" sx={{ p: 8 }}>
+                      <Box sx={{ m: 2 }}>
+                        <Typography variant="h4">
+                          Nenhuma empresa encontrada!
+                        </Typography>
+                        <Typography variant="h6">
+                          Tente filtrar pelas ativas
+                        </Typography>
+                      </Box>
+                      <Button
+                        variant="contained"
+                        onClick={() => setAtivosTrue(true)}
+                        sx={{ m: 2 }}
+                      >
+                        Filtrar por ativas
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                )
+              ) : (
+                empresas
+                  .filter((empresa) => empresa.ativo === ativosTrue)
+                  .filter((e) =>
+                    e.razaoSocial
+                      .toLowerCase()
+                      .includes(buscaNome.toLowerCase()),
+                  )
+                  .map((empresa) => (
+                    <TableRow key={empresa.id}>
+                      <TableCell>{empresa.razaoSocial}</TableCell>
+                      <TableCell>{mask(empresa.cnpj)}</TableCell>
+                      <TableCell>
+                        <IconButton
+                          onClick={(e) => {
+                            setMenuAncora(e.currentTarget);
+                            setMenuEmpresa(empresa);
+                          }}
+                          sx={{ p: 1, background: "#dddcdc", borderRadius: 2 }}
+                        >
+                          <FormatListBulletedIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -326,11 +384,17 @@ export default function Empresas() {
           >
             {menuEmpresa?.ativo ? (
               <>
-                <BlockIcon fontSize="small" color="warning" sx={{ mr: 1 }} /> Inativar
+                <BlockIcon fontSize="small" color="warning" sx={{ mr: 1 }} />{" "}
+                Inativar
               </>
             ) : (
               <>
-                <CheckCircleOutlinedIcon fontSize="small" color="success" sx={{ mr: 1 }} /> Ativar
+                <CheckCircleOutlinedIcon
+                  fontSize="small"
+                  color="success"
+                  sx={{ mr: 1 }}
+                />{" "}
+                Ativar
               </>
             )}
           </MenuItem>
