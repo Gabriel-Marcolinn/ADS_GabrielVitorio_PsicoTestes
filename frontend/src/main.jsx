@@ -15,10 +15,21 @@ import Empresas from "./components/empresa/Empresas.jsx";
 import Pacientes from "./components/paciente/Pacientes.jsx";
 import Usuarios from "./components/usuario/Usuarios.jsx";
 import Aplicacoes from "./components/aplicacao/Aplicacoes.jsx";
-import { isAuthenticated } from "../services/authService.js";
+import { isAuthenticated, getUsuarioLogado } from "../services/authService.js";
 
-function RotaProtegida({ children }) {
-  return isAuthenticated() ? children : <Navigate to="/login" replace />;
+const ROTA_INICIAL = {
+  AD: "/empresas",
+  PA: "/usuarios",
+  PS: "/pacientes",
+};
+
+function RotaProtegida({ children, roles }) {
+  if (!isAuthenticated()) return <Navigate to="/login" replace />;
+  const usuario = getUsuarioLogado();
+  if (roles && !roles.includes(usuario?.tipo)) {
+    return <Navigate to={ROTA_INICIAL[usuario?.tipo] ?? "/login"} replace />;
+}
+  return children;
 }
 
 const theme = createTheme({
@@ -54,10 +65,38 @@ function Layout() {
         <Route path="/" element={<Navigate to="/login" />} />
 
         <Route path="/login" element={<Login />} />
-        <Route path="/empresas" element={<RotaProtegida><Empresas /></RotaProtegida>} />
-        <Route path="/pacientes" element={<RotaProtegida><Pacientes /></RotaProtegida>} />
-        <Route path="/usuarios" element={<RotaProtegida><Usuarios /></RotaProtegida>} />
-        <Route path="/aplicacoes" element={<RotaProtegida><Aplicacoes /></RotaProtegida>} />
+        <Route
+path="/empresas"
+element={
+<RotaProtegida roles={["AD"]}>
+<Empresas />
+</RotaProtegida>
+          }
+/>
+        <Route
+path="/pacientes"
+element={
+<RotaProtegida roles={["PA", "PS"]}>
+<Pacientes />
+</RotaProtegida>
+          }
+/>
+        <Route
+path="/usuarios"
+element={
+<RotaProtegida roles={["AD", "PA"]}>
+<Usuarios />
+</RotaProtegida>
+          }
+/>
+        <Route
+path="/aplicacoes"
+element={
+<RotaProtegida roles={["PA", "PS"]}>
+<Aplicacoes />
+</RotaProtegida>
+          }
+/>
       </Routes>
     </>
   );
