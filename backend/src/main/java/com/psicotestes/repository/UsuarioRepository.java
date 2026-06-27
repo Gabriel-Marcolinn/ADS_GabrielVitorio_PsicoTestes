@@ -25,4 +25,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     // Usado nos KPIs dos dashboards
     long countByTipoInAndAtivoTrue(List<String> tipos);
+
+    long countByEmpresaIdAndTipoInAndAtivoTrue(long empresaId, List<String> tipos);
 }

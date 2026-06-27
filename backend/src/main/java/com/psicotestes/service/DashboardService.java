@@ -1,6 +1,7 @@
 package com.psicotestes.service;
 
 import com.psicotestes.dto.DashboardAdminResponseDTO;
+import com.psicotestes.dto.DashboardPsicologoAdminResponseDTO;
 import com.psicotestes.repository.AplicacaoTesteRepository;
 import com.psicotestes.repository.EmpresaRepository;
 import com.psicotestes.repository.UsuarioRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,6 +40,26 @@ public class DashboardService {
         return new DashboardAdminResponseDTO(kpis, distribuicaoTestes, ranking);
     }
 
+    @Transactional(readOnly = true)
+    public DashboardPsicologoAdminResponseDTO montarDashboardPsicologoAdmin(Long empresaId) {
+
+        // KPIs
+        DashboardPsicologoAdminResponseDTO.KpisGestor kpis = new DashboardPsicologoAdminResponseDTO.KpisGestor(
+                usuarioRepository.countByEmpresaIdAndTipoInAndAtivoTrue(empresaId, List.of("PS")),
+                aplicacaoTesteRepository.countPacientesAtivosByEmpresaId(empresaId),
+                aplicacaoTesteRepository.countTestesByEmpresaId(empresaId)
+        );
+
+        // 2. Gráfico e Ranking REAIS
+        List<DashboardPsicologoAdminResponseDTO.DesempenhoPsicologo> desempenhoEquipe =
+                aplicacaoTesteRepository.montarDesempenhoEquipe(empresaId);
+
+        // 3. Gráfico Mensal
+        List<DashboardPsicologoAdminResponseDTO.AtividadeMensalPivot> atividadeMensal = montarAtividadeMensal(empresaId);
+
+        return new DashboardPsicologoAdminResponseDTO(kpis, desempenhoEquipe, atividadeMensal);
+    }
+
     private List<DashboardAdminResponseDTO.TestesPorEmpresaPivot> MontarDistribuicaoTestes() {
         List<DashboardAdminResponseDTO.TestesPorEmpresa> dadosBrutos = aplicacaoTesteRepository.contarTestesAgrupadosPorEmpresa();
         List<DashboardAdminResponseDTO.TestesPorEmpresaPivot> distribuicaoTestes = dadosBrutos.stream()
@@ -54,5 +76,34 @@ public class DashboardService {
                 .toList();
 
         return distribuicaoTestes;
+    }
+
+    private List<DashboardPsicologoAdminResponseDTO.AtividadeMensalPivot> montarAtividadeMensal(Long empresaId) {
+        List<DashboardPsicologoAdminResponseDTO.AtividadeMensalFlat> dadosBrutos =
+                aplicacaoTesteRepository.buscarAtividadeMensalFlat(empresaId);
+
+        // Dicionário simples para converter número em texto (Índice 1 = Jan)
+        String[] nomesMeses = {"", "Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"};
+
+        List<DashboardPsicologoAdminResponseDTO.AtividadeMensalPivot> atividadeMensal = dadosBrutos.stream()
+                // Primeiro: Agrupamos pelo NÚMERO do mês (para manter a ordem do tempo)
+                .collect(Collectors.groupingBy(
+                        DashboardPsicologoAdminResponseDTO.AtividadeMensalFlat::mes,
+                        Collectors.toMap(
+                                DashboardPsicologoAdminResponseDTO.AtividadeMensalFlat::nomePsicologo,
+                                DashboardPsicologoAdminResponseDTO.AtividadeMensalFlat::quantidade
+                        )
+                ))
+                .entrySet().stream()
+                // Segundo: Garantimos que o mês 1 venha antes do mês 2
+                .sorted(Map.Entry.comparingByKey())
+                // Terceiro: Traduzimos o número para "Jan", "Fev" e empacotamos pro DTO do Front-end
+                .map(entry -> {
+                    String nomeMes = nomesMeses[entry.getKey()];
+                    return new DashboardPsicologoAdminResponseDTO.AtividadeMensalPivot(nomeMes, entry.getValue());
+                })
+                .toList();
+
+        return atividadeMensal;
     }
 }

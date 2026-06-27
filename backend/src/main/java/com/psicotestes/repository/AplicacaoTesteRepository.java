@@ -1,10 +1,12 @@
 package com.psicotestes.repository;
 
 import com.psicotestes.dto.DashboardAdminResponseDTO;
+import com.psicotestes.dto.DashboardPsicologoAdminResponseDTO;
 import com.psicotestes.model.AplicacaoTeste;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,4 +53,38 @@ public interface AplicacaoTesteRepository extends JpaRepository<AplicacaoTeste, 
         ORDER BY COUNT(a.id) DESC
     """)
     List<DashboardAdminResponseDTO.DesempenhoEmpresa> montarRankingEmpresas();
+
+    @Query("SELECT COUNT(a) FROM AplicacaoTeste a JOIN a.usuario u WHERE u.empresa.id = :empresaId")
+    long countTestesByEmpresaId(@Param("empresaId") Long empresaId);
+
+    @Query("SELECT COUNT(DISTINCT a.paciente.id) FROM AplicacaoTeste a JOIN a.usuario u WHERE u.empresa.id = :empresaId")
+    long countPacientesAtivosByEmpresaId(@Param("empresaId") Long empresaId);
+
+    @Query("""
+        SELECT new com.psicotestes.dto.DashboardPsicologoAdminResponseDTO$DesempenhoPsicologo(
+            u.nome,
+            COUNT(a.id),
+            COUNT(DISTINCT a.paciente.id)
+        )
+        FROM AplicacaoTeste a
+        JOIN a.usuario u
+        WHERE u.empresa.id = :empresaId
+        GROUP BY u.nome
+        ORDER BY COUNT(a.id) DESC
+    """)
+    List<DashboardPsicologoAdminResponseDTO.DesempenhoPsicologo> montarDesempenhoEquipe(@Param("empresaId") Long empresaId);
+
+    @Query("""
+        SELECT new com.psicotestes.dto.DashboardPsicologoAdminResponseDTO$AtividadeMensalFlat(
+            CAST(EXTRACT(MONTH FROM a.dataAplicacao) AS int),
+            u.nome,
+            COUNT(a.id)
+        )
+        FROM AplicacaoTeste a
+        JOIN a.usuario u
+        WHERE u.empresa.id = :empresaId
+        GROUP BY EXTRACT(MONTH FROM a.dataAplicacao), u.nome
+        ORDER BY EXTRACT(MONTH FROM a.dataAplicacao) ASC
+    """)
+    List<DashboardPsicologoAdminResponseDTO.AtividadeMensalFlat> buscarAtividadeMensalFlat(@Param("empresaId") Long empresaId);
 }
