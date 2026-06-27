@@ -3,6 +3,10 @@ import { logout } from "./authService.js";
 export async function fetchAutenticado(url, opcoes = {}) {
   const response = await fetch(url, opcoes);
   if (response.status === 403) {
+    localStorage.setItem(
+      "toast_pendente",
+      JSON.stringify({ mensagem: "Sessão expirada. Faça login novamente.", tipo: "warning" })
+    );
     logout();
     window.location.replace("/login");
   }
