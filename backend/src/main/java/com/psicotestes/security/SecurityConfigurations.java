@@ -39,9 +39,10 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // A rota de Login DEVE ser pública
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-
-                        .requestMatchers(HttpMethod.POST, "/api/empresas").hasRole("ADMIN") // empresas só admins podem ver
-
+                        .requestMatchers("/api/empresas").hasRole("ADMIN")
+                        .requestMatchers("/api/usuarios").hasAnyRole("ADMIN","PSICOLOGO_ADMIN")
+                        .requestMatchers( "/api/aplicacoes").hasAnyRole("PSICOLOGO_ADMIN","PSICOLOGO")
+                        .requestMatchers( "/api/pacientes").hasAnyRole("PSICOLOGO_ADMIN","PSICOLOGO")
                         // Qualquer outra rota não mapeada acima precisará do Token JWT (estar autenticado)
                         .anyRequest().authenticated()
                 )
