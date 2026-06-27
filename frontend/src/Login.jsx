@@ -9,6 +9,7 @@ import Alert from "@mui/material/Alert";
 import { useState, useEffect } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
+import PsychologyIcon from "@mui/icons-material/Psychology";
 import { login, getUsuarioLogado } from "../services/authService";
 import Toast from "./components/Toast";
 
@@ -56,70 +57,109 @@ export default function Login() {
     <>
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
           minHeight: "100vh",
+          background:
+            "linear-gradient(135deg, #EEF2FF 0%, #F1F5F9 50%, #E0E7FF 100%)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          p: 2,
         }}
       >
-        <Paper elevation={4} sx={{ p: 4, width: 600, borderRadius: 3 }}>
-          <Typography
-            sx={{ textAlign: "center" }}
-            variant="h5"
-            fontWeight="bold"
-            mb={3}
-          >
-            Seja bem-vindo ao Psicotestes!
-          </Typography>
-
-          {erro && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {erro}
-            </Alert>
-          )}
-
+        <Paper sx={{ width: 420, overflow: "hidden", p: 0 }}>
+          {/* Cabeçalho com gradiente */}
           <Box
-            sx={{ flexDirection: "column" }}
-            component="form"
-            onSubmit={handleSubmit(onSubmit)}
-            display="flex"
-            gap={2}
+            sx={{
+              background: "linear-gradient(135deg, #4F46E5 0%, #6366F1 100%)",
+              p: 4,
+              textAlign: "center",
+            }}
           >
-            <TextField
-              {...register("email")}
-              label="Email"
-              type="email"
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              {...register("senha")}
-              label="Senha"
-              type={showPassword ? "text" : "password"}
-              fullWidth
-              sx={{ mb: 2 }}
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? "👁️" : "🙈"}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                },
+            <Box
+              sx={{
+                width: 60,
+                height: 60,
+                background: "rgba(255,255,255,0.15)",
+                borderRadius: "16px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                mx: "auto",
+                mb: 2,
               }}
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              disabled={carregando}
             >
-              {carregando ? "Entrando..." : "Login"}
-            </Button>
+              <PsychologyIcon sx={{ color: "#fff", fontSize: 34 }} />
+            </Box>
+            <Typography
+              variant="h5"
+              sx={{ color: "white" }}
+              fontWeight={700}
+              mb={0.5}
+            >
+              Psicotestes
+            </Typography>
+            <Typography
+              sx={{ color: "rgba(255,255,255,0.72)", fontSize: "0.85rem" }}
+            >
+              Sistema de Avaliação Psicológica
+            </Typography>
+          </Box>
+
+          {/* Formulário */}
+          <Box sx={{ p: 4 }}>
+            <Typography sx={{ mb: 1 }} variant="h6" fontWeight={700}>
+              Seja bem-vindo ao Psicotestes!
+            </Typography>
+
+            {erro && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {erro}
+              </Alert>
+            )}
+
+            <Box
+              component="form"
+              onSubmit={handleSubmit(onSubmit)}
+              sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+            >
+              <TextField
+                {...register("email")}
+                label="Email"
+                type="email"
+                fullWidth
+              />
+              <TextField
+                {...register("senha")}
+                label="Senha"
+                type={showPassword ? "text" : "password"}
+                fullWidth
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                          size="small"
+                        >
+                          {showPassword ? "👁️" : "🙈"}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                disabled={carregando}
+                size="large"
+                sx={{ mt: 1 }}
+              >
+                {carregando ? "Entrando..." : "Login"}
+              </Button>
+            </Box>
           </Box>
         </Paper>
       </Box>
