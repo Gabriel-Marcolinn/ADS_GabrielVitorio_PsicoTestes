@@ -178,7 +178,8 @@ public class AplicacaoTesteService {
                 aplicacao.getPontuacaoTotal(),
                 aplicacao.getClassificacao(),
                 aplicacao.getDataAplicacao(),
-                aplicacao.getAnaliseIa()
+                aplicacao.getAnaliseIa(),
+                aplicacao.getLaudo()
         );
     }
 }

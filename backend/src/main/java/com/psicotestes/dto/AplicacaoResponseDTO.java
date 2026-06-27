@@ -11,5 +11,6 @@ public record AplicacaoResponseDTO(
         Double pontuacaoTotal,
         String classificacao,
         LocalDateTime dataAplicacao,
-        String analiseIa
+        String analiseIa,
+        String laudo
 ) {}
