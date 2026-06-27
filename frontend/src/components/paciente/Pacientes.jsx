@@ -89,13 +89,19 @@ export default function Pacientes() {
       setPsicologoFiltro(usuarioLogado?.id);
     } else if (isPA) {
       listarUsuarios(usuarioLogado?.empresaId, true)
-        .then((lista) => setPsicologos(lista.filter((u) => u.tipo === "PS")))
+        .then((lista) => {
+          const ps = lista.filter((u) => u.tipo === "PS");
+          setPsicologos(ps);
+          if (ps.length > 0) setPsicologoFiltro(ps[0].id);
+        })
         .catch(console.error);
     } else {
       listarTodosUsuarios()
-        .then((lista) =>
-          setPsicologos(lista.filter((u) => u.tipo === "PS" && u.ativo)),
-        )
+        .then((lista) => {
+          const ps = lista.filter((u) => u.tipo === "PS" && u.ativo);
+          setPsicologos(ps);
+          if (ps.length > 0) setPsicologoFiltro(ps[0].id);
+        })
         .catch(console.error);
     }
   }, []);
