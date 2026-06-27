@@ -22,4 +22,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     // Para indicar se tem algum usuário cadastrado na empresa, impedindo a remoção da mesma caso sim
     Boolean existsByEmpresaId(Long empresaId);
+
+    // Usado nos KPIs dos dashboards
+    long countByTipoInAndAtivoTrue(List<String> tipos);
 }

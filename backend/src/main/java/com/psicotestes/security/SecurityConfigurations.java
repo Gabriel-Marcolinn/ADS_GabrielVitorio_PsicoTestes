@@ -47,6 +47,7 @@ public class SecurityConfigurations {
                         .requestMatchers( "/api/aplicacoes").hasAnyRole("PSICOLOGO_ADMIN","PSICOLOGO")
                         .requestMatchers(HttpMethod.GET, "/api/pacientes").authenticated()
                         .requestMatchers( "/api/pacientes").hasAnyRole("PSICOLOGO_ADMIN","PSICOLOGO")
+                        .requestMatchers(HttpMethod.GET, "/api/dashboard/admin").hasRole("ADMIN")
                         // Qualquer outra rota não mapeada acima precisará do Token JWT (estar autenticado)
                         .anyRequest().authenticated()
                 )
