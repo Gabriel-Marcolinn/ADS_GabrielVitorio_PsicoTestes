@@ -228,16 +228,6 @@ export default function Usuarios() {
             variant="contained"
             size="large"
             onClick={() => setModalCadastrarAberta(true)}
-            sx={{
-              background: "linear-gradient(135deg, #0097a7, #00bcd4)",
-              color: "#fafafa",
-              borderRadius: 3,
-              boxShadow: "0px 0px 30px rgba(0, 188, 212, 0.4)",
-              "&:hover": {
-                background: "linear-gradient(135deg, #00838f, #0097a7)",
-                boxShadow: "0px 0px 30px rgba(0, 188, 212, 0.6)",
-              },
-            }}
           >
             + Novo Usuário
           </Button>
@@ -277,7 +267,7 @@ export default function Usuarios() {
           sx={{ width: "100%", maxWidth: "75%" }}
         >
           <Table>
-            <TableHead sx={{ backgroundColor: "#dddcdc" }}>
+            <TableHead>
               <TableRow>
                 <TableCell>
                   <strong>Nome</strong>
@@ -381,7 +371,7 @@ export default function Usuarios() {
                             setMenuAncora(e.currentTarget);
                             setMenuUsuario(usuario);
                           }}
-                          sx={{ p: 1, background: "#dddcdc", borderRadius: 2 }}
+                          sx={{ background: "#EEF2FF", color: "#6366F1", "&:hover": { background: "#E0E7FF" } }}
                         >
                           <FormatListBulletedIcon />
                         </IconButton>

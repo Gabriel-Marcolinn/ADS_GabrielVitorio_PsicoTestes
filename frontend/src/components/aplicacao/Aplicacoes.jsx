@@ -68,19 +68,9 @@ export default function Aplicacoes() {
             variant="contained"
             size="large"
             onClick={() => setModalCadastrarAberta(true)}
-            sx={{
-              background: "linear-gradient(135deg, #0097a7, #00bcd4)",
-              color: "#fafafa",
-              borderRadius: 3,
-              boxShadow: "0px 0px 30px rgba(0, 188, 212, 0.4)",
-              "&:hover": {
-                background: "linear-gradient(135deg, #00838f, #0097a7)",
-                boxShadow: "0px 0px 30px rgba(0, 188, 212, 0.6)",
-              },
-            }}
           >
             + Nova Aplicação
-          </Button>{" "}
+          </Button>
         </Box>
       </Box>
     </>
