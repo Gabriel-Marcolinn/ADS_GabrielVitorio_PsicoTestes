@@ -2,6 +2,7 @@ package com.psicotestes.repository;
 
 import com.psicotestes.dto.DashboardAdminResponseDTO;
 import com.psicotestes.dto.DashboardPsicologoAdminResponseDTO;
+import com.psicotestes.dto.DashboardPsicologoResponseDTO;
 import com.psicotestes.model.AplicacaoTeste;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -87,4 +88,20 @@ public interface AplicacaoTesteRepository extends JpaRepository<AplicacaoTeste, 
         ORDER BY EXTRACT(MONTH FROM a.dataAplicacao) ASC
     """)
     List<DashboardPsicologoAdminResponseDTO.AtividadeMensalFlat> buscarAtividadeMensalFlat(@Param("empresaId") Long empresaId);
+
+    @Query("SELECT COUNT(a) FROM AplicacaoTeste a WHERE a.usuario.id = :usuarioId")
+    long countTestesByUsuarioId(@Param("usuarioId") Long usuarioId);
+
+    @Query("""
+        SELECT new com.psicotestes.dto.DashboardPsicologoResponseDTO$TesteFrequencia(
+            t.nome,
+            COUNT(a.id)
+        )
+        FROM AplicacaoTeste a
+        JOIN a.teste t
+        WHERE a.usuario.id = :usuarioId
+        GROUP BY t.nome
+        ORDER BY COUNT(a.id) DESC
+    """)
+    List<DashboardPsicologoResponseDTO.TesteFrequencia> buscarFrequenciaTestesPorPsicologo(@Param("usuarioId") Long usuarioId);
 }

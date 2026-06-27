@@ -20,4 +20,7 @@ public interface PacienteRepository extends JpaRepository<Paciente, Long> {
 
     // Para facilitar a listagem de pacientes ativos e inativos
     List<Paciente> findByPsicologoIdAndAtivoOrderByIdAsc(Long psicologoId, Boolean ativo);
+
+    // Usado para os dashboards
+    long countByPsicologoId(Long usuarioId);
 }

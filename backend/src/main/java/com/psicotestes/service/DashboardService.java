@@ -2,8 +2,10 @@ package com.psicotestes.service;
 
 import com.psicotestes.dto.DashboardAdminResponseDTO;
 import com.psicotestes.dto.DashboardPsicologoAdminResponseDTO;
+import com.psicotestes.dto.DashboardPsicologoResponseDTO;
 import com.psicotestes.repository.AplicacaoTesteRepository;
 import com.psicotestes.repository.EmpresaRepository;
+import com.psicotestes.repository.PacienteRepository;
 import com.psicotestes.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class DashboardService {
     private final EmpresaRepository empresaRepository;
     private final UsuarioRepository usuarioRepository;
     private final AplicacaoTesteRepository aplicacaoTesteRepository;
+    private final PacienteRepository pacienteRepository;
 
     @Transactional(readOnly = true)
     public DashboardAdminResponseDTO montarDashboardAdmin() {
@@ -58,6 +61,22 @@ public class DashboardService {
         List<DashboardPsicologoAdminResponseDTO.AtividadeMensalPivot> atividadeMensal = montarAtividadeMensal(empresaId);
 
         return new DashboardPsicologoAdminResponseDTO(kpis, desempenhoEquipe, atividadeMensal);
+    }
+
+    @Transactional(readOnly = true)
+    public DashboardPsicologoResponseDTO montarDashboardPsicologo(Long usuarioId) {
+
+        // KPIs
+        DashboardPsicologoResponseDTO.KpisPsicologo kpis = new DashboardPsicologoResponseDTO.KpisPsicologo(
+                pacienteRepository.countByPsicologoId(usuarioId),
+                aplicacaoTesteRepository.countTestesByUsuarioId(usuarioId)
+        );
+
+        // Gráfico de Barras
+        List<DashboardPsicologoResponseDTO.TesteFrequencia> frequenciaTestes =
+                aplicacaoTesteRepository.buscarFrequenciaTestesPorPsicologo(usuarioId);
+
+        return new DashboardPsicologoResponseDTO(kpis, frequenciaTestes);
     }
 
     private List<DashboardAdminResponseDTO.TestesPorEmpresaPivot> MontarDistribuicaoTestes() {
