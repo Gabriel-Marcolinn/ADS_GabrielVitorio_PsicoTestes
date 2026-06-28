@@ -35,6 +35,14 @@ public class PacienteController {
         return ResponseEntity.ok(pacientes);
     }
 
+
+    @GetMapping("/empresa")
+    public ResponseEntity<List<PacienteResponseDTO>> listarPorEmpresa(
+            @RequestParam Long empresaId,
+            @RequestParam (defaultValue = "true") Boolean ativo) {
+        return ResponseEntity.ok(pacienteService.listarPorEmpresaIdAndAtivo(empresaId, ativo));
+    }
+
     // PUT /api/pacientes/{id} -> Atualizar dados cadastrais
     @PutMapping("/{id}")
     public ResponseEntity<PacienteResponseDTO> atualizar(

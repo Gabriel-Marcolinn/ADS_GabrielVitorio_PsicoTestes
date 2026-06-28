@@ -61,6 +61,14 @@ public class PacienteService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<PacienteResponseDTO> listarPorEmpresaIdAndAtivo(Long empresaId, Boolean ativo) {
+        return pacienteRepository.findByEmpresaId(empresaId, ativo)
+                .stream()
+                .map(paciente -> new PacienteResponseDTO(paciente))
+                .toList();
+    }
+
     @Transactional
     public PacienteResponseDTO atualizar(Long id, PacienteRequestDTO dto) {
         Paciente paciente = pacienteRepository.findById(id)

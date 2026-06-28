@@ -2,6 +2,8 @@ package com.psicotestes.repository;
 
 import com.psicotestes.model.Paciente;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +22,14 @@ public interface PacienteRepository extends JpaRepository<Paciente, Long> {
 
     // Para facilitar a listagem de pacientes ativos e inativos
     List<Paciente> findByPsicologoIdAndAtivoOrderByIdAsc(Long psicologoId, Boolean ativo);
+
+    // Para listar todos os pacientes de uma empresa
+    @Query("SELECT p FROM Paciente p " +
+            "JOIN p.psicologo u " +
+            "WHERE u.empresa.id = :empresaId " +
+            "AND p.ativo = :ativo " +
+            "ORDER BY p.id")
+    List<Paciente> findByEmpresaId(@Param("empresaId") Long empresaId, @Param("ativo") Boolean ativo);
 
     // Usado para os dashboards
     long countByPsicologoId(Long usuarioId);
