@@ -19,6 +19,7 @@ const TIPO_LABELS = {
 const NAV_LINKS = [
   { label: "Dashboard", path: "/dashboard-admin", roles: ["AD"] },
   { label: "Dashboard", path: "/dashboard-psicologo-admin", roles: ["PA"] },
+  { label: "Dashboard", path: "/dashboard-psicologo", roles: ["PS"] },
   { label: "Empresas", path: "/empresas", roles: ["AD"] },
   { label: "Usuários", path: "/usuarios", roles: ["AD", "PA"] },
   { label: "Pacientes", path: "/pacientes", roles: ["PA", "PS"] },
