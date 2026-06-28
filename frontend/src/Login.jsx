@@ -43,7 +43,7 @@ export default function Login() {
     try {
       await login(data.email, data.senha);
       const usuario = getUsuarioLogado();
-      if (usuario.tipo === "AD") navigate("/empresas");
+      if (usuario.tipo === "AD") navigate("/dashboard-admin");
       else if (usuario.tipo === "PA") navigate("/usuarios");
       else navigate("/pacientes");
     } catch (e) {

@@ -254,7 +254,7 @@ function Layout() {
         <Route
           path="/dashboard-admin"
           element={
-            <RotaProtegida>
+            <RotaProtegida roles={["AD"]}>
               <DashboardAdmin />
             </RotaProtegida>
           }
