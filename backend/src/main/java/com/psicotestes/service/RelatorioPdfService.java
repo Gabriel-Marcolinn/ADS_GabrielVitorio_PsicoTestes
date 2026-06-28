@@ -66,6 +66,7 @@ public class RelatorioPdfService {
         context.setVariable("classificacao", aplicacaoTeste.getClassificacao());
         context.setVariable("dataAplicacao", aplicacaoTeste.getDataAplicacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         context.setVariable("analiseIa", aplicacaoTeste.getAnaliseIa());
+        context.setVariable("laudo", aplicacaoTeste.getLaudo());
 
         // Passa a lista completa de Respostas para o template HTML preencher a tabela
         context.setVariable("respostas", aplicacaoTeste.getRespostas());
