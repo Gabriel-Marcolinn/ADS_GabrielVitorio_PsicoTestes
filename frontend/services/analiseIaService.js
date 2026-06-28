@@ -1,7 +1,7 @@
 import { getAuthHeaders } from "./authService.js";
 import { fetchAutenticado, handleResponse } from "./apiClient.js";
 
-const BASE_URL = "http://localhost:8080/api/ia";
+const BASE_URL = "https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/ia";
 
 // ANALISE TESTE UNICO
 export async function analisarTesteUnico(aplicacaoId) {

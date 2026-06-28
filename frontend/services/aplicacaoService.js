@@ -1,7 +1,7 @@
 import { getAuthHeaders } from "./authService.js";
 import { fetchAutenticado, handleResponse } from "./apiClient.js";
 
-const BASE_URL = "http://localhost:8080/api/aplicacoes";
+const BASE_URL = "https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/aplicacoes";
 
 // APLICAR TESTE
 export async function aplicarTeste(data, usuarioId) {
@@ -27,7 +27,7 @@ export async function listarAplicacoesPorPaciente(pacienteId) {
 // GERAR PDF
 export async function gerarPDF(id) {
   const response = await fetchAutenticado(
-    `http://localhost:8080/api/relatorios/aplicacao/${id}/simplificado`,
+    `https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/relatorios/aplicacao/${id}/simplificado`,
     { headers: getAuthHeaders() },
   );
   if (!response.ok) throw new Error("Erro ao gerar PDF");
@@ -36,7 +36,7 @@ export async function gerarPDF(id) {
 
 export async function gerarPDFCompleto(id) {
   const response = await fetchAutenticado(
-    `http://localhost:8080/api/relatorios/aplicacao/${id}/completo`,
+    `https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/relatorios/aplicacao/${id}/completo`,
     { headers: getAuthHeaders() },
   );
   if (!response.ok) throw new Error("Erro ao gerar PDF completo");
@@ -46,7 +46,7 @@ export async function gerarPDFCompleto(id) {
 // ENVIAR EMAIL
 export async function enviarEmailPdf(id, email) {
   const response = await fetchAutenticado(
-    `http://localhost:8080/api/relatorios/aplicacao/${id}/enviar-email?emailDestinatario=${encodeURIComponent(email)}`,
+    `https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/relatorios/aplicacao/${id}/enviar-email?emailDestinatario=${encodeURIComponent(email)}`,
     {
       method: "POST",
       headers: getAuthHeaders(),
@@ -58,7 +58,7 @@ export async function enviarEmailPdf(id, email) {
 
 export async function enviarEmailPdfCompleto(id, email) {
   const response = await fetchAutenticado(
-    `http://localhost:8080/api/relatorios/aplicacao/${id}/enviar-email-completo?emailDestinatario=${encodeURIComponent(email)}`,
+    `https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/relatorios/aplicacao/${id}/enviar-email-completo?emailDestinatario=${encodeURIComponent(email)}`,
     {
       method: "POST",
       headers: getAuthHeaders(),

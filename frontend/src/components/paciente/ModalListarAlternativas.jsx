@@ -20,7 +20,7 @@ export default function ModalListarAlternativas({
   useEffect(() => {
     if (aberta && aplicacaoId) {
       setCarregando(true);
-      fetch(`http://localhost:8080/api/aplicacoes/${aplicacaoId}`, {
+      fetch(`https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/aplicacoes/${aplicacaoId}`, {
         headers: getAuthHeaders(),
       })
         .then((r) => r.json())

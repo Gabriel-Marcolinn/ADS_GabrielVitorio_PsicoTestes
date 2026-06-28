@@ -25,7 +25,7 @@ export default function ModalListarPsicologos({ aberta, onFechar, empresa }) {
   useEffect(() => {
     if (aberta && empresa) {
       fetch(
-        `http://localhost:8080/api/usuarios?empresaId=${empresa.id}&ativo=true`,
+        `https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/usuarios?empresaId=${empresa.id}&ativo=true`,
         { headers: getAuthHeaders() },
       )
         .then((r) => r.json())

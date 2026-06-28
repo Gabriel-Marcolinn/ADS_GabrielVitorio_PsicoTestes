@@ -1,7 +1,7 @@
 import { getAuthHeaders } from "./authService.js";
 import { fetchAutenticado, handleResponse } from "./apiClient.js";
 
-const BASE_URL = "http://localhost:8080/api/pacientes";
+const BASE_URL = "https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/pacientes";
 
 // CADASTRO
 export async function cadastrarPaciente(data) {

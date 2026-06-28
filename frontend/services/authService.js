@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080/api/auth";
+const BASE_URL = "https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/auth";
 const TOKEN_KEY = "psicotestes_token";
 
 export async function login(email, senha) {
