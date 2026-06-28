@@ -9,13 +9,13 @@ import java.util.Optional;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     // Para validação de unicidade no cadastro e para realizar o login do usuário
-    Optional<Usuario> findByEmail(String email);
+    Optional<Usuario> findByEmailOrderByNomeAsc(String email);
 
     // Essencial para o psicólogo administrador ver apenas a listagem de usuários da sua empresa
-    List<Usuario> findByEmpresaId(Long empresaId);
+    List<Usuario> findByEmpresaIdOrderByNomeAsc(Long empresaId);
 
     // Para facilitar a listagem de usuários de uma empresa filtrando entre ativos e inativos
-    List<Usuario> findByEmpresaIdAndAtivoOrderByIdAsc(Long empresaId, Boolean ativo);
+    List<Usuario> findByEmpresaIdAndAtivoOrderByNomeAsc(Long empresaId, Boolean ativo);
 
     // Para facilitar a busca global de um usuário pelo nome (uso exclusivo do Administrador geral)
     List<Usuario> findByNomeContainingIgnoreCase(String nome);

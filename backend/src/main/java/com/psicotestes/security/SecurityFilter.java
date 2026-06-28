@@ -33,7 +33,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
             if (!email.isEmpty()) {
                 // 3. Busca o usuário no banco de dados
-                UserDetails usuario = usuarioRepository.findByEmail(email)
+                UserDetails usuario = usuarioRepository.findByEmailOrderByNomeAsc(email)
                         .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
                 // 4. Cria o objeto de autenticação que o Spring Security entende

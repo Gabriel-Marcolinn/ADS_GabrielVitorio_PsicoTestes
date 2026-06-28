@@ -30,11 +30,11 @@ public class PacienteService {
     @Transactional
     public PacienteResponseDTO salvar(PacienteRequestDTO dto) {
         String cpfFormatado = dto.cpf().trim().replace("-", "").replace(".","");
-        if (pacienteRepository.findByCpfAndPsicologoId(cpfFormatado, dto.psicologoId()).isPresent()) {
+        if (pacienteRepository.findByCpfAndPsicologoIdOrderByNomeAsc(cpfFormatado, dto.psicologoId()).isPresent()) {
             throw new RuntimeException("Já existe um paciente cadastrado com este CPF para este psicólogo.");
         }
 
-        if (pacienteRepository.findByEmailAndPsicologoId(dto.email(), dto.psicologoId()).isPresent()) {
+        if (pacienteRepository.findByEmailAndPsicologoIdOrderByNomeAsc(dto.email(), dto.psicologoId()).isPresent()) {
             throw new RuntimeException("Já existe um paciente cadastrado com este email para este psicólogo.");
         }
 
@@ -55,7 +55,7 @@ public class PacienteService {
 
     @Transactional(readOnly = true)
     public List<PacienteResponseDTO> listarPorPsicologo(Long psicologoId, Boolean ativo) {
-        return pacienteRepository.findByPsicologoIdAndAtivoOrderByIdAsc(psicologoId, ativo)
+        return pacienteRepository.findByPsicologoIdAndAtivoOrderByNomeAsc(psicologoId, ativo)
                 .stream()
                 .map(paciente -> new PacienteResponseDTO(paciente))
                 .toList();
@@ -77,12 +77,12 @@ public class PacienteService {
         String cpfFormatado = dto.cpf().trim().replace("-", "").replace(".","");
 
         // Só lança erro se o CPF mudou E o novo CPF já existe no banco para o mesmo psicólogo
-        if (!paciente.getCpf().equals(cpfFormatado) && pacienteRepository.findByCpfAndPsicologoId(cpfFormatado,dto.psicologoId()).isPresent()) {
+        if (!paciente.getCpf().equals(cpfFormatado) && pacienteRepository.findByCpfAndPsicologoIdOrderByNomeAsc(cpfFormatado,dto.psicologoId()).isPresent()) {
             throw new RuntimeException("Este CPF já está em uso por outro paciente.");
         }
 
         // Só lança erro se o email mudou E o novo email já existe no banco para o mesmo psicólogo
-        if (!paciente.getEmail().equals(dto.email()) && pacienteRepository.findByEmailAndPsicologoId(dto.email(), dto.psicologoId()).isPresent()) {
+        if (!paciente.getEmail().equals(dto.email()) && pacienteRepository.findByEmailAndPsicologoIdOrderByNomeAsc(dto.email(), dto.psicologoId()).isPresent()) {
             throw new RuntimeException("Este email já está em uso por outro paciente.");
         }
 

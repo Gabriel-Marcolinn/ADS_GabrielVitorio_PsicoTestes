@@ -7,6 +7,7 @@ import com.psicotestes.model.Usuario;
 import com.psicotestes.repository.EmpresaRepository;
 import com.psicotestes.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,7 @@ public class UsuarioService {
     @Transactional
     public UsuarioResponseDTO salvar(UsuarioRequestDTO dto) {
 
-        if (usuarioRepository.findByEmail(dto.email()).isPresent()) {
+        if (usuarioRepository.findByEmailOrderByNomeAsc(dto.email()).isPresent()) {
             throw new RuntimeException("Já existe um usuário cadastrado com este e-mail.");
         }
 
@@ -32,7 +33,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Empresa não encontrada."));
 
         if (dto.tipo().equals("PA")) {
-            if (usuarioRepository.findByEmpresaId(empresa.getId()).stream().anyMatch(u -> u.getTipo().equals("PA"))) {
+            if (usuarioRepository.findByEmpresaIdOrderByNomeAsc(empresa.getId()).stream().anyMatch(u -> u.getTipo().equals("PA"))) {
                 throw new RuntimeException("Já existe outro psicólogo administrador cadastrado para essa empresa, remova o mesmo e tente novamente.");
             }
         }
@@ -52,7 +53,7 @@ public class UsuarioService {
 
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarPorEmpresa(Long empresaId, Boolean ativo) {
-        return usuarioRepository.findByEmpresaIdAndAtivoOrderByIdAsc(empresaId, ativo)
+        return usuarioRepository.findByEmpresaIdAndAtivoOrderByNomeAsc(empresaId, ativo)
                 .stream()
                 .map(UsuarioResponseDTO::new)
                 .toList();
@@ -60,7 +61,7 @@ public class UsuarioService {
 
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarTodos() {
-        return usuarioRepository.findAll()
+        return usuarioRepository.findAll(Sort.by(Sort.Order.asc("nome").ignoreCase()))
                 .stream()
                 .map(UsuarioResponseDTO::new)
                 .toList();
@@ -72,7 +73,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
 
         // Garante que não vai roubar o e-mail de outro usuário
-        if (!usuario.getEmail().equals(dto.email()) && usuarioRepository.findByEmail(dto.email()).isPresent()) {
+        if (!usuario.getEmail().equals(dto.email()) && usuarioRepository.findByEmailOrderByNomeAsc(dto.email()).isPresent()) {
             throw new RuntimeException("Este e-mail já está em uso por outro usuário.");
         }
 
@@ -80,7 +81,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Empresa não encontrada."));
 
         if (dto.tipo().equals("PA")) {
-            if (usuarioRepository.findByEmpresaId(empresa.getId()).stream().anyMatch(u -> u.getTipo().equals("PA"))) {
+            if (usuarioRepository.findByEmpresaIdOrderByNomeAsc(empresa.getId()).stream().anyMatch(u -> u.getTipo().equals("PA"))) {
                 throw new RuntimeException("Já existe outro psicólogo administrador cadastrado para essa empresa, esse usuário não poderá ser um psicólogo administrador.");
             }
         }

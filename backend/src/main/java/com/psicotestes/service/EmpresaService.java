@@ -8,6 +8,7 @@ import com.psicotestes.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class EmpresaService {
 
     @Transactional(readOnly = true)
     public List<EmpresaResponseDTO> listarTodas() {
-        return empresaRepository.findAll()
+        return empresaRepository.findAll(Sort.by(Sort.Order.asc("razaoSocial").ignoreCase()))
                 .stream()
                 .map(empresa -> new EmpresaResponseDTO(empresa))
                 .toList();
