@@ -17,6 +17,7 @@ import Usuarios from "./components/usuario/Usuarios.jsx";
 import Aplicacoes from "./components/aplicacao/Aplicacoes.jsx";
 import { isAuthenticated, getUsuarioLogado } from "../services/authService.js";
 import DashboardAdmin from "./components/DashboardAdmin.jsx";
+import DashboardPsicologoAdmin from "./components/DashboardPsicologoAdmin.jsx";
 
 const ROTA_INICIAL = {
   AD: "/dashboard-admin",
@@ -256,6 +257,14 @@ function Layout() {
           element={
             <RotaProtegida roles={["AD"]}>
               <DashboardAdmin />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="/dashboard-psicologo-admin"
+          element={
+            <RotaProtegida roles={["PA"]}>
+              <DashboardPsicologoAdmin />
             </RotaProtegida>
           }
         />

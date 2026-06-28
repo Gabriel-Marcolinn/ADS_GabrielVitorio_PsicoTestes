@@ -10,3 +10,14 @@ export async function obterDashboardAdmin() {
   });
   return handleResponse(response);
 }
+
+// DASH PSICO ADMIN
+export async function obterDashboardPsicologoAdmin(empresaId) {
+  const response = await fetchAutenticado(
+    `${BASE_URL}/psicologoadmin/${empresaId}`,
+    {
+      headers: getAuthHeaders(),
+    },
+  );
+  return handleResponse(response);
+}
