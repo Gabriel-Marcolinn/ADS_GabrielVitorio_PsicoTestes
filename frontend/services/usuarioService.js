@@ -1,7 +1,7 @@
 import { getAuthHeaders } from "./authService.js";
 import { fetchAutenticado, handleResponse } from "./apiClient.js";
 
-const BASE_URL = "http://localhost:8080/api/usuarios";
+const BASE_URL = "/api/usuarios";
 
 // CADASTRO
 export async function cadastrarUsuario(data) {

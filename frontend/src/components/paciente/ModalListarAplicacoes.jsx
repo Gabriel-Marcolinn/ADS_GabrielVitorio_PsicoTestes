@@ -73,7 +73,7 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
 
   useEffect(() => {
     if (aberta && paciente) {
-      fetch(`http://localhost:8080/api/aplicacoes/paciente/${paciente.id}`, {
+      fetch(`/api/aplicacoes/paciente/${paciente.id}`, {
         headers: getAuthHeaders(),
       })
         .then((r) => r.json())
