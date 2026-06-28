@@ -16,9 +16,10 @@ import Pacientes from "./components/paciente/Pacientes.jsx";
 import Usuarios from "./components/usuario/Usuarios.jsx";
 import Aplicacoes from "./components/aplicacao/Aplicacoes.jsx";
 import { isAuthenticated, getUsuarioLogado } from "../services/authService.js";
+import DashboardAdmin from "./components/DashboardAdmin.jsx";
 
 const ROTA_INICIAL = {
-  AD: "/empresas",
+  AD: "/dashboard-admin",
   PA: "/usuarios",
   PS: "/pacientes",
 };
@@ -247,6 +248,14 @@ function Layout() {
           element={
             <RotaProtegida roles={["PA", "PS"]}>
               <Aplicacoes />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="/dashboard-admin"
+          element={
+            <RotaProtegida>
+              <DashboardAdmin />
             </RotaProtegida>
           }
         />
