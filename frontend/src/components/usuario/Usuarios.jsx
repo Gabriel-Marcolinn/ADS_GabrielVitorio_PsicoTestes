@@ -135,7 +135,7 @@ export default function Usuarios() {
     try {
       await atualizarUsuario(usuarioParaEditar.id, {
         ...data,
-        empresaId: usuarioLogado.empresaId,
+        empresaId: usuarioParaEditar.empresaId,
       });
       setUsuarios(
         usuarios.map((u) =>

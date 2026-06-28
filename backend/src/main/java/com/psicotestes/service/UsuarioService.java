@@ -31,6 +31,12 @@ public class UsuarioService {
         Empresa empresa = empresaRepository.findById(dto.empresaId())
                 .orElseThrow(() -> new RuntimeException("Empresa não encontrada."));
 
+        if (dto.tipo().equals("PA")) {
+            if (usuarioRepository.findByEmpresaId(empresa.getId()).stream().anyMatch(u -> u.getTipo().equals("PA"))) {
+                throw new RuntimeException("Já existe outro psicólogo administrador cadastrado para essa empresa, remova o mesmo e tente novamente.");
+            }
+        }
+
         Usuario usuario = Usuario.builder()
                 .nome(dto.nome())
                 .email(dto.email())
@@ -72,6 +78,12 @@ public class UsuarioService {
 
         Empresa empresa = empresaRepository.findById(dto.empresaId())
                 .orElseThrow(() -> new RuntimeException("Empresa não encontrada."));
+
+        if (dto.tipo().equals("PA")) {
+            if (usuarioRepository.findByEmpresaId(empresa.getId()).stream().anyMatch(u -> u.getTipo().equals("PA"))) {
+                throw new RuntimeException("Já existe outro psicólogo administrador cadastrado para essa empresa, esse usuário não poderá ser um psicólogo administrador.");
+            }
+        }
 
         usuario.setNome(dto.nome());
         usuario.setEmail(dto.email());
