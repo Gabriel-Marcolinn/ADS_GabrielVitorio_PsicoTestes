@@ -22,6 +22,14 @@ export async function listarPacientes(psicologoId, ativo) {
   return handleResponse(response);
 }
 
+export async function listarPacientesPorEmpresa(empresaId, ativo) {
+  const response = await fetchAutenticado(
+    `${BASE_URL}/empresa?empresaId=${empresaId}&ativo=${ativo}`,
+    { headers: getAuthHeaders() },
+  );
+  return handleResponse(response);
+}
+
 // ATUALIZAR
 export async function atualizarPaciente(id, data) {
   const response = await fetchAutenticado(`${BASE_URL}/${id}`, {

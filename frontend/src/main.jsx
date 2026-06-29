@@ -18,11 +18,12 @@ import Aplicacoes from "./components/aplicacao/Aplicacoes.jsx";
 import { isAuthenticated, getUsuarioLogado } from "../services/authService.js";
 import DashboardAdmin from "./components/DashboardAdmin.jsx";
 import DashboardPsicologoAdmin from "./components/DashboardPsicologoAdmin.jsx";
+import DashboardPsicologo from "./components/DashboardPsicologo.jsx";
 
 const ROTA_INICIAL = {
   AD: "/dashboard-admin",
-  PA: "/usuarios",
-  PS: "/pacientes",
+  PA: "/dashboard-psicologo-admin",
+  PS: "/dashboard-psicologo",
 };
 
 function RotaProtegida({ children, roles }) {
@@ -265,6 +266,14 @@ function Layout() {
           element={
             <RotaProtegida roles={["PA"]}>
               <DashboardPsicologoAdmin />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="/dashboard-psicologo"
+          element={
+            <RotaProtegida roles={["PS"]}>
+              <DashboardPsicologo />
             </RotaProtegida>
           }
         />

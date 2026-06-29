@@ -21,3 +21,11 @@ export async function obterDashboardPsicologoAdmin(empresaId) {
   );
   return handleResponse(response);
 }
+
+// DASH PSICO
+export async function obterDashboardPsicologo(usuarioId) {
+  const response = await fetchAutenticado(`${BASE_URL}/psicologo`, {
+    headers: { ...getAuthHeaders(), usuarioId: usuarioId },
+  });
+  return handleResponse(response);
+}

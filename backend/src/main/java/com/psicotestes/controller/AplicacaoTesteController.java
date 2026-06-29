@@ -45,6 +45,13 @@ public class AplicacaoTesteController {
         return ResponseEntity.ok(aplicacoesPsicologo);
     }
 
+    // Visualizar histórico de aplicações de uma empresa, para listar pelo psicologo admin
+    @GetMapping("/empresa/{empresaId}")
+    public ResponseEntity<List<AplicacaoResponseDTO>> listarPorEmpresa(@PathVariable Long empresaId) {
+        List<AplicacaoResponseDTO> aplicacoesEmpresa = aplicacaoTesteService.listarAplicacoesPorEmpresa(empresaId);
+        return ResponseEntity.ok(aplicacoesEmpresa);
+    }
+
     @GetMapping("/{AplicacaoId}")
     public ResponseEntity<AplicacaoCompletaResponseDTO> buscarAplicacaoCompleta(@PathVariable Long AplicacaoId) {
         return ResponseEntity.ok(aplicacaoTesteService.buscarAplicacaoCompletaDTO(AplicacaoId));

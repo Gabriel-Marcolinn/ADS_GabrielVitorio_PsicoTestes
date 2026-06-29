@@ -116,6 +116,15 @@ public class AplicacaoTesteService {
                 .toList();
     }
 
+    // Visualizar Aplicações de uma empresa, usado pelo FrontEnd
+    @Transactional(readOnly = true)
+    public List<AplicacaoResponseDTO> listarAplicacoesPorEmpresa(Long empresaId) {
+        return aplicacaoTesteRepository.findByEmpresaId(empresaId)
+                .stream()
+                .map(this::mapearParaDTO)
+                .toList();
+    }
+
     // Buscar aplicação completa, usado para geração dos relatórios em PDF, retorna a entidade mas não é usado pelo FrontEnd
     @Transactional(readOnly = true)
     public AplicacaoTeste buscarAplicacaoCompleta(Long aplicacaoId) {
