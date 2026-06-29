@@ -13,10 +13,27 @@ export async function aplicarTeste(data, usuarioId) {
   return handleResponse(response);
 }
 
-// LISTAGEM DE UM PACIENTE
+// LISTAGEM
 export async function listarAplicacoesPorPaciente(pacienteId) {
   const response = await fetchAutenticado(
     `${BASE_URL}/paciente/${pacienteId}`,
+    {
+      headers: getAuthHeaders(),
+    },
+  );
+  return handleResponse(response);
+}
+
+export async function listarAplicacoesPorEmpresa(empresaId) {
+  const response = await fetchAutenticado(`${BASE_URL}/empresa/${empresaId}`, {
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(response);
+}
+
+export async function listarAplicacoesPorPsicologo(psicologoId) {
+  const response = await fetchAutenticado(
+    `${BASE_URL}/psicologo/${psicologoId}`,
     {
       headers: getAuthHeaders(),
     },
