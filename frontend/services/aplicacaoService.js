@@ -1,11 +1,7 @@
 import { getAuthHeaders } from "./authService.js";
 import { fetchAutenticado, handleResponse } from "./apiClient.js";
 
-<<<<<<< HEAD
-const BASE_URL = "https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/aplicacoes";
-=======
 const BASE_URL = "/api/aplicacoes";
->>>>>>> c9c6b43f6067201af85fc2cec52f21ab58c902e4
 
 // APLICAR TESTE
 export async function aplicarTeste(data, usuarioId) {
@@ -48,11 +44,7 @@ export async function listarAplicacoesPorPsicologo(psicologoId) {
 // GERAR PDF
 export async function gerarPDF(id) {
   const response = await fetchAutenticado(
-<<<<<<< HEAD
-    `https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/relatorios/aplicacao/${id}/simplificado`,
-=======
     `/api/relatorios/aplicacao/${id}/simplificado`,
->>>>>>> c9c6b43f6067201af85fc2cec52f21ab58c902e4
     { headers: getAuthHeaders() },
   );
   if (!response.ok) throw new Error("Erro ao gerar PDF");
@@ -61,11 +53,7 @@ export async function gerarPDF(id) {
 
 export async function gerarPDFCompleto(id) {
   const response = await fetchAutenticado(
-<<<<<<< HEAD
-    `https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/relatorios/aplicacao/${id}/completo`,
-=======
     `/api/relatorios/aplicacao/${id}/completo`,
->>>>>>> c9c6b43f6067201af85fc2cec52f21ab58c902e4
     { headers: getAuthHeaders() },
   );
   if (!response.ok) throw new Error("Erro ao gerar PDF completo");
@@ -75,11 +63,7 @@ export async function gerarPDFCompleto(id) {
 // ENVIAR EMAIL
 export async function enviarEmailPdf(id, email) {
   const response = await fetchAutenticado(
-<<<<<<< HEAD
-    `https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/relatorios/aplicacao/${id}/enviar-email?emailDestinatario=${encodeURIComponent(email)}`,
-=======
     `/api/relatorios/aplicacao/${id}/enviar-email?emailDestinatario=${encodeURIComponent(email)}`,
->>>>>>> c9c6b43f6067201af85fc2cec52f21ab58c902e4
     {
       method: "POST",
       headers: getAuthHeaders(),
@@ -91,11 +75,7 @@ export async function enviarEmailPdf(id, email) {
 
 export async function enviarEmailPdfCompleto(id, email) {
   const response = await fetchAutenticado(
-<<<<<<< HEAD
-    `https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/relatorios/aplicacao/${id}/enviar-email-completo?emailDestinatario=${encodeURIComponent(email)}`,
-=======
     `/api/relatorios/aplicacao/${id}/enviar-email-completo?emailDestinatario=${encodeURIComponent(email)}`,
->>>>>>> c9c6b43f6067201af85fc2cec52f21ab58c902e4
     {
       method: "POST",
       headers: getAuthHeaders(),

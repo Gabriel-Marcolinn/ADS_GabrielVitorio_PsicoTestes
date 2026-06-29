@@ -61,11 +61,7 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
 
   useEffect(() => {
     if (aberta && paciente) {
-<<<<<<< HEAD
-      fetch(`https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/aplicacoes/paciente/${paciente.id}`, {
-=======
       fetch(`/api/aplicacoes/paciente/${paciente.id}`, {
->>>>>>> c9c6b43f6067201af85fc2cec52f21ab58c902e4
         headers: getAuthHeaders(),
       })
         .then((r) => r.json())

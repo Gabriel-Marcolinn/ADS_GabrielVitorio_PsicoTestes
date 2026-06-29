@@ -1,11 +1,7 @@
 import { getAuthHeaders } from "./authService.js";
 import { fetchAutenticado, handleResponse } from "./apiClient.js";
 
-<<<<<<< HEAD
-const BASE_URL = "https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/usuarios";
-=======
 const BASE_URL = "/api/usuarios";
->>>>>>> c9c6b43f6067201af85fc2cec52f21ab58c902e4
 
 // CADASTRO
 export async function cadastrarUsuario(data) {
