@@ -1,7 +1,7 @@
 import { fetchAutenticado, handleResponse } from "./apiClient";
 import { getAuthHeaders } from "./authService";
 
-const BASE_URL = "http://localhost:8080/api/dashboard";
+const BASE_URL = "/api/dashboard";
 
 // DASH ADMIN
 export async function obterDashboardAdmin() {
