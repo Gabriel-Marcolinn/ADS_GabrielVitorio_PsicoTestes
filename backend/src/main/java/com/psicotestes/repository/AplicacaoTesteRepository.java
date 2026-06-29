@@ -20,6 +20,16 @@ public interface AplicacaoTesteRepository extends JpaRepository<AplicacaoTeste, 
     // Usado para listar a lista de aplicações por psicólogo
     List<AplicacaoTeste> findByUsuarioIdOrderByDataAplicacaoDesc(Long psicologoId);
 
+    // Usado para listar as aplicações por empresa
+    @Query(
+            "SELECT app FROM AplicacaoTeste app " +
+            "JOIN app.usuario u " +
+            "JOIN u.empresa e " +
+            "WHERE e.id = :empresaId " +
+            "ORDER BY app.paciente.nome asc"
+    )
+    List<AplicacaoTeste> findByEmpresaId(@Param("empresaId") Long empresaId);
+
     // Busca uma aplicação específica já trazendo as respostas aninhadas.
     // O @EntityGraph evita o problema do N+1 Queries na hora de gerar o PDF com os resultados.
     @EntityGraph(attributePaths = {"respostas", "respostas.alternativa"})
