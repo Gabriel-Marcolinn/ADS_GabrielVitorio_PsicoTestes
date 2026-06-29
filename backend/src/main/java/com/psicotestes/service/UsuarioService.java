@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -80,7 +81,7 @@ public class UsuarioService {
         Empresa empresa = empresaRepository.findById(dto.empresaId())
                 .orElseThrow(() -> new RuntimeException("Empresa não encontrada."));
 
-        if (dto.tipo().equals("PA")) {
+        if (!Objects.equals(dto.tipo(), usuario.getTipo())  && dto.tipo().equals("PA")) {
             if (usuarioRepository.findByEmpresaIdOrderByNomeAsc(empresa.getId()).stream().anyMatch(u -> u.getTipo().equals("PA"))) {
                 throw new RuntimeException("Já existe outro psicólogo administrador cadastrado para essa empresa, esse usuário não poderá ser um psicólogo administrador.");
             }
