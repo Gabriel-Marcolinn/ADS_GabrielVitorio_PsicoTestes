@@ -2,11 +2,13 @@ package com.psicotestes.controller;
 
 import com.psicotestes.dto.UsuarioRequestDTO;
 import com.psicotestes.dto.UsuarioResponseDTO;
+import com.psicotestes.model.Usuario;
 import com.psicotestes.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -60,7 +62,11 @@ public class UsuarioController {
 
     // DELETE /api/usuarios/{id} -> Excluir usuário (Soft Delete)
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminar(@PathVariable Long id, @AuthenticationPrincipal Usuario usuarioLogado) {
+        if (usuarioLogado.getId().equals(id)) {
+            throw new RuntimeException("Operação negada: Você não pode excluir a própria conta.");
+        }
+
         usuarioService.remover(id);
         return ResponseEntity.noContent().build(); // 204 No Content
     }
