@@ -48,7 +48,7 @@ public class DashboardService {
 
         // KPIs
         DashboardPsicologoAdminResponseDTO.KpisGestor kpis = new DashboardPsicologoAdminResponseDTO.KpisGestor(
-                usuarioRepository.countByEmpresaIdAndTipoInAndAtivoTrue(empresaId, List.of("PS")),
+                usuarioRepository.countByEmpresaIdAndTipoInAndAtivoTrue(empresaId, List.of("PS", "PA")),
                 aplicacaoTesteRepository.countPacientesAtivosByEmpresaId(empresaId),
                 aplicacaoTesteRepository.countTestesByEmpresaId(empresaId)
         );
