@@ -52,6 +52,9 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/api/dashboard/admin").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/dashboard/psicologoadmin/**").hasRole("PSICOLOGO_ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/dashboard/psicologo/**").hasRole("PSICOLOGO")
+                        // Rotas do React Router (SPA) — depois das regras de API para não interferir
+                        .requestMatchers(HttpMethod.GET, "/{path:[^\\.]*}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/{path:[^\\.]*}/{subpath:[^\\.]*}").permitAll()
                         // Qualquer outra rota não mapeada acima precisará do Token JWT (estar autenticado)
                         .anyRequest().authenticated()
                 )
