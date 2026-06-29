@@ -37,6 +37,8 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
                         // Libera preflight CORS
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // Arquivos estáticos do frontend (React build)
+                        .requestMatchers("/", "/index.html", "/assets/**", "/*.js", "/*.css", "/*.svg", "/*.ico", "/*.png", "/*.webp").permitAll()
                         // A rota de Login DEVE ser pública
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/empresas").authenticated()

@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080/api/auth";
+const BASE_URL = "/api/auth";
 const TOKEN_KEY = "psicotestes_token";
 
 export async function login(email, senha) {

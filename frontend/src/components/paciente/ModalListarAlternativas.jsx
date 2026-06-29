@@ -20,7 +20,7 @@ export default function ModalListarAlternativas({
   useEffect(() => {
     if (aberta && aplicacaoId) {
       setCarregando(true);
-      fetch(`http://localhost:8080/api/aplicacoes/${aplicacaoId}`, {
+      fetch(`/api/aplicacoes/${aplicacaoId}`, {
         headers: getAuthHeaders(),
       })
         .then((r) => r.json())

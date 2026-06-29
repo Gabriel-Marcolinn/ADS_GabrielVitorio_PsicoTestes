@@ -17,7 +17,7 @@ function maskCPF(value) {
     .replace(/(\d{3})(\d)/, "$1.$2")
     .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
 }
-import { listarTodosUsuarios } from "../../../services/usuarioService";
+import { listarUsuarios } from "../../../services/usuarioService";
 import { getUsuarioLogado } from "../../../services/authService";
 
 export default function ModalCadastrarPaciente({
@@ -31,7 +31,7 @@ export default function ModalCadastrarPaciente({
 
   useEffect(() => {
     if (aberta) {
-      listarTodosUsuarios()
+      listarUsuarios(usuario.empresaId, true)
         .then((lista) => setUsuarios(lista.filter((u) => u.tipo === "PS")))
         .catch(console.error);
 
@@ -86,9 +86,7 @@ export default function ModalCadastrarPaciente({
               error={!!errors.usuarioId}
               helperText={errors.usuarioId?.message}
             >
-              {usuarios
-              .filter(u => u.ativo === true)
-              .map((u) => (
+              {usuarios.map((u) => (
                 <MenuItem key={u.id} value={u.id}>
                   {u.nome}
                 </MenuItem>
