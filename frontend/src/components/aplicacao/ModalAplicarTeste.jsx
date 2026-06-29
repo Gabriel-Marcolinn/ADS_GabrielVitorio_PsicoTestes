@@ -77,7 +77,11 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
           .then((lista) => setUsuarios(lista.filter((u) => u.tipo === "PS")))
           .catch(console.error);
       }
+<<<<<<< HEAD
       fetch("https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/testes", { headers: getAuthHeaders() })
+=======
+      fetch("/api/testes", { headers: getAuthHeaders() })
+>>>>>>> c9c6b43f6067201af85fc2cec52f21ab58c902e4
         .then((r) => r.json())
         .then(setTestes)
         .catch(console.error);
@@ -106,7 +110,11 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
 
   async function handleProximo(data) {
     const completo = await fetch(
+<<<<<<< HEAD
       `https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/testes/${data.testeId}`,
+=======
+      `/api/testes/${data.testeId}`,
+>>>>>>> c9c6b43f6067201af85fc2cec52f21ab58c902e4
       { headers: getAuthHeaders() },
     ).then((r) => r.json());
     setTesteCompleto(completo);
@@ -134,7 +142,11 @@ export default function ModalAplicarTeste({ aberta, onFechar, onCadastrar }) {
     const alternativasIds = Object.values(respostas);
 
     try {
+<<<<<<< HEAD
       const resposta = await fetch("https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/aplicacoes", {
+=======
+      const resposta = await fetch("/api/aplicacoes", {
+>>>>>>> c9c6b43f6067201af85fc2cec52f21ab58c902e4
         method: "POST",
         headers: {
           ...getAuthHeaders(),

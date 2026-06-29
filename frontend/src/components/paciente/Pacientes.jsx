@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   cadastrarPaciente,
   listarPacientes,
+  listarPacientesPorEmpresa,
   atualizarPaciente,
   inativarPaciente,
   deletarPaciente,
@@ -51,6 +52,7 @@ import DialogActions from "@mui/material/DialogActions";
 
 export default function Pacientes() {
   const [pacientes, setPacientes] = useState([]);
+  const [todosPacientes, setTodosPacientes] = useState([]);
   const [psicologos, setPsicologos] = useState([]);
   const [psicologoFiltro, setPsicologoFiltro] = useState("");
   const [modalCadastrarAberta, setModalCadastrarAberta] = useState(false);
@@ -75,6 +77,10 @@ export default function Pacientes() {
   const isPS = tipo === "PS";
   const isPA = tipo === "PA";
 
+  const psicologoMap = Object.fromEntries(
+    psicologos.map((p) => [p.id, p.nome]),
+  );
+
   const [toast, setToast] = useState({
     aberto: false,
     mensagem: "",
@@ -92,7 +98,7 @@ export default function Pacientes() {
         .then((lista) => {
           const ps = lista.filter((u) => u.tipo === "PS");
           setPsicologos(ps);
-          if (ps.length > 0) setPsicologoFiltro(ps[0].id);
+          setPsicologoFiltro("todos");
         })
         .catch(console.error);
     } else {
@@ -109,11 +115,18 @@ export default function Pacientes() {
   useEffect(() => {
     if (!psicologoFiltro) {
       setPacientes([]);
+      setTodosPacientes([]);
       return;
     }
-    listarPacientes(psicologoFiltro, ativosTrue)
-      .then(setPacientes)
-      .catch(console.error);
+    if (psicologoFiltro === "todos") {
+      listarPacientesPorEmpresa(usuarioLogado?.empresaId, ativosTrue)
+        .then(setPacientes)
+        .catch(console.error);
+    } else {
+      listarPacientes(psicologoFiltro, ativosTrue)
+        .then(setPacientes)
+        .catch(console.error);
+    }
   }, [psicologoFiltro, ativosTrue]);
 
   // ANALISE IA PACIENTE
@@ -330,6 +343,7 @@ export default function Pacientes() {
                 label="Psicólogo"
                 onChange={(e) => setPsicologoFiltro(e.target.value)}
               >
+                {isPA && <MenuItem value="todos">Mostrar todos</MenuItem>}
                 {psicologos.map((u) => (
                   <MenuItem key={u.id} value={u.id}>
                     {u.nome}
@@ -357,6 +371,11 @@ export default function Pacientes() {
                 <TableCell>
                   <strong>E-mail</strong>
                 </TableCell>
+                {isPA && (
+                  <TableCell>
+                    <strong>Psicólogo</strong>
+                  </TableCell>
+                )}
                 <TableCell>
                   <strong>Ações</strong>
                 </TableCell>
@@ -369,7 +388,11 @@ export default function Pacientes() {
               ).length === 0 ? (
                 ativosTrue ? (
                   <TableRow>
-                    <TableCell colSpan={4} align="center" sx={{ p: 8 }}>
+                    <TableCell
+                      colSpan={isPA ? 5 : 4}
+                      align="center"
+                      sx={{ p: 8 }}
+                    >
                       <Box sx={{ m: 2 }}>
                         <Typography variant="h4">
                           Nenhum paciente encontrado!
@@ -390,7 +413,11 @@ export default function Pacientes() {
                   </TableRow>
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={4} align="center" sx={{ p: 8 }}>
+                    <TableCell
+                      colSpan={isPA ? 5 : 4}
+                      align="center"
+                      sx={{ p: 8 }}
+                    >
                       <Box sx={{ m: 2 }}>
                         <Typography variant="h4">
                           Nenhum paciente encontrado!
@@ -416,21 +443,30 @@ export default function Pacientes() {
                   )
                   .map((paciente) => (
                     <TableRow key={paciente.id}>
-                      <TableCell sx={{ width: "25%" }}>
+                      <TableCell sx={{ width: isPA ? "20%" : "25%" }}>
                         {paciente.nome}
                       </TableCell>
-                      <TableCell sx={{ width: "20%" }}>
+                      <TableCell sx={{ width: isPA ? "15%" : "20%" }}>
                         {mask(paciente.cpf)}
                       </TableCell>
-                      <TableCell sx={{ width: "45%" }}>
+                      <TableCell sx={{ width: isPA ? "30%" : "45%" }}>
                         {paciente.email}
                       </TableCell>
+                      {isPA && (
+                        <TableCell sx={{ width: "25%" }}>
+                          {psicologoMap[paciente.psicologoId] ?? "—"}
+                        </TableCell>
+                      )}
                       <TableCell sx={{ width: "10%" }}>
                         <IconButton
                           onClick={(e) =>
                             handleAbrirAcoes(e.currentTarget, paciente)
                           }
-                          sx={{ background: "#EEF2FF", color: "#6366F1", "&:hover": { background: "#E0E7FF" } }}
+                          sx={{
+                            background: "#EEF2FF",
+                            color: "#6366F1",
+                            "&:hover": { background: "#E0E7FF" },
+                          }}
                         >
                           <FormatListBulletedIcon />
                         </IconButton>

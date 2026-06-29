@@ -16,11 +16,14 @@ import Pacientes from "./components/paciente/Pacientes.jsx";
 import Usuarios from "./components/usuario/Usuarios.jsx";
 import Aplicacoes from "./components/aplicacao/Aplicacoes.jsx";
 import { isAuthenticated, getUsuarioLogado } from "../services/authService.js";
+import DashboardAdmin from "./components/DashboardAdmin.jsx";
+import DashboardPsicologoAdmin from "./components/DashboardPsicologoAdmin.jsx";
+import DashboardPsicologo from "./components/DashboardPsicologo.jsx";
 
 const ROTA_INICIAL = {
-  AD: "/empresas",
-  PA: "/usuarios",
-  PS: "/pacientes",
+  AD: "/dashboard-admin",
+  PA: "/dashboard-psicologo-admin",
+  PS: "/dashboard-psicologo",
 };
 
 function RotaProtegida({ children, roles }) {
@@ -247,6 +250,30 @@ function Layout() {
           element={
             <RotaProtegida roles={["PA", "PS"]}>
               <Aplicacoes />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="/dashboard-admin"
+          element={
+            <RotaProtegida roles={["AD"]}>
+              <DashboardAdmin />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="/dashboard-psicologo-admin"
+          element={
+            <RotaProtegida roles={["PA"]}>
+              <DashboardPsicologoAdmin />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="/dashboard-psicologo"
+          element={
+            <RotaProtegida roles={["PS"]}>
+              <DashboardPsicologo />
             </RotaProtegida>
           }
         />

@@ -17,6 +17,9 @@ const TIPO_LABELS = {
 };
 
 const NAV_LINKS = [
+  { label: "Dashboard", path: "/dashboard-admin", roles: ["AD"] },
+  { label: "Dashboard", path: "/dashboard-psicologo-admin", roles: ["PA"] },
+  { label: "Dashboard", path: "/dashboard-psicologo", roles: ["PS"] },
   { label: "Empresas", path: "/empresas", roles: ["AD"] },
   { label: "Usuários", path: "/usuarios", roles: ["AD", "PA"] },
   { label: "Pacientes", path: "/pacientes", roles: ["PA", "PS"] },
@@ -29,14 +32,29 @@ export default function Header() {
   const usuario = getUsuarioLogado();
   const tipo = usuario?.tipo;
 
-  const primeiraRota = NAV_LINKS.find((l) => l.roles.includes(tipo))?.path ?? "/login";
+  const primeiraRota =
+    NAV_LINKS.find((l) => l.roles.includes(tipo))?.path ?? "/login";
 
   return (
     <AppBar position="static">
-      <Toolbar sx={{ maxWidth: 1400, width: "100%", mx: "auto", gap: 1, minHeight: "60px !important" }}>
+      <Toolbar
+        sx={{
+          maxWidth: 1400,
+          width: "100%",
+          mx: "auto",
+          gap: 1,
+          minHeight: "60px !important",
+        }}
+      >
         {/* Logo */}
         <Box
-          sx={{ display: "flex", alignItems: "center", gap: 1.5, cursor: "pointer", mr: 1 }}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1.5,
+            cursor: "pointer",
+            mr: 1,
+          }}
           onClick={() => navigate(primeiraRota)}
         >
           <Box
@@ -53,7 +71,12 @@ export default function Header() {
           >
             <PsychologyIcon sx={{ color: "#fff", fontSize: 20 }} />
           </Box>
-          <Typography fontWeight={700} fontSize="0.95rem" color="text.primary" letterSpacing="-0.01em">
+          <Typography
+            fontWeight={700}
+            fontSize="0.95rem"
+            color="text.primary"
+            letterSpacing="-0.01em"
+          >
             Psicotestes
           </Typography>
         </Box>
@@ -72,7 +95,9 @@ export default function Header() {
                   color: ativo ? "primary.main" : "text.secondary",
                   fontWeight: ativo ? 700 : 500,
                   fontSize: "0.85rem",
-                  backgroundColor: ativo ? "rgba(99,102,241,0.08)" : "transparent",
+                  backgroundColor: ativo
+                    ? "rgba(99,102,241,0.08)"
+                    : "transparent",
                   "&:hover": {
                     backgroundColor: "rgba(99,102,241,0.08)",
                     color: "primary.main",
@@ -105,16 +130,30 @@ export default function Header() {
         {/* Usuário */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
           <Box sx={{ textAlign: "right" }}>
-            <Typography variant="body2" fontWeight={600} color="text.primary" lineHeight={1.3} fontSize="0.85rem">
+            <Typography
+              variant="body2"
+              fontWeight={600}
+              color="text.primary"
+              lineHeight={1.3}
+              fontSize="0.85rem"
+            >
               {usuario?.nome}
             </Typography>
-            <Typography variant="caption" color="text.secondary" lineHeight={1.2} fontSize="0.7rem">
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              lineHeight={1.2}
+              fontSize="0.7rem"
+            >
               {TIPO_LABELS[tipo]}
             </Typography>
           </Box>
           <Divider orientation="vertical" flexItem />
           <IconButton
-            onClick={() => { logout(); navigate("/login"); }}
+            onClick={() => {
+              logout();
+              navigate("/login");
+            }}
             size="small"
             title="Sair"
             sx={{

@@ -43,9 +43,9 @@ export default function Login() {
     try {
       await login(data.email, data.senha);
       const usuario = getUsuarioLogado();
-      if (usuario.tipo === "AD") navigate("/empresas");
-      else if (usuario.tipo === "PA") navigate("/usuarios");
-      else navigate("/pacientes");
+      if (usuario.tipo === "AD") navigate("/dashboard-admin");
+      else if (usuario.tipo === "PA") navigate("/dashboard-psicologo-admin");
+      else navigate("/dashboard-psicologo");
     } catch (e) {
       setErro(e.message);
     } finally {

@@ -23,36 +23,24 @@ import ModalLaudo from "./ModalLaudo";
 
 const TIPO_LABELS = {
   //BDI-DOIS
-  "Mínimo/Sem Depressão": { label: "Mínimo/Sem Depressão", color: "success" },
-  "Depressão Leve": { label: "Depressão Leve", color: "secondary" },
-  "Depressão Moderada": { label: "Depressão Moderada", color: "warning" },
-  "Depressão Grave": { label: "Depressão Grave", color: "error" },
+  Mínimo: { label: "Mínimo", color: "success" },
+  Leve: { label: "Leve", color: "secondary" },
+  Moderado: { label: "Moderado", color: "warning" },
+  Severo: { label: "Severo", color: "error" },
 
   //BSS
-  "Poucos sinais de risco suicida.": {
-    label: "Poucos sinais de risco suicida.",
-    color: "success",
-  },
-  "Pensamentos suicidas ou sofrimento importante.": {
-    label: "Pensamentos suicidas ou sofrimento importante.",
-    color: "warning",
-  },
-  "Risco elevado de tentativa suicida.": {
-    label: "Risco elevado de tentativa suicida.",
-    color: "error",
-  },
+  "Risco Baixo": { label: "Risco Baixo", color: "success" },
+  "Risco Moderado": { label: "Risco Moderado", color: "warning" },
+  "Risco Alto": { label: "Risco Alto", color: "error" },
 
   //WHO
-  "Satisfatória (Qualidade de vida boa)": {
-    label: "Qualidade de vida indicativa satisfatória",
-    color: "success",
-  },
-  "Regular (Qualidade de vida moderada)": {
-    label: "Qualidade de vida indicativa regular",
+  "Boa qualidade de vida": { label: "Boa qualidade de vida", color: "success" },
+  "Qualidade de vida moderada": {
+    label: "Qualidade de vida moderada",
     color: "warning",
   },
-  "Qualidade de vida indicativa baixa": {
-    label: "Qualidade de vida indicativa baixa",
+  "Baixa qualidade de vida": {
+    label: "Baixa qualidade de vida",
     color: "error",
   },
 };
@@ -73,7 +61,11 @@ export default function ModalListarAplicacoes({ aberta, onFechar, paciente }) {
 
   useEffect(() => {
     if (aberta && paciente) {
+<<<<<<< HEAD
       fetch(`https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/aplicacoes/paciente/${paciente.id}`, {
+=======
+      fetch(`/api/aplicacoes/paciente/${paciente.id}`, {
+>>>>>>> c9c6b43f6067201af85fc2cec52f21ab58c902e4
         headers: getAuthHeaders(),
       })
         .then((r) => r.json())

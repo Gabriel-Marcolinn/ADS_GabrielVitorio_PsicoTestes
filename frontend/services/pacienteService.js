@@ -1,7 +1,11 @@
 import { getAuthHeaders } from "./authService.js";
 import { fetchAutenticado, handleResponse } from "./apiClient.js";
 
+<<<<<<< HEAD
 const BASE_URL = "https://adsgabrielvitoriopsicotestes-production.up.railway.app/api/pacientes";
+=======
+const BASE_URL = "/api/pacientes";
+>>>>>>> c9c6b43f6067201af85fc2cec52f21ab58c902e4
 
 // CADASTRO
 export async function cadastrarPaciente(data) {
@@ -17,6 +21,14 @@ export async function cadastrarPaciente(data) {
 export async function listarPacientes(psicologoId, ativo) {
   const response = await fetchAutenticado(
     `${BASE_URL}?psicologoId=${psicologoId}&ativo=${ativo}`,
+    { headers: getAuthHeaders() },
+  );
+  return handleResponse(response);
+}
+
+export async function listarPacientesPorEmpresa(empresaId, ativo) {
+  const response = await fetchAutenticado(
+    `${BASE_URL}/empresa?empresaId=${empresaId}&ativo=${ativo}`,
     { headers: getAuthHeaders() },
   );
   return handleResponse(response);
