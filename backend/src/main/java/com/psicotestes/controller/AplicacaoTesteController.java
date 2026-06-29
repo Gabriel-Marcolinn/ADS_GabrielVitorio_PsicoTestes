@@ -23,7 +23,6 @@ public class AplicacaoTesteController {
     @PostMapping
     public ResponseEntity<AplicacaoResponseDTO> aplicarTeste(
             @RequestBody @Valid AplicacaoRequestDTO dto,
-            // TODO: Substituir por @AuthenticationPrincipal quando implementar Spring Security
             @RequestHeader("Usuario-Id") Long usuarioLogadoId
     ) {
 
