@@ -22,11 +22,11 @@ public class EmpresaService {
     @Transactional
     public EmpresaResponseDTO salvar(EmpresaRequestDTO dto) {
 
-        if (empresaRepository.findByCnpj(dto.cnpj()).isPresent()) {
+        String cnpjFormatado = dto.cnpj().trim().replace("-", "").replace(".","").replace("/","");
+        if (empresaRepository.findByCnpj(cnpjFormatado).isPresent()) {
             throw new RuntimeException("Já existe uma empresa cadastrada com este CNPJ.");
         }
 
-        String cnpjFormatado = dto.cnpj().trim().replace("-", "").replace(".","").replace("/","");
         Empresa empresa = new Empresa(dto.razaoSocial(), cnpjFormatado);
         return new EmpresaResponseDTO(empresaRepository.save(empresa));
     }
@@ -51,14 +51,15 @@ public class EmpresaService {
         Empresa empresaExistente = empresaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Empresa não encontrada."));
 
+        String cnpjFormatado = dto.cnpj().trim().replace("-", "").replace(".","").replace("/","");
         // Se o CNPJ mudou, verifica se o novo já existe em outra empresa
-        if (!empresaExistente.getCnpj().equals(dto.cnpj()) &&
-                empresaRepository.findByCnpj(dto.cnpj()).isPresent()) {
+        if (!empresaExistente.getCnpj().equals(cnpjFormatado) &&
+                empresaRepository.findByCnpj(cnpjFormatado).isPresent()) {
             throw new RuntimeException("O novo CNPJ já está em uso por outra empresa.");
         }
 
         empresaExistente.setRazaoSocial(dto.razaoSocial());
-        empresaExistente.setCnpj(dto.cnpj());
+        empresaExistente.setCnpj(cnpjFormatado);
 
         return new EmpresaResponseDTO(empresaRepository.save(empresaExistente));
     }
